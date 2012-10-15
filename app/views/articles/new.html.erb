@@ -1,0 +1,28 @@
+<section id="editor-toolbox">
+  <section class="content-bloc">
+    <%= render :partial => 'panel_search' %>
+  </section>
+</section>
+<section id="articles-box">
+  <section class="content-bloc">
+    <%= form_for(@article) do |f| %>
+      <article class="article">
+        <header>
+          <h3 class="category">
+            <%= @article.category_display %>&nbsp;&bull;
+          </h3>
+          <aside class="actions">
+            <a href="<%= session[:last_url] %>"><%= t('action.cancel') %></a> |
+            <%= f.submit t('action.ok'), :disable_with => t('action.wait') %>
+          </aside>
+          <%= render :partial => 'layouts/error_messages', :locals => { :item => @article } %>
+          <%= render :partial => 'edit', :locals => {:f => f } %>
+          <aside class="actions">
+            <a href="<%= session[:last_url] %>"><%= t('action.cancel') %></a> |
+            <%= f.submit t('action.ok'), :disable_with => t('action.wait') %>
+          </aside>
+        </header>
+      </article>
+    <% end %>
+  </section>
+</section>

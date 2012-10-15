@@ -1,0 +1,22 @@
+<section class="content-bloc">
+  <article class="article">
+    <header>
+      <h3 class="category">
+        <%= t('devise.passwords.change_your_password') %>&nbsp;&bull;
+      </h3>
+    </header>
+    <%= form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :put }) do |f| %>
+      <%= devise_error_messages! %>
+      <%= f.hidden_field :reset_password_token %>
+      <br/>
+      <div><div class="mandatory">*</div><%= f.label :password %><br/>
+      <%= f.password_field :password, :required => true %></div>
+      <div><div class="mandatory">*</div><%= f.label :password_confirmation %><br/>
+      <%= f.password_field :password_confirmation, :required => true %></div>
+      <br/>
+      <div class="actions"><%= f.submit t('devise.passwords.change_your_password') %></div>
+      <div class="mandatory">*</div>&nbsp;:<%= t('general.mandatory') %>
+    <% end %>
+    <%= render :partial => "devise/shared/links" %>
+  </article>
+</section>

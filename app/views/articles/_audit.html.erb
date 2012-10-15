@@ -1,0 +1,1 @@
+<ol>  <% for audit in @article.audits %>    <li>      <%= audit.status_display.html_safe %>      <%= display_time_by(audit.updated_by, audit.updated_at) %>      <% if audit.comments.present? %>        [<strong><%= audit.comments %></strong>]      <% end %>    </li>  <% end %></ol>

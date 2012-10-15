@@ -1,0 +1,46 @@
+<% first_row = true %>
+<% for article in articles %>
+  <li>
+    <% if not first_row %><hr/><% end %>
+    <article class="article">
+      <header>
+        <% unless article.heading.blank? %>
+          <h4><%= article.heading_display.html_safe %><br/></h4>
+        <% end %>
+        <h3 class="category">
+          <%= article.category_display %>&nbsp;&bull;
+          <%= link_to article.title_display.html_safe,
+                :action => :article,
+                :uri => article.uri %>
+        </h3>
+        <div class="signature">
+          <div class="date"><%= l article.published_at, :format => :long_ordinal %></div>&nbsp;
+          <%= article.signature if article.category_option?(:signature) %>
+        </div>
+      </header>
+      <% if article.category_option?(:start_end_dates) %>
+        <strong><%= t('activerecord.attributes.article.start_datetime') %></strong>
+        <%= article.start_datetime %>
+        <br/>
+        <% if article.end_datetime.present? %>
+          <strong><%= t('activerecord.attributes.article.end_datetime') %></strong>
+          <%= article.end_datetime %>
+          <br/>
+        <% end %>
+      <% end %>
+      <% if article.category_option?(:address) %>
+        <strong><%= t('activerecord.attributes.article.address') %></strong>
+        <%= article.address %>
+        <br/>
+      <% end %>
+      <%= truncate_html(article.content_with_large).html_safe %>
+      <% if article.category_option?(:image) and article.image_file_name.present? %>
+        <%= image_tag article.image.url(:large) %>
+      <% end %>
+      <% if article.category_option?(:document) and article.document_file_name.present? %>
+        <%= link_to icon_large('pdficon_large.gif', article.title_display), article.document.url %>
+      <% end %>
+    </article>
+  </li>
+  <% first_row = false %>
+<% end %>

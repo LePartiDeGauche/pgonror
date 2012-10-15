@@ -1,0 +1,24 @@
+<section id="actualites-editos">
+  <section id="actualites-editos-content" class="content-bloc">
+		<%= render :partial => 'layouts/index_articles_1col_1_on_3', 
+					:locals => { :articles => @editos, :category => 'edito' } %>
+  </section>
+  <section id="actualites-dossiers-content" class="content-bloc highlighted-bloc">
+    <%= render :partial => 'layouts/index_articles_1col_1_on_3', 
+          :locals => { :articles => @dossiers, :category => 'dossier' } %>
+  </section>
+</section>
+<section id="actualites-actus">
+  <section id="actualites-actus-content" class="content-bloc">
+    <%= render :partial => 'layouts/index_articles_3cols_2_on_3', 
+          :locals => { :articles => @actus, :category => 'actu' } %>
+  </section>
+  <section id="actualites-communiques-content" class="content-bloc">
+    <%= render :partial => 'layouts/index_articles_3cols_2_on_3', 
+          :locals => { :articles => @communiques, :category => 'com' } %>
+  </section>
+  <section id="actualites-international-content" class="content-bloc">
+    <%= render :partial => 'layouts/index_articles_3cols_2_on_3', 
+          :locals => { :articles => @tout_international,  :category => 'inter' } %>
+  </section>
+</section>

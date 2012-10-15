@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+  </head>
+  <body>
+    <p>
+      <strong><%= t('activerecord.attributes.request.first_name') %></strong> : <%= @first_name %>
+      <br/><strong><%= t('activerecord.attributes.request.last_name') %></strong> : <%= @last_name %>
+      <br/><strong><%= t('activerecord.attributes.request.email') %></strong> : <%= @email %>
+      <% unless @address.blank? %>
+        <br/><strong><%= t('activerecord.attributes.request.address') %></strong> : <%= @address %>
+      <% end %>
+      <% unless @zip_code.blank? %>
+        <br/><strong><%= t('activerecord.attributes.request.zip_code') %></strong> : <%= @zip_code %>
+      <% end %>
+      <% unless @city.blank? %>
+        <br/><strong><%= t('activerecord.attributes.request.city') %></strong> : <%= @city %>
+      <% end %>
+      <% unless @phone.blank? %>
+        <br/><strong><%= t('activerecord.attributes.request.phone') %></strong> : <%= @phone %>
+      <% end %>
+      <br/><strong><%= t('activerecord.attributes.request.comment') %></strong> : <%= @comment %>
+    </p>
+  </body>
+</html>

@@ -1,0 +1,23 @@
+<section class="content-bloc">
+  <article class="article">
+    <header>
+      <h3 class="category">
+        <%= t('general.sign_up') %>&nbsp;&bull;
+      </h3>
+    </header>
+    <%= form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| %>
+      <%= devise_error_messages! %>
+      <br/>
+      <div><div class="mandatory">*</div><%= f.label :email %><br/>
+      <%= f.email_field :email, :required => true %></div>
+      <div><div class="mandatory">*</div><%= f.label :password %><br/>
+      <%= f.password_field :password, :required => true %></div>
+      <div><div class="mandatory">*</div><%= f.label :password_confirmation %><br/>
+      <%= f.password_field :password_confirmation, :required => true %></div>
+      <br/>
+      <div class="actions"><%= f.submit t('general.sign_up') %></div>
+      <div class="mandatory">*</div>&nbsp;:<%= t('general.mandatory') %>
+    <% end %>
+    <%= render :partial => "devise/shared/links" %>
+  </article>
+</section>

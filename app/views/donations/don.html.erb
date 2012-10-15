@@ -1,0 +1,68 @@
+<section>
+  <section class="content-bloc">
+    <% unless @don.nil? %>
+      <%= render :partial => 'layouts/article_simplified', :locals => { :article => @don } %>
+    <% end %>                        
+    <article class="article">
+      <header>
+        <h1><%= t('action.donation.title') %></h1>
+      </header>
+      <%= render :partial => 'layouts/error_messages', :locals => { :item => @donation } %>
+      <%= form_for @donation, :url => { :action => "valider_don" } do |f| %>
+        <div class="form-medium">
+          <table>
+            <tr>
+              <td><div class="mandatory">*</div><%= f.label :first_name %></td>
+              <td><%= f.text_field :first_name, :required => true %></td>
+              <td><div class="mandatory">*</div><%= f.label :last_name %></td>
+              <td><%= f.text_field :last_name, :required => true %></td>
+            </tr>
+            <tr>
+              <td><div class="mandatory">*</div><%= f.label :address %></td>
+              <td><%= f.text_field :address, :required => true %></td>
+            </tr>
+            <tr>
+              <td><div class="mandatory">*</div><%= f.label :zip_code %></td>
+              <td><%= f.text_field :zip_code, :required => true %></td>
+              <td><div class="mandatory">*</div><%= f.label :city %></td>
+              <td><%= f.text_field :city, :required => true %></td>
+            </tr>
+            <tr>
+              <td><div class="mandatory">*</div><%= f.label :email %></td>
+              <td><%= f.email_field :email, :required => true %></td>
+            </tr>
+            <tr>
+              <td><%= f.label :phone %></td>
+              <td><%= f.text_field :phone %></td>
+            </tr>
+            <tr><td>&nbsp;</td></tr>
+            <tr>
+              <td><div class="mandatory">*</div><%= f.label :amount %></td>
+              <td>
+                <%= f.number_field :amount, :required => true %><br/>
+                <div class="information"><%= t('activerecord.attributes.donation.amount_explain') %></div>
+              </td>
+            </tr>
+            <tr><td>&nbsp;</td></tr>
+            <tr>
+              <td><%= f.label :comment %></td>
+              <td colspan="3"><%= f.text_area :comment %></td>
+            </tr>
+            <tr><td>&nbsp;</td></tr>
+            <tr>
+              <td>
+                <div class="mandatory">*</div>&nbsp;:
+                <%= t('general.mandatory') %>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <center>
+          <aside class="actions">
+            <%= submit_tag t('action.send'), :disable_with => t('action.wait') %>
+          </aside>
+        </center>
+      <% end %>
+    </article>
+  </section>
+</section>

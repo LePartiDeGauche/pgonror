@@ -1,0 +1,12 @@
+<% if item.errors.any? %>
+  <div id="error_explanation">
+    <h2>
+      <%= t('activerecord.errors.messages.record_invalid', :errors => item.errors.count) %>
+    </h2>
+    <ul>
+      <% item.errors.full_messages.each do |msg| %>
+        <li><%= msg.html_safe %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %> 

@@ -1,0 +1,20 @@
+<section class="content-bloc">
+  <%= form_for([@user, @permission]) do |f| %>
+    <article class="article">
+      <aside class="actions">
+				<%= t('action.permission.update') %>	|
+				<%= link_to t('action.cancel'), @user %>	|
+				<%= f.submit t('action.ok'), :disable_with => t('action.wait') %>
+			</aside>
+      <header>
+        <h3 class="category">
+          <%= t('activerecord.attributes.user.permission') %>&nbsp;&bull;
+        </h3>
+        <h1>
+          <%= @user.email%>
+        </h1>
+      </header>  
+      <%= render :partial => 'edit', :locals => { :f => f } %>
+    </article>
+  <% end %>
+</section>

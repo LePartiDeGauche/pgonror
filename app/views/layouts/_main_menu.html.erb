@@ -1,0 +1,16 @@
+<% first = true %>
+<div id="mainmenu" class="inline-menu">
+  <% MENU.each do |menu, options| %>
+    <% unless not options.blank? and options[:hide] %>
+      <% if first %>
+        <% first = false %>
+      <% else %>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+      <% end %>
+      <%= link_to_unless_current(menu, { :controller => options[:controller], 
+                                         :action => options[:action] }) do |name| %>
+        <span class="current"><%= name %></span>
+      <% end %>
+    <% end %> 
+  <% end %>
+</div>

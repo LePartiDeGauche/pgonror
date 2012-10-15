@@ -1,0 +1,9 @@
+<ol>
+  <li><%= link_to_unless_current t('action.article.all'), 
+                    :action => :index,
+                    :status => :all %></li>
+  <li><%= render :partial => 'articles/categories', 
+                 :locals => { :categories => @categories_online, 
+                              :status => Article::ONLINE,
+                              :important => false } %></li>
+</ol>

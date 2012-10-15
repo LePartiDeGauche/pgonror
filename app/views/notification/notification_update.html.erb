@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+    <title><%= @title %></title>
+  </head>
+  <p>
+    <% unless @comments.nil? %>
+      <strong><%= t('activerecord.attributes.audits.comments') %></strong> : <%= @comments %><br/>
+    <% end %>
+    <% unless @url.nil? %>
+      <strong><%= t('activerecord.attributes.article.link_to') %></strong> : <%= @url %><br/>
+    <% end %>
+    <% unless @published_url.nil? %>
+      <strong><%= t('action.show_context') %></strong> : <%= @published_url %><br/>
+    <% end %>
+    <% if @zoom %>
+      <strong><%= t('activerecord.attributes.article.zoom') %></strong><br/>
+    <% end %>
+    <% unless @expired_at.nil? %>
+      <strong><%= t('activerecord.attributes.article.expired_at') %></strong> : <%= @expired_at %><br/>
+    <% end %>
+    <strong><%= t('activerecord.attributes.article.created_by') %></strong> : <%= @created_by %><br/>
+    <strong><%= t('activerecord.attributes.article.updated_by') %></strong> : <%= @updated_by %><br/>
+    <strong><%= t('activerecord.attributes.article.status') %></strong> : <%= @status %>
+  </p>
+  <body style="width: 612px; color: #333; font-family: 'Trebuchet MS', Georgia, 'Times New Roman', Times, serif; font-size: 14px; font-style: normal; font-weight: normal; line-height: 21px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;">
+    <h3 style="color: red; font-family: 'Arial Black', Gadget, sans-serif; font-size: 13px; font-style: normal; font-weight: bold; line-height: 12px; margin-bottom: 12px; margin-left: 0px; margin-right: 0px; margin-top: 0px;padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;"><%= @category %></h3>
+    <% unless @heading.nil? %>
+      <h4 style="color: #222; font-size: 14px; font-style: normal; font-weight: bold; line-height: 17px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><%= @heading.html_safe %></h4>
+    <% end %>
+    <h1 style="color: #B50000; font-size: 25px; font-style: normal; font-weight: bold; line-height: 25px; margin-bottom: 0px; margin-left: 0px;  margin-right: 0px; margin-top: 0px;"><%= @title.html_safe %></h1>
+    <% unless @source.nil? %>
+      <h2 style="color: #81BF40; font-size: 14px; font-style: normal; font-weight: bold; line-height: 18px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><%= @source %></h2>
+    <% end %>
+    <% unless @folder.nil? %>
+      <h2 style="color: #81BF40; font-size: 14px; font-style: normal; font-weight: bold; line-height: 18px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px;"><%= @folder %></h2>
+    <% end %>
+    <p>
+        <div style = "background-color: #81BF40; border-bottom-width: 0px; border-left-width: 0px; border-right-width: 0px; border-top-width: 0px; color: white; font-family: 'Trebuchet MS', Georgia, 'Times New Roman', Times, serif; font-size: 12px; font-style: italic; font-variant: small-caps; font-weight: normal; line-height: 18px; list-style-image: none; list-style-position: outside; list-style-type: none; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; padding-bottom: 0px; padding-left: 2px; padding-right: 2px; padding-top: 0px; text-align: -webkit-auto; vertical-align: baseline; display: inline;">
+          <%= @published_at %>
+        </div>&nbsp;<% unless @signature.nil? %><i><%= @signature %></i><% end %>
+        <% unless @tags.blank? %>
+          <div style="color: #B50000; font-family: 'Trebuchet MS', Georgia, 'Times New Roman', Times, serif; font-size: 12px; font-style: normal; font-weight: normal; height: auto; line-height: 22px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; margin-top: 0px; padding-bottom: 0px; padding-left: 2px; padding-right: 2px; padding-top: 0px; text-decoration: none; vertical-align: baseline;">
+            <%= @tags %>
+          </div>
+        <%end%>
+    </p>
+    <p style="color: #333; display: block; font-family: 'Trebuchet MS', Georgia, 'Times New Roman', Times, serif; font-size: 13px; font-style: normal; font-weight: normal; line-height: 18px; margin-bottom: 8px; margin-left: 0px; margin-right: 0px; margin-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px; text-align: justify;">
+      <% if @image_url.present? %><img src="<%= @image_url %>"><% end %>
+      <%= @content.html_safe if @content.present? %>
+    </p>
+  </body>
+</html>

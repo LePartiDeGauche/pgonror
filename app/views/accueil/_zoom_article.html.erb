@@ -1,0 +1,90 @@
+<% unless articles.nil? %>
+  <ol>
+    <% index = 1 %>
+    <% for article in articles %>
+      <% content = article.content_replaced_with_zoom.html_safe %>
+      <li id=<%= "zoom-article" + index.to_s %> "<%= index == 1 ? "" : "display: none" %>">
+        <article class="article">
+          <% if content[0..7] == "<img src" or content[0..10] == "<iframe src" %>
+            <aside><%= content %></aside>
+          <% else %>
+            <div class="inner-zoom"><%= content %></div>
+          <% end %>
+          <div id="zoom-navigator" class="pages">
+            <% for page in 1..5 %>
+              <% if page != index %>
+                <a class=<%= "zoom-button" + page.to_s %>><%= page.to_s %></a>
+              <% end %>
+              <%= page.to_s if page == index %>
+            <% end %>
+          </div>
+          <section>
+            <% unless article.heading.blank? %>
+              <h4><%= article.heading_display.html_safe %><br/></h4>
+            <% end %>
+            <h1>
+              <%= link_to article.title_display.html_safe,
+                                :controller => article.category_option(:controller),
+                                :action => article.category_option(:action),
+                                :uri => article.uri %>
+            </h1>
+          </section>
+        </article>
+        <% index = index + 1 %>
+      </li>
+    <% end %>
+  </ol>
+<% end %>
+<script>
+  function next() {
+    $('#zoom li:last').after($('#zoom li:first'));
+    showOnlyFirst();
+  };
+  function showOnlyFirst() {
+    $('#zoom li').hide();
+    $('#zoom li:first').show(300);
+  };
+  $(document).ready(function() {
+    var speed = 6000;
+    var run = setInterval('next()', speed);
+    $('.zoom-button1').click(function() {
+      $('#zoom li#zoom-article2').insertAfter($('#zoom li#zoom-article1'));
+      $('#zoom li#zoom-article3').insertAfter($('#zoom li#zoom-article2'));
+      $('#zoom li#zoom-article4').insertAfter($('#zoom li#zoom-article3'));
+      $('#zoom li#zoom-article5').insertAfter($('#zoom li#zoom-article4'));
+      showOnlyFirst();
+    });
+    $('.zoom-button2').click(function() {
+      $('#zoom li#zoom-article3').insertAfter($('#zoom li#zoom-article2'));
+      $('#zoom li#zoom-article4').insertAfter($('#zoom li#zoom-article3'));
+      $('#zoom li#zoom-article5').insertAfter($('#zoom li#zoom-article4'));
+      $('#zoom li#zoom-article1').insertAfter($('#zoom li#zoom-article5'));
+      showOnlyFirst();
+    });
+    $('.zoom-button3').click(function() {
+      $('#zoom li#zoom-article4').insertAfter($('#zoom li#zoom-article3'));
+      $('#zoom li#zoom-article5').insertAfter($('#zoom li#zoom-article4'));
+      $('#zoom li#zoom-article1').insertAfter($('#zoom li#zoom-article5'));
+      $('#zoom li#zoom-article2').insertAfter($('#zoom li#zoom-article1'));
+      showOnlyFirst();
+    });
+    $('.zoom-button4').click(function() {
+      $('#zoom li#zoom-article5').insertAfter($('#zoom li#zoom-article4'));
+      $('#zoom li#zoom-article1').insertAfter($('#zoom li#zoom-article5'));
+      $('#zoom li#zoom-article2').insertAfter($('#zoom li#zoom-article1'));
+      $('#zoom li#zoom-article3').insertAfter($('#zoom li#zoom-article2'));
+      showOnlyFirst();
+    });
+    $('.zoom-button5').click(function() {
+      $('#zoom li#zoom-article1').insertAfter($('#zoom li#zoom-article5'));
+      $('#zoom li#zoom-article2').insertAfter($('#zoom li#zoom-article1'));
+      $('#zoom li#zoom-article3').insertAfter($('#zoom li#zoom-article2'));
+      $('#zoom li#zoom-article4').insertAfter($('#zoom li#zoom-article3'));
+      showOnlyFirst();
+    });
+    $('#zoom').hover(
+      function() { clearInterval(run); },
+      function() { run = setInterval('next()', speed); }
+    ); 
+  });
+</script>

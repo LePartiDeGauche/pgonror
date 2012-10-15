@@ -1,0 +1,126 @@
+<section>
+  <section class="content-bloc">
+    <% unless @adhesion.nil? %>
+      <%= render :partial => 'layouts/article_simplified', :locals => { :article => @adhesion } %>
+    <% end %>                        
+    <article class="article">
+      <header>
+        <h1><%= t('action.membership.title') %></h1>
+      </header>
+      <%= form_for @membership, :url => { :action => "valider_adhesion" } do |f| %>
+        <%= render :partial => 'layouts/error_messages', :locals => { :item => @membership } %>
+        <div class="form-medium">
+          <table>
+            <tr>
+              <td></td>
+              <td>
+                <%= radio_button_tag :renew, false, !@membership.renew %>
+                <label><%= t('activerecord.attributes.membership.renew_option_new') %></label>
+                <%= radio_button_tag :renew, true, @membership.renew %>
+                <label><%= t('activerecord.attributes.membership.renew_option_renew') %></label>
+              </td>
+              <td><div class="mandatory">*</div><%= f.label :department %></td>
+              <td><%= f.collection_select :department, Membership::DEPARTEMENTS, :to_s, :to_s, :prompt =>t('action.select'), :required => true %></td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+              <td><%= f.label :committee %></td>
+              <td><%= f.text_field :committee %></td>
+            </tr>
+            <tr><td>&nbsp;</td></tr>
+            <tr>
+              <td><div class="mandatory">*</div><%= f.label :first_name %></td>
+              <td><%= f.text_field :first_name, :required => true %></td>
+              <td><div class="mandatory">*</div><%= f.label :last_name %></td>
+              <td><%= f.text_field :last_name, :required => true %></td>
+            </tr>
+            <tr>
+              <td><div class="mandatory">*</div><%= f.label :gender %></td>
+              <td><%= f.collection_select :gender, Membership::GENDERS, :to_s, :to_s, :prompt =>t('action.select'), :required => true %></td>
+              <td><div class="mandatory">*</div><%= f.label :address %></td>
+              <td><%= f.text_field :address, :required => true %></td>
+            </tr>
+            <tr>
+              <td><div class="mandatory">*</div><%= f.label :zip_code %></td>
+              <td><%= f.text_field :zip_code, :required => true %></td>
+              <td><div class="mandatory">*</div><%= f.label :city %></td>
+              <td><%= f.text_field :city, :required => true %></td>
+            </tr>
+            <tr>
+              <td><div class="mandatory">*</div><%= f.label :email %></td>
+              <td><%= f.email_field :email, :required => true %></td>
+              <td><div class="mandatory">*</div><%= f.label :birthdate %></td>
+              <td>
+                <%= f.date_select :birthdate, 
+                                  :start_year => Time.now.year - 100, 
+                                  :end_year => Time.now.year - 15,
+                                  :include_blank => true,
+                                  :required => true %>
+              </td>
+            </tr>
+            <tr>
+              <td><div class="mandatory">**</div><%= f.label :phone %></td>
+              <td><%= f.text_field :phone %></td>
+              <td><div class="mandatory">**</div><%= f.label :mobile %></td>
+              <td><%= f.text_field :mobile %></td>
+            </tr>
+            <tr>
+              <td><%= f.label :job %></td>
+              <td><%= f.text_field :job %></td>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+            </tr>
+            <tr><td>&nbsp;</td></tr>
+            <tr>
+              <td><%= f.label :mandate %></td>
+              <td><%= f.text_field :mandate %></td>
+              <td><%= f.label :mandate_place %></td>
+              <td><%= f.text_field :mandate_place %></td>
+            </tr>
+            <tr><td>&nbsp;</td></tr>
+            <tr>
+              <td><%= f.label :union %></td>
+              <td><%= f.text_field :union %></td>
+              <td><%= f.label :union_resp %></td>
+              <td><%= f.select :union_resp, Membership::responsibilities, {:include_blank => true} %></td>
+            </tr>
+            <tr>
+              <td><%= f.label :assoc %></td>
+              <td><%= f.text_field :assoc %></td>
+              <td><%= f.label :assoc_resp %></td>
+              <td><%= f.select :assoc_resp, Membership::responsibilities, {:include_blank => true} %></td>
+            </tr>
+            <tr><td>&nbsp;</td></tr>
+            <tr>
+              <td><div class="mandatory">*</div><%= f.label :amount %></td>
+              <td><%= f.select :predefined_amount, Membership::amounts %></td>
+              <td><label><%= t('activerecord.attributes.membership.free_amount') %></label></td>
+              <td>
+                <%= f.number_field :amount %><br/>
+                <div class="information"><%= t('activerecord.attributes.membership.amount_explain') %></div>
+              </td>
+            </tr>
+            <tr><td>&nbsp;</td></tr>
+            <tr>
+              <td><%= f.label :comment %></td>
+              <td colspan="3"><%= f.text_area :comment %></td>
+            </tr>
+            <tr><td>&nbsp;</td></tr>
+            <tr>
+              <td colspan="3">
+                <div class="mandatory">*</div>&nbsp;: <%= t('general.mandatory') %><br/>
+                <div class="mandatory">**</div>&nbsp;: <%= t('general.exclusive') %>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <center>
+          <aside class="actions">
+            <%= submit_tag t('action.send'), :disable_with => t('action.wait') %>
+          </aside>
+        </center>
+      <% end %>
+    </article>
+  </section>
+</section>

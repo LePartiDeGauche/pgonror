@@ -1,0 +1,22 @@
+<section class="content-bloc">
+  <article class="article">
+    <header>
+      <h3 class="category">
+        <%= t('general.user_access') %>&nbsp;&bull;
+      </h3>
+    </header>
+    <%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
+      <br/>
+      <div><%= f.label :email %><br/>
+      <%= f.email_field :email %></div>
+      <div><%= f.label :password %><br/>
+      <%= f.password_field :password %></div>
+      <% if devise_mapping.rememberable? -%>
+        <div><%= f.check_box :remember_me %> <%= f.label :remember_me %></div>
+      <% end -%>
+      <br/>
+      <div class="actions"><%= f.submit t('general.user_access') %></div>
+    <% end %>
+    <%= render :partial => "devise/shared/links" %>
+  </article>
+</section>

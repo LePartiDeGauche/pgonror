@@ -1,0 +1,40 @@
+<section id="editor-toolbox">
+  <section id="search-box" class="content-bloc">
+    <aside class="actions">
+      <%= form_tag({:action => :search,
+                    :category => session[:category],
+                    :status => session[:status]}, 
+                    :remote => true,
+                    :id => 'search-form') do %>
+        <%= text_field_tag :search, params[:search] %>
+        <%= submit_tag t("action.search") %>
+      <% end %>
+    </aside>
+  </section>
+  <section id="categories-list" class="content-bloc">
+    <%= render :partial => 'menu_content' %>
+  </section>
+</section>
+<section id="articles-box">
+  <% unless @article.nil? %>
+    <section class="content-bloc">
+      <article class="article">
+        <aside class="actions">
+          <a href="<%= session[:prior_url] %>"><%= t('action.back') %></a>
+        </aside>
+        <header>
+          <% unless @article.heading.nil? %>
+            <h4><%= @article.heading_display.html_safe %><br/></h4>
+          <% end %>
+          <h3 class="category">
+            <%= @article.category_display %>&nbsp;&bull;
+          </h3>
+          <h1>
+            <%= @article.title_display.html_safe %>
+          </h1>
+        </header>
+        <%= render :partial => 'articles/show' %>
+      </article>
+    </section>
+  <% end %>
+</section>

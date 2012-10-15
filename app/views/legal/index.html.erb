@@ -1,0 +1,15 @@
+<section id="legal-liste">
+  <section id="legal-content" class="content-bloc">
+    <% unless @legal.nil? %>
+      <%= render :partial => 'layouts/article_simplified',  :locals => { :article => @legal } %>
+    <% end %>
+  </section>
+</section>
+<section id="sources-vignettes">
+  <section id="sources-content" class="content-bloc">
+    <% unless @source_archives.nil? %>
+      <%= render :partial => 'layouts/index_articles_1col_1_on_3', 
+            :locals => { :articles => @source_archives, :category => 'codearchive' } %>
+    <% end %>
+  </section>
+</section>

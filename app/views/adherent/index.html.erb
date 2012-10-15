@@ -1,0 +1,63 @@
+<section>
+  <section class="content-bloc">
+      <article class="article">
+        <header>
+          <h3 class="category">
+            <%= t('identity.reserved') %>&nbsp;&bull;
+          </h3>
+        </header>
+      </article>
+      <%= link_to_unless_current t('general.mypage'), edit_user_registration_path %><br/>
+      <%= link_to_unless_current t('general.sign_out'), destroy_user_session_path, :method => :delete %>
+  </section>
+</section>
+<section id="editor-toolbox">
+  <section id="search-box" class="content-bloc">
+    <aside class="actions">
+      <%= form_tag(adherent_search_path,
+                   :method => :get,
+                   :remote => true,
+                   :id => 'search-form') do %>
+        <%= hidden_field_tag :category, session[:category] %>
+        <%= search_field_tag :search, 
+                             params[:search], 
+                             :placeholder => t('action.search') %>
+        <%= submit_tag t("action.search"),
+                       :disable_with => t('action.wait') %>
+      <% end %>
+      <script>
+        $(document).ready(function(){
+          var output = "#articles-search-list";
+          $('#search-form')
+            .bind("ajax:beforeSend", function(evt, xhr, settings){
+            })
+            .bind("ajax:success", function(evt, data, status, xhr){
+              $(output).html(xhr.responseText);
+            })
+            .bind("ajax:error", function(evt, xhr, status, error){
+              var errors, errorText;
+              try {
+                errors = $.parseJSON(xhr.responseText);
+              } catch(err) {
+                errors = {message: err};
+              }
+              errorText = "<ul>";
+              for( error in errors ) {
+                errorText += "<li>" + errors[error] + "</li> ";
+              }
+              errorText += "</ul>";
+              $(output).html(errorText);
+            });
+        });
+      </script>
+    </aside>
+  </section>
+  <section id="categories-list" class="content-bloc">
+    <%= render :partial => 'menu_content' %>
+  </section>
+</section>
+<section id="articles-box">
+  <section id="articles-search-list" class="content-bloc">
+    <%= render :partial => 'search_list' %>
+  </section>
+</section>

@@ -1,0 +1,15 @@
+<section id="vudailleurs-liste">
+  <section class="content-bloc">
+    <%= render :partial => 'layouts/index_articles_1col_2_on_3', 
+          :locals => { :articles => @articles, :category => 'web' } %>
+  </section>
+</section>
+<section id="vudailleurs-vignettes">
+  <section class="content-bloc">
+    <%= render :partial => 'envoyer_message' %>
+  </section>
+  <section class="content-bloc">
+    <%= render :partial => 'layouts/index_articles_1col_1_on_3', 
+          :locals => { :articles => @articlesblog, :category => 'directblog' } %>
+  </section>
+</section>

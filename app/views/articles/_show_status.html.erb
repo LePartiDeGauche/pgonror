@@ -1,0 +1,11 @@
+<% unless @article.nil? %>
+  <%= @article.status_display_with_style.html_safe %>
+  <uri><%= @article.uri %><br/></uri>
+  <%= t('activerecord.attributes.article.draft') if @article.draft %>
+<% end %>
+<% if Article::ONLINE == @article.status and @article.category_option(:controller).present?%>
+  <%= link_to t('action.show_context'),
+        :controller => @article.category_option(:controller),
+        :action => @article.category_option(:action),
+        :uri => @article.uri %>
+<% end %>

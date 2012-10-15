@@ -1,0 +1,17 @@
+<% unless @source.nil? %>
+  <section class="content-bloc">
+    <article class="@source">
+      <header>
+        <h3 class="category"><%= @source.category_display %>&nbsp;&bull;</h3>
+        <% unless @source.heading.blank? %>
+          <h4><%= @source.heading_display.html_safe %></h4><br/>
+        <% end %>
+        <h1><%= link_to @source.title_display.html_safe,
+                :controller => @source.category_option(:controller),
+                :action => @source.category_option(:action),
+                :uri => @source.uri %></h1>
+      </header>
+      <%= @source.content_with_medium.html_safe %>
+    </article>
+  </section>
+<% end %>

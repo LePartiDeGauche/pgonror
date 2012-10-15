@@ -1,0 +1,49 @@
+<% unless articles.nil? %>
+  <hgroup>
+    <h3 class="category">
+      <%= Article::category_option(category, :category_title) %>&nbsp;&bull;
+    </h3>
+    <% if Article::category_option?(category, :link_all_title) %>
+      <h2 class="main-title">
+        <%= link_to Article::category_option(category, :link_all_title), 
+                    :controller => Article::category_option(category, :controller), 
+                    :action => Article::category_option(category, :action_all) %>
+      </h2>
+    <% end %>
+  </hgroup>
+  <table>
+    <tr>
+      <% first_row = true %>
+      <% for article in articles %>
+        <% if not first_row %>
+          <td class="article-inter-column"></td>
+        <% end %>
+        <td class="article-one-third-column">
+          <article class="article">
+            <header>
+              <% unless article.heading.blank? %>
+                <h4><%= article.heading_display.html_safe %><br/></h4>
+              <% end %>
+              <h1>
+                <%= link_to article.title_display.html_safe,
+                      :controller => Article::category_option(category, :controller),
+                      :action => Article::category_option(category, :action),
+                      :uri => article.uri %>
+              </h1>
+            </header>
+            <%= truncate_html(article.content_with_mini.html_safe) %>
+            <footer class="actions">
+              <%= link_to (Article::category_option?(category, :video) ? 
+                            t('titre.voir_video') :
+                            t('titre.lire_suite')),
+                    :controller => Article::category_option(category, :controller),
+                    :action => Article::category_option(category, :action),
+                    :uri => article.uri %>
+            </footer>
+          </article>
+        </td>
+        <% first_row = false %>
+      <% end %>
+    </tr>
+  </table>
+<% end %>

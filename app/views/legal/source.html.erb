@@ -1,0 +1,30 @@
+<section class="content-bloc">
+  <% unless @article.nil? %>
+    <article class="article">
+      <hgroup>
+        <h3 class="category"><%= @article.category_display %>&nbsp;&bull;</h3>
+        <br/>
+      </hgroup>
+      <header>
+        <% unless @article.heading.blank? %>
+          <h4><%= @article.heading_display.html_safe %><br/></h4>
+        <% end %>
+        <h1 class="large-title"><%= @article.title_display.html_safe %></h1><br/>
+        <% unless @article.parent_id.nil? %>
+          <h2 class="main-title">
+            <%= link_to @article.folder_display.html_safe, 
+                  :controller => @article.folder.category_option(:controller),
+                  :action => @article.folder.category_option(:action),
+                  :uri => @article.folder.uri %>
+          </h2>
+        <% end %>
+        <div class="signature">
+          <div class="date"><%= l @article.published_at, :format => :long_ordinal %></div>&nbsp;
+          <%= @article.signature if @article.category_option?(:signature) %>
+        </div>
+        <%= render :partial => 'layouts/share_article' %>
+      </header>
+      <%= coderay(@article.content).html_safe unless @article.content.blank? %>
+    </article>
+  <% end %>
+</section>

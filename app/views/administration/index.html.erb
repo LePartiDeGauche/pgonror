@@ -1,0 +1,29 @@
+<%= render :partial => 'administration/menu' %>
+<section id="administration-work">
+  <%= form_tag '/administration/index' do %>
+  <%= hidden_field_tag :type, @type %>
+    <section class="content-bloc">
+      <h1><%= @label %></h1>
+      <aside class="actions">
+        <%= search_field_tag :search, params[:search], :size => "30" %>
+        <%= submit_tag t('action.search') %>
+      </aside>
+    </section>
+  <% end if @type %>
+
+  <% unless @logs.empty? %>
+    <section class="content-bloc">
+      <%= paginate @logs %>
+      <ol>
+        <% @logs.each do |log| %>
+          <li><%= log %></li>
+        <% end %>
+      </ol>
+      <%= paginate @logs %>
+    </section>
+  <% else %>
+    <section class="content-bloc">
+      <%= t('action.administration') %>
+    </section>
+  <% end %>
+</section>

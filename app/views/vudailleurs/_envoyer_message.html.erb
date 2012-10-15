@@ -1,0 +1,26 @@
+<div class="form-small">
+  <%= form_for @request, :url => { :action => "envoyer_message" } do |f| %>
+    <article class="article">
+      <header>
+        <h3 class="category">
+          <%= t('action.request.title_alt') %>
+        </h3>
+      </header>
+      <%= render :partial => 'layouts/error_messages', :locals => { :item => @request } %>
+      <table>
+        <tr><td><div class="mandatory">*</div><%= f.label :first_name %></td><td><%= f.text_field :first_name, :required => true %></td></tr>
+        <tr><td><div class="mandatory">*</div><%= f.label :last_name %></td><td><%= f.text_field :last_name, :required => true %></td></tr>
+        <tr><td><div class="mandatory">*</div><%= f.label :email %></td><td><%= f.email_field :email, :required => true %></td></tr>
+        <tr><td><div class="mandatory">*</div><%= f.label :comment_alt %></td><td><%= f.text_area :comment, :required => true %></td></tr>
+        <tr>
+          <td><div class="mandatory">*</div>&nbsp:<%= t('general.mandatory') %></td>
+          <td>
+            <aside class="actions">
+              <%= submit_tag t('action.send'), :disable_with => t('action.wait') %>
+            </aside>
+          </td>
+        </tr>
+      </table>
+    </article>
+  <% end %>
+</div>

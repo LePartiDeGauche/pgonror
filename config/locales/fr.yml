@@ -1,0 +1,488 @@
+# encoding: utf-8
+# PGonror is the corporate web site framework of Le Parti de Gauche based on Ruby on Rails.
+# 
+# Copyright (C) 2012 Le Parti de Gauche
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# 
+# See doc/COPYRIGHT.rdoc for more details.
+fr:
+  general:
+    time_by:          "il y a %{time} par %{by}"
+    unknown:          "inconnu"
+    created:          "Créé"
+    modified:         "Modifié"
+    no_data:          "L’information recherchée n’est pas disponible."
+    error404:         "PAGE INTROUVABLE (Erreur 404)"
+    no_data_explain:  "Nous sommes désolés, mais l’adresse demandée est introuvable et ne correspond à aucun article répertorié sur ce site web. Utilisez le menu principal du site pour naviguer au travers des différents articles d’information ou utilisez la fonction de recherche située en haut à gauche de la page principale."
+    not_authorized:   "Vous n’avez pas les accréditations nécessaires pour publier ou changer le statut d’un article de cette catégorie. Votre niveau d’autorisation pour cette catégorie d’article (%{category}) et cette source d’information (%{source}) est '%{authorization}'."
+    not_authorized_short:   "Vous n’avez pas les accréditations nécessaires pour publier ou changer le statut d’un article de cette catégorie."
+    not_saved:        "Les données ne sont pas enregistrées."
+    content:          "Chaîne éditoriale"
+    toc:              "Table des matières"
+    toc_explain:      "Sélectionnez un thème parmi la liste ci-dessous pour afficher les articles correspondants."
+    permissions:      "Accréditations"
+    administration:   "Administration"
+    sign_out:         "Déconnexion "
+    sign_out_explain: "Cliquez sur le lien ci-dessous pour vous déconnecter."
+    mypage:           "Changer mon mot de passe"
+    user_access:      "Accès adhérents"
+    sign_up:          "Inscrivez-vous"
+    mandatory:        "Information obligatoire"
+    exclusive:        "Une des informations est obligatoire"
+    more_videos:      "Plus de vidéos sur le site de la Télé de Gauche "
+    title:            "Le Parti de Gauche"
+    copyright:        "Le Parti de Gauche, 63 avenue de la République, 75011 Paris"
+    mentions:         "Mentions légales, crédits et sources du site"
+
+  identity:
+    apply:                "Adhésion"
+    support:              "Nous soutenir"
+    fdg:                  "Place au peuple !"
+    reserved:             "ESPACE ADHÉRENT"
+    reserved_link:        "Retrouvez prochainement ici les informations publiées pour les adhérents."
+    follow:               "RÉSEAUX SOCIAUX"
+    agauche:              "À GAUCHE"
+    agauche_title:        "Abonnez-vous à À Gauche, l’hebdomadaire du Parti de Gauche."
+    agauche_type:         "Type d’abonnement."
+    agauche_standard:     "Abonnement standard €29,00"
+    agauche_premium:      "Abonnement de soutien €50,00"
+    gavroche:             "RÉSEAU JEUNE"
+    gavroche_title:       "Retrouvez le Gavroche, le journal des jeunes du Parti de Gauche."
+    rss_explain:          "Abonnez-vous au fil d’actualités en utilisant un lecteur ou aggrégateur RSS avec cette addresse."
+    txt_explain:          "Téléchargez les derniers articles sous forme d’un fichier portable (.txt)."
+    
+  alert:
+    message:              "Message"
+    request:              "URL"
+    params:               "Parametres"
+  
+  action:
+    cancel:         "Annuler"
+    ok:             "Enregistrer"
+    send:           "Envoyer"
+    back:           "Retour"
+    wait:           "Patience…"
+    back_list:      "Retour à la liste"
+    update:         "Modifier"
+    change_status:  "Changer statut"
+    change_category:  "Changer catégorie"
+    delete:         "Supprimer"
+    search:         "Rechercher"
+    search_list:    "RÉSULTATS DE LA RECHERCHE"
+    next:           "Suivants…"
+    previous:       "…Précédents"
+    confirm:        "Êtes-vous sûr ?"
+    show_context:   "Article publié"
+    drag_drop:      "Sélectionnez un lien ou une image et déplacez le dans le corps du texte."
+    administration: "Sélectionnez une rubrique pour l’administration du site."
+    select:         "Sélectionnez"
+    download:       "Téléchargez le document"
+    share:          "Partagez cet article sur les réseaux sociaux à l’aide des liens ci-dessous ou copiez le lien court suivant dans vos messages :"
+    article:
+      create:             "Créer du contenu"
+      create_explain:     "Sélectionnez une catégorie d'article afin de créer du contenu."
+      create_associated:  "Création du contenu associé"
+      update:             "Modification d’un article"
+      status:             "Changement de statut d’un article"
+      created:            "L’article a été créé."
+      updated:            "L’article a été modifié."
+      deleted:            "L’article a été supprimé."
+      all:                "Tous les articles"
+      attached:           "Articles associés"
+      search_criteria:    "Utilisez les différents critères de recherche (répertoire, source, mot-clé)."
+      search_explain:     "Utilisez la fonction de recherche afin de pouvoir sélectionner des liens ou des images pouvant être insérés dans le corps du texte."
+      up_explain:         "Cliquez sur le lien pour naviguer dans le dossier ou répertoire de niveau supérieur."
+    user:
+      update:     "Modification d’un utilisateur"
+      updated:    "L’utilisateur a été modifié."
+      deleted:    "L’utilisateur a été supprimé."
+      log:        "Utilisateurs"
+    image:
+      create:     "Sélectionnez un fichier et cliquez sur 'Enregistrer' afin de déposer une image dans le catalogue"
+      external:   "ou entrez une adresse externe"
+      created:    "L’image a été déposée dans le catalogue."
+    document:
+      create:     "Sélectionnez un fichier et cliquez sur 'Enregistrer' afin de déposer un document dans le catalogue."
+      created:    "Le document a été déposé dans le catalogue."
+    permission:
+      create:     "Ajouter une accréditation"
+      created:    "L’accréditation a été créée."
+      update:     "Modification d’une accréditation"
+      updated:    "L’accréditation a été modifiée."
+      deleted:    "L’accréditation a été supprimée."
+    tag:
+      all:        "Mots-clés"
+      create:     "Ajouter un mot-clé"
+      created:    "Le mot-clé a été créé."
+      added:      "Le mot-clé a été ajouté."
+      deleted:    "Le mot-clé a été supprimé."
+    request:
+      title:      "ENVOYER UN MESSAGE AU PARTI DE GAUCHE"
+      title_alt:  "SUGGERER UN ARTICLE DU WEB"
+      log:        "Messages"
+      created:    "Nous avons bien reçu votre message et vous répondrons dans les meilleurs délais."
+    subscription:
+      title:      "INSCRIPTION À LA LETTRE D’INFORMATION"
+      log:        "Inscriptions à la lettre d’information"
+      created:    "Vous êtes maintenant inscrit à la lettre d’information du Parti de Gauche."
+    membership:
+      title:      "Vous pouvez adhérer en ligne en renseignant le formulaire ci-dessous."
+      log:        "Adhésions"
+      paid_log:   "Adhésions payées"
+      unpaid_log: "Adhésions en suspens"
+      payment:    "Vérifiez les informations ci-dessous, vous serez ensuite redirigé vers notre prestataire de paiement."
+      created:    "Votre adhésion a été transmise au Parti de Gauche. Nous vous en remercions."
+      error:      "Votre adhésion n’a pas été enregistrée en raison d’une erreur."
+      txt:        "<center><p>Merci de votre adh&eacute;sion au Parti de Gauche.</p><p><b>Vous allez &ecirc;tre redirig&eacute; vers la page de paiement s&eacute;curis&eacute; Paybox.</b><br>Suite &agrave; votre paiement, vous recevrez un message contenant le re&ccedil;u de carte bancaire relatif &agrave; votre don.<br><i>Nous vous remercions de bien vouloir patienter quelques secondes.</i></p></center>"
+    donation:
+      title:      "Vous pouvez faire un don en ligne en renseignant le formulaire ci-dessous."
+      log:        "Dons"
+      payment:    "Vérifiez les informations ci-dessous, vous serez ensuite redirigé vers notre prestataire de paiement."
+      created:    "Votre don a été transmis au Parti de Gauche. Nous vous en remercions."
+      error:      "Votre don n’a pas été enregistré en raison d’une erreur."
+      txt:        "<center><p>Merci de faire un don au Parti de Gauche.</p><p><b>Vous allez &ecirc;tre redirig&eacute; vers la page de paiement s&eacute;curis&eacute; Paybox.</b><br>Suite &agrave; votre paiement, vous recevrez un message contenant le re&ccedil;u de carte bancaire relatif &agrave; votre don.<br><i>Nous vous remercions de bien vouloir patienter quelques secondes.</i></p></center>"
+    payment:
+      commit:     "Procéder au paiement"
+      cancelled:  "Votre paiement est annulé."
+    audit:
+      log:        "Historique des modifications"
+
+  passwd:
+    no_auth:    "Vous n’avez pas accès à cette partie du site."
+    
+  permission:
+    authorization:
+      editor:     "Rédaction"
+      reviewer:   "Correction"
+      publisher:  "Publication"
+
+  mailer:
+    hello:                                      "Bonjour,"
+    notification_update_subject:                "[lepartidegauche.fr] Mise à jour"
+    notification_create_subject:                "[lepartidegauche.fr] Création"
+    notification_message_subject:               "[lepartidegauche.fr] Nouveau message de contact"
+    notification_subscription_subject:          "[lepartidegauche.fr] Nouvelle inscription à la lettre d'information"
+    notification_membership_subject:            "[lepartidegauche.fr] Nouvelle adhésion"
+    notification_membership_subject_renew:      "[lepartidegauche.fr] Renouvellement adhésion"
+    notification_donation_subject:              "[lepartidegauche.fr] Nouveau don"
+    receipt_message_subject:                    "[lepartidegauche.fr] Message de contact"
+    receipt_subscription_subject:               "[lepartidegauche.fr] Inscription à la lettre d'information"
+    receipt_membership_subject:                 "[lepartidegauche.fr] Adhésion"
+    receipt_donation_subject:                   "[lepartidegauche.fr] Don"
+    notification_new_user:                      "[lepartidegauche.fr] Nouvel utilisateur"
+    alert_admins:                               "[lepartidegauche.fr] ALERTE"
+      
+  user:
+    type:       "UTILISATEUR"
+    empty:      "Il n’y a pas d’utilisateur répondant aux critères."
+      
+  article:
+    status:
+      rework:     "À revoir (en attente de modification)"
+      new:        "Nouveau (en attente de relecture)"
+      reviewed:   "Relu (en attente d’approbation)"
+      online:     "En ligne (publié)"
+      offline:    "Hors ligne (non publié)"
+    empty:        "Il n’y a pas d’article répondant aux critères."
+  titre:
+    lire:                "+ lire"
+    lire_suite:          "+ lire la suite"
+    voir_video:          "+ voir la vidéo"
+    autres:              "Articles récents"
+
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      short: "%e %b"
+      long: "%e %B %Y"
+      long_ordinal: "%A %e %B %Y"
+      only_day: "%e"
+ 
+    day_names: [Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi]
+    abbr_day_names: [dim, lun, mar, mer, jeu, ven, sam]
+    month_names: [~, Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Septembre, Octobre, Novembre, Décembre]
+    abbr_month_names: [~, jan., fév., mar., avr., mai, juin, juil., août, sept., oct., nov., déc.]
+    order:
+        - :day
+        - :month
+        - :year
+  
+  time:
+    formats:
+      default: "%d %B %Y - %Hh%M"
+      full: "%A %d %B %Y - %Hh%M"
+      short: "%d %b"
+      long: "%A %d %B %Y %H:%M:%S"
+      date_only: "%d %B %Y"
+      time_only: "%Hh%M"
+      iso_date_only: "%Y%B%D"
+    am: 'am'
+    pm: 'pm'
+    
+  datetime:
+    distance_in_words:
+      half_a_minute: "une demi-minute"
+      less_than_x_seconds:
+        zero:  "moins d’une seconde"
+        one:   "moins de 1 seconde"
+        other: "moins de %{count} secondes"
+      x_seconds:
+        one:   "1 seconde"
+        other: "%{count} secondes"
+      less_than_x_minutes:
+        zero:  "moins d’une minute"
+        one:   "moins de 1 minute"
+        other: "moins de %{count} minutes"
+      x_minutes:
+        one:   "1 minute"
+        other: "%{count} minutes"
+      about_x_hours:
+        one:   "environ une heure"
+        other: "environ %{count} heures"
+      x_days:
+        one:   "1 jour"
+        other: "%{count} jours"
+      about_x_months:
+        one:   "environ un mois"
+        other: "environ %{count} mois"
+      x_months:
+        one:   "1 mois"
+        other: "%{count} mois"
+      about_x_years:
+        one:   "environ un an"
+        other: "environ %{count} ans"
+      over_x_years:
+        one:   "plus d’un an"
+        other: "plus de %{count} ans"
+    prompts:
+      year:   "Année"
+      month:  "Mois"
+      day:    "Jour"
+      hour:   "Heure"
+      minute: "Minute"
+      second: "Seconde"
+  
+  number:
+    format:
+      precision: 3
+      separator: ','
+      delimiter: ' '
+    currency:
+      format:
+        unit: '€'
+        precision: 2
+        format: '%n %u'
+    human:
+      format:
+        delimiter: "" 
+        precision: 2
+      storage_units:
+        format: "%n %u"
+        units:
+          byte:
+            one:   "octet"
+            other: "octets"
+          kb: "ko"
+          mb: "Mo"
+          gb: "Go"
+          tb: "To"
+ 
+  support:
+    array:
+      sentence_connector: 'et'
+      skip_last_comma: true
+      words_connector: ", "
+      two_words_connector: " et "
+      last_word_connector: " et "
+  
+  activerecord:
+    errors:
+      full_messages:
+        format:   "%{message}"
+      template:
+        header: 
+          one: "Impossible d’enregistrer %{model}: 1 erreur"
+          other: "Impossible d’enregistrer %{model}: %{count} erreurs."
+        body: "Veuillez vérifier les champs suivants :"
+      messages:
+        inclusion: "n’est pas inclus(e) dans la liste."
+        exclusion: "n’est pas disponible."
+        invalid: "n’est pas valide."
+        confirmation: "ne concorde pas avec la confirmation."
+        accepted: "doit être accepté(e)."
+        empty: "doit être renseigné."
+        blank: "doit être renseigné."
+        too_long: "est trop long (pas plus de %{count} caractères)."
+        too_short: "est trop court (au moins %{count} caractères)."
+        wrong_length: "ne fait pas la bonne longueur (doit comporter %{count} caractères)."
+        taken: "est déjà utilisé."
+        not_a_number: "n’est pas un nombre."
+        greater_than: "doit être supérieur à %{count}."
+        greater_than_or_equal_to: "doit être supérieur ou égal à %{count}."
+        equal_to: "doit être égal à %{count}."
+        less_than: "doit être inférieur à %{count}."
+        less_than_or_equal_to: "doit être inférieur ou égal à %{count}."
+        odd: "doit être impair."
+        even: "doit être pair."
+        record_invalid: "%{errors} erreur(s)."
+    attributes:
+      article:
+        heading:                    "Surtitre"
+        title:                      "Titre"
+        signature:                  "Signature"
+        credit:                     "Crédit photo"
+        uri:                        "Lien (URI)"
+        status:                     "Statut"
+        category:                   "Catégorie"
+        content:                    "Corps du texte"
+        access_level:               "Accès"
+        draft:                      "Ne pas publier (mode brouillon)"
+        parent_id:                  "Répertoire"
+        source_id:                  "Source"
+        source_id_explain:          "Défini la source d’information de l’article."
+        published_at:               "Publication"
+        published_at_explain:       "La date de publication est utilisée pour ordonner les articles."
+        expired_at:                 "Expire après"
+        zoom:                       "À la une de la page d’accueil"
+        schedule:                   "Horaires"
+        start_datetime:             "Date et heure de début"
+        end_datetime:               "Heure de fin"
+        agenda:                     "Effectuer une entrée dans l’agenda"
+        email:                      "Contact"
+        external_id:                "Lien photothèque"
+        address:                    "Lieu"
+        image:                      "Image"
+        document:                   "Document"
+        image_inline:               "Format d’image utilisé dans les corps d’article"
+        image_large:                "Grande vignette"
+        image_zoom:                 "Format d’image utilisé pour les zooms"
+        image_medium:               "Vignette de taille moyenne"
+        image_small:                "Petite vignette"
+        image_mini:                 "Mini vignette"
+        image_alternate:            "Vignette de taille intermédiaire"
+        file_name:                  "Nom de fichier"
+        content_type:               "Type de fichier"
+        file_size:                  "Taille du fichier"
+        created_by:                 "Créé par"
+        updated_by:                 "Modifié par"
+        no_endtime:                 "Pas d’heure de fin"
+        all_day:                    "Toute la journée"
+        link_to:                    "Accès chaîne éditoriale"
+        tags:                       "Mots-clés"
+      user:
+        email:                      "Adresse électronique"
+        password:                   "Mot de passe"
+        password_confirmation:      "Confirmation du mot de passe"
+        current_password:           "Mot de passe actuel"
+        remember_me:                "Se souvenir de moi"
+        administrator:              "Administrateur"
+        publisher:                  "Autorisé à ajouter du contenu"
+        notification_message:       "Notification des messages de contact"
+        notification_subscription:  "Notification des inscriptions à la lettre d’information"
+        notification_donation:      "Notification des dons"
+        notification_membership:    "Notification des adhésions"
+        permissions:                "Accréditations"
+        permission:                 "Accréditation"
+        access_level:               "Niveau d’accès"
+        sign_in_count:              "Nombre de connections"
+        last_sign_in_at:            "Dernière connection"
+        locked_at:                  "Verrouillé le"
+        confirmation_sent_at:       "Confirmation envoyée le"
+        confirmed_at:               "Confirmé le"
+        last_sign_in_ip:            "Dernière adresse IP"
+      permission:
+        category:                   "Catégorie"
+        category_explain:           "Défini la catégorie d’article pour laquelle l’accrédition est enregistrée."
+        source_id:                  "Source d’information"
+        source_id_explain:          "Défini la source d’information pour laquelle l’accrédition est enregistrée."
+        authorization:              "Autorisation"
+        authorization_explain:      "Défini le niveau d’autorisation pour la catégorie d’article et la source d’information."
+        notification_level:         "Notification"
+        notification_level_explain: "Statut d’article pour lequel une notification est envoyée."
+      tag:
+        tag:                        "Mot-clé"
+        tag_create_explain:         "Créez un nouveau mot-clé à ajouter à l’article."
+        tag_add_explain:            "Sélectionnez un mot-clé parmi la liste ci-dessous afin de l’ajouter à l’article."
+      request:
+        last_name:                  "Nom"
+        first_name:                 "Prénom"
+        email:                      "Adresse électronique"
+        address:                    "Adresse"
+        zip_code:                   "Code postal"
+        city:                       "Ville"
+        phone:                      "Téléphone"
+        comment:                    "Commentaire"
+        comment_alt:                "Lien vers un article du web"
+        recipient:                  "Destinataire"
+        recipient_explain:          "Sélectionnez « Le Parti de Gauche » ou une commission comme destinataire de votre message."
+        recipient_explain2:         "Si vous souhaitez traiter une question portant sur un thème particulier, sélectionnez la commission correspondante."
+        recipient_explain3:         "Si vous souhaitez contacter le Parti de Gauche près de chez vous, cliquez sur le nom de votre <strong>département</strong> dans la liste ci-contre."
+      subscription:
+        last_name:                  "Nom"
+        first_name:                 "Prénom"
+        email:                      "Adresse électronique"
+        address:                    "Adresse"
+        zip_code:                   "Code postal"
+        city:                       "Ville"
+        phone:                      "Téléphone"
+      membership:
+        last_name:                  "Nom"
+        first_name:                 "Prénom"
+        gender:                     "Sexe"
+        email:                      "Adresse électronique"
+        address:                    "Adresse"
+        zip_code:                   "Code postal"
+        city:                       "Ville"
+        phone:                      "Téléphone fixe"
+        mobile:                     "Téléphone mobile"
+        comment:                    "Observations"
+        renew:                      "Adhésion"
+        renew_option_new:           "Première adhésion"
+        renew_option_renew:         "Réadhésion"
+        department:                 "Département"
+        committee:                  "Comité local"
+        birthdate:                  "Date de naissance"
+        job:                        "Profession"
+        mandate:                    "Mandat(s) électif(s)"
+        mandate_place:              "Lieu d’exercice"
+        union:                      "Engagements syndicaux"
+        union_resp:                 "Responsabilités"
+        resp_option_local:          "Locales"
+        resp_option_dept:           "Départementales"
+        resp_option_nation:         "Nationales"
+        assoc:                      "Engagements associatifs"
+        assoc_resp:                 "Responsabilités"
+        amount:                     "Montant"
+        amount_error:               "doit être supérieur ou égal à %{min}"
+        amount_explain:             "Le montant doit être supérieur ou égal à 36 €."
+        free_amount:                "ou montant libre (€)"
+        select_amount:              "Sélectionnez ou entrez un montant libre"
+        amount_band1:               "36 € (revenus inférieurs à 1 000 €)"
+        amount_band2:               "60 € (revenus inférieurs à 1 500 €)"
+        amount_band3:               "120 € (revenus inférieurs à 2 000 €)"
+        amount_band4:               "300 € (revenus inférieurs à 3 000 €)"
+        amount_band5:               "480 € (revenus supérieurs à 3 000 €)"
+        payment_identifier:         "Identifiant de paiement"
+      donation:
+        last_name:                  "Nom"
+        first_name:                 "Prénom"
+        email:                      "Adresse électronique"
+        address:                    "Adresse"
+        zip_code:                   "Code postal"
+        city:                       "Ville"
+        phone:                      "Téléphone"
+        comment:                    "Commentaire"        
+        amount:                     "Montant (€)"
+        amount_error:               "doit être inférieur ou égal à %{max}"
+        amount_explain:             "Dans la limite de 7 500 € par an."
+      audits:
+        comments:                   "Commentaires"
+        comments_explain:           "Merci de décrire ici la modification effectuée."

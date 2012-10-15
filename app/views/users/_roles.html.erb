@@ -1,0 +1,28 @@
+<tr>
+  <td><div class="mandatory">*</div><strong><%= t('activerecord.attributes.article.access_level') %></strong></td>
+  <td><%= f.select :access_level, User::access_levels %></td>
+</tr>
+<tr>
+	<td><div class="mandatory">*</div><strong><%= t('activerecord.attributes.user.publisher') %></strong></td>
+	<td><%= f.check_box :publisher %></td>
+</tr>
+<tr>
+  <td><div class="mandatory">*</div><strong><%= t('activerecord.attributes.user.notification_message') %></strong></td>
+  <td><%= f.check_box :notification_message %></td>
+</tr>
+<tr>
+  <td><div class="mandatory">*</div><strong><%= t('activerecord.attributes.user.notification_subscription') %></strong></td>
+  <td><%= f.check_box :notification_subscription %></td>
+</tr>
+<tr>
+  <td><div class="mandatory">*</div><strong><%= t('activerecord.attributes.user.notification_donation') %></strong></td>
+  <td><%= f.check_box :notification_donation %></td>
+</tr>
+<tr>
+  <td><div class="mandatory">*</div><strong><%= t('activerecord.attributes.user.notification_membership') %></strong></td>
+  <td><%= f.check_box :notification_membership %></td>
+</tr>
+<tr>
+  <td><div class="mandatory">*</div><strong><%= t('activerecord.attributes.user.administrator') %></strong></td>
+  <td><%= f.check_box :administrator %></td>
+</tr>

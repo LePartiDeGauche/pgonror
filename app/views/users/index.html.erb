@@ -1,0 +1,46 @@
+<%= render :partial => 'administration/menu' %>
+<section id="administration-work">
+  <%= form_tag(search_users_path, 
+               :remote => true,
+               :id => 'search-form',
+               :method => :get) do %>
+    <section id="user-search" class="content-bloc">
+      <h1><%= t('action.user.log') %></h1>
+      <aside class="actions">
+        <%= search_field_tag :search, 
+                             params[:search], 
+                             :placeholder => t('action.search') %>
+        <%= submit_tag t('action.search'), 
+                       :disable_with => t('action.wait') %>
+      </aside>
+      <script>
+        $(document).ready(function(){
+          var output = "#user-list";
+          $('#search-form')
+            .bind("ajax:beforeSend", function(evt, xhr, settings){
+            })
+            .bind("ajax:success", function(evt, data, status, xhr){
+              $(output).html(xhr.responseText);
+            })
+            .bind("ajax:error", function(evt, xhr, status, error){
+              var errors, errorText;
+              try {
+                errors = $.parseJSON(xhr.responseText);
+              } catch(err) {
+                errors = {message: err};
+              }
+              errorText = "<ul>";
+              for( error in errors ) {
+                errorText += "<li>" + errors[error] + "</li> ";
+              }
+              errorText += "</ul>";
+              $(output).html(errorText);
+            });
+        });
+      </script>
+    </section>
+  <% end %>
+  <section id="user-list" class="content-bloc">
+    <%= render :partial => 'search_list' %>
+  </section>
+</section>

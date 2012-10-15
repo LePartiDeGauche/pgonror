@@ -1,0 +1,37 @@
+<% unless article.nil? %>
+  <article class="article">
+    <hgroup>
+      <h3 class="category">
+        <%= article.category_display %>&nbsp;&bull;
+      </h3>
+      <% if article.category_option?(:link_all_title) %>
+        <h2 class="main-title">
+          <%= link_to article.category_option(:link_all_title),
+                :controller => article.category_option(:controller),
+                :action => article.category_option(:action_all) %>
+        </h2>
+      <% end %>
+      <br/>
+    </hgroup>
+    <header>
+      <% unless article.heading.blank? %>
+        <h4><%= article.heading_display.html_safe %></h4><br/>
+      <% end %>
+      <h1>
+        <%= link_to article.title_display.html_safe,
+              :controller => article.category_option(:controller),
+              :action => article.category_option(:action),
+              :uri => article.uri %>
+      </h1>
+    </header>
+    <%= truncate_html(article.content_with_small, :length => 120).html_safe %>
+    <footer class="actions">
+      <%= link_to (article.category_option?(:video) ? 
+                          t('titre.voir_video') :
+                          t('titre.lire_suite')),
+            :controller => article.category_option(:controller),
+            :action => article.category_option(:action),
+            :uri => article.uri %>
+    </footer>
+  </article>
+<% end %>

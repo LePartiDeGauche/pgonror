@@ -1,0 +1,224 @@
+// To generate css equivalent to the blueprint css but with your configuration applied, uncomment:
+// @include blueprint-print
+@import "blueprint/reset";
+@import "compass/typography/lists/bullets";
+
+// To configure blueprint, edit the partials/base.sass file.
+@import "partials/base_print";
+
+// Import all the default blueprint modules so that we can access their mixins.
+@import "blueprint";
+
+// Import the non-default scaffolding module.
+@import "blueprint/scaffolding";
+@include blueprint;
+
+//Recommended Blueprint configuration with scoping and semantic layout:
+body.bp {
+  @include blueprint-print(true); 
+}
+
+a {
+  text-decoration: none;
+}
+
+.content-bloc {
+  background-color: white;
+  line-height: 130%;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-left: $pg-padding;
+  padding-right: $pg-padding;
+  margin-top: 8px;
+  margin-right: 2px;
+  margin-bottom: 2px;
+  h1 {
+    font-size: 110%;
+    font-weight: bolder;
+    color: $pg-red;
+    display: inline;
+  }
+  h2, h3, h4 {
+    font-size: 100%;
+    display: inline;
+    font-weight: bolder;
+  }
+  .content {
+    margin-top: 4px;
+  }
+  .category {
+    font-size: 90%;
+    color: red;
+    font-family: Arial Black, Gadget, sans-serif;
+  }
+  .large-title {
+    font-size: 180%;
+  }
+  .main-title {
+    font-size: 100%;
+    color: $pg-green;
+  }
+  .mandatory {
+    display: inline;
+    color: $pg-red;
+  }
+  .signature {
+    color: black;
+    font-size: 100%;
+    font-style: italic;
+    font-variant: small-caps;
+  }
+  .information {
+    color: gray;
+    font-size: 90%;
+    display: inline;
+  }
+  .tag {
+    font-size: 85%;
+    line-height: 22px;
+    margin: 0;
+  }
+  .actions {
+    display: none;
+  }
+  .article {
+    .date {
+      display: inline;
+      font-size: 85%;
+      background-color: $pg-green;
+      color: white;
+      padding-left: 2px;
+      padding-right: 2px;
+    }
+    .date-title {
+      display: inline;
+      font-size: 85%;
+    }
+    .inner-zoom {
+      padding-top: $pg-padding;
+      padding-bottom: $pg-padding;
+      padding-left: $pg-padding;
+      padding-right: $pg-padding;
+      height: 209px;
+    }
+    .edit {
+      line-height: 24px;
+      label {
+        vertical-align: middle;
+      }
+      input[type=text] {
+        height: 8px;
+        margin: 0;
+        vertical-align: middle;
+        width: auto;        
+        border-spacing: 0px;
+      }
+      select {
+        margin: 0;
+        vertical-align: middle;
+      }
+      textarea {
+        width: 98%; 
+        height: auto;       
+      }
+    }
+    .photos {
+      text-align: center;
+      img {
+        vertical-align: middle;
+        margin-bottom: 4px;
+      }
+    }
+  }
+  .pages {
+    display: none;
+  }
+  ol {
+    @include no-bullets;
+    padding: 0;
+    margin:0;
+  }
+  p {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 8px;
+    text-align: justify;
+    font-size: 90%;
+    line-height: 140%;
+  }
+  table {
+    td {
+      vertical-align: top;
+      padding: 0;
+    }
+    .article-inter-column {
+      width: 12px;
+    }
+    .article-mini-column {
+      width: 60px;
+    }
+    .article-one-third-column {
+      width: 196px;
+    }
+  }
+}
+
+#banner, #content, #identity, #tools, #mainmenu {
+    @include column($blueprint-grid-columns);
+}
+
+.logobox {
+  display: none;
+}
+
+$list-spacing: 8px;
+.inline-menu {
+  display: none;
+}
+
+#mainmenu {
+  display: none;
+}
+
+#searchbar {
+  display: none;
+}
+
+#usermenubar {
+  display: none;
+}
+
+#footer {
+  @include column($blueprint-grid-columns);
+}
+
+#connect {
+  display: none;
+}
+
+#network {
+  display: none;
+}
+
+#agauche {
+  display: none;
+}
+
+#gavroche {
+  display: none;
+}
+
+#legal {
+  @include column($blueprint-grid-columns);
+  margin-top: 10px;
+  text-align: center;
+}
+
+.popup {
+  display: none;
+}
+
+.addthis_default_style {
+  display: none;
+}

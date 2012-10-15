@@ -1,0 +1,51 @@
+<section id="militer-liste">
+  <section class="content-bloc">
+    <div class="rss"><%= link_to icon_medium('rss.png'), militer_rss_feed_path(:format => :xml), :class => :popup %></div>
+    <%= render :partial => 'layouts/index_articles_1col_2_on_3_agenda', 
+          :locals => { :articles => @articles, :category => 'evenement' } %>
+  </section>
+</section>
+<section id="militer-vignettes">
+  <section class="content-bloc">
+    <div id="carte" style="width:292px;height:354px;"></div>
+  </section>
+  <section class="content-bloc">
+    <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', :locals => { :articles => @tracts, :category => "tract", :title => :hide } %>
+  </section>
+</section>
+<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyARG0BrRKKXVO06jeS5NamKyW5SX8sVBbw&sensor=false" type="text/javascript"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    var geocoder;
+    var map;
+    geocoder = new google.maps.Geocoder();
+    var latlng = new google.maps.LatLng(47,1.5);
+    var mapOptions = {
+      zoom: 5,
+      center: latlng,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    }
+    map = new google.maps.Map(document.getElementById('carte'), mapOptions);
+    <% for article in @articles %>
+      geocoder.geocode(
+          { address: "<%= article.address %>", region: "FR" },
+          function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+          var marker = new google.maps.Marker({
+              map: map,
+              position: results[0].geometry.location,
+              title:"<%= article.title_display %>"
+          });
+          var infoWindow = new google.maps.InfoWindow({
+            content:"<%= article.start_end_datetime_display(true) %><br/>" +
+                    "<a href='<%= url_for(:controller => :accueil, :action => :default, :id => article.id) %>'><%= article.title_display %></a><br/>" +
+                    "<%= article.address %>"
+          });
+          google.maps.event.addListener(marker, 'click', function() {
+            infoWindow.open(map, marker);
+          });
+        }
+      });
+    <% end %>
+  });
+</script>

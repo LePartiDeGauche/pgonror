@@ -1,0 +1,47 @@
+<ol>
+  <li><%= link_to_unless_current t('action.article.all'), 
+                    :action => :index,
+                    :status => :all %></li>
+  <li><%= link_to_unless_current Article::status_display(Article::NEW), 
+                        :action => :index, 
+                        :status => Article::NEW %></li>
+  <li><%= render :partial => 'categories', 
+                 :locals => { :categories => @categories_new,
+                              :zoom => @zoom_new, 
+                              :status => Article::NEW,
+                              :important => true,
+                              :icon => 'yellowlight.gif' } %></li>
+  <li><%= link_to_unless_current Article::status_display(Article::REWORK), 
+                        :action => :index, 
+                        :status => Article::REWORK,
+                        :important => true %></li>
+  <li><%= render :partial => 'categories', 
+                 :locals => { :categories => @categories_rework, 
+                              :zoom => @zoom_rework, 
+                              :status => Article::REWORK,
+                              :important => true,
+                              :icon => 'warning.gif' } %></li>
+  <li><%= link_to_unless_current Article::status_display(Article::REVIEWED), 
+                        :action => :index, 
+                        :status => Article::REVIEWED %></li>
+  <li><%= render :partial => 'categories', 
+                 :locals => { :categories => @categories_reviewed, 
+                              :zoom => @zoom_reviewed, 
+                              :status => Article::REVIEWED,
+                              :important => true,
+                              :icon => 'notice.gif' } %></li>
+  <li><%= link_to_unless_current Article::status_display(Article::ONLINE), 
+                    :action => :index, 
+                    :status => Article::ONLINE %></li>
+  <li><%= render :partial => 'categories', 
+                 :locals => { :categories => @categories_online, 
+                              :zoom => @zoom_online, 
+                              :status => Article::ONLINE,
+                              :important => false } %></li>
+  <li><%= link_to_unless_current Article::status_display(Article::OFFLINE), 
+                    :action => :index, 
+                    :status => Article::OFFLINE %></li>
+  <li><%= link_to_unless_current t('action.tag.all'),
+                    :controller => :tags, 
+                    :action => :index %></li>
+</ol>

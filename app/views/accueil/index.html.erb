@@ -1,0 +1,110 @@
+<section id="editos">
+  <section id="editos-content" class="content-bloc">
+    <%= render :partial => 'layouts/index_articles_1col_1_on_4', :locals => { :articles => @edito, :category => "edito" } %>
+  </section>
+</section>
+<section id="recent">
+  <section id="zoom" class="content-bloc">
+    <%= render :partial => 'zoom_article', :locals => { :articles => @actus } %>
+  </section>
+  <section id="communique">
+    <section id="communique-content" class="content-bloc">
+      <%= render :partial => 'layouts/index_articles_simplified', :locals => { :articles => @communiques, :category => "com" } %>
+    </section>
+  </section>
+  <section id="inter">
+    <section id="inter-content" class="content-bloc">
+      <%= render :partial => 'layouts/summary_article', :locals => { :article => @inter } %>
+    </section>
+  </section>
+</section>
+<section id="actualites">
+  <section id="actualites-content" class="content-bloc">
+    <%= render :partial => 'layouts/index_articles_1col_1_on_4', :locals => { :articles => @dossier, :category => "dossier" } %>
+  </section>
+</section>
+<section id="campagne">
+  <section id="campagne-content" class="content-bloc">
+    <%= render :partial => 'layouts/article_simplified', :locals => { :article => @campagne } %>
+  </section>
+</section>
+<section id="videos">
+  <section id="videos-content" class="content-bloc highlighted-bloc">
+    <% unless @videos.nil? %>
+      <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', 
+                 :locals => { :articles => @videos, :category => "video", :title => :zoom } %>
+    <% end %>
+  </section>
+</section>
+<section id="vdg-photos">
+  <section id="ailleurs-content" class="content-bloc">
+    <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', :locals => { :articles => @ailleurs, :category => "web", :title => :zoom } %>
+  </section>
+  <section id="vdg">
+    <section id="vdg-content" class="content-bloc">
+      <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', :locals => { :articles => @vdg, :category => "articlevdg", :title => :zoom } %>
+    </section>
+  </section>
+  <section id="diapos">
+    <section id="diapos-content" class="content-bloc highlighted-bloc">
+      <% unless @diapos.nil? %>
+        <%= render :partial => 'layouts/index_articles_1col_1_on_3_diaporama', 
+                   :locals => { :articles => @diapos, :category => "diaporama" } %>
+      <% end %>
+    </section>
+  </section>
+</section>
+<section id="arguments-blogs">
+  <section id="arguments">
+    <section id="arguments-content" class="content-bloc highlighted-bloc">
+      <%= render :partial => 'layouts/index_articles_simplified', :locals => { :articles => @arguments, :category => "argument" } %>
+    </section>
+  </section>
+  <section id="blogss">
+    <section id="blogs-content" class="content-bloc">
+      <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', :locals => { :articles => @directblogs, :category => "directblog", :title => :zoom } %>
+    </section>
+  </section>
+  <section id="librairie">
+    <section id="librairie-content" class="content-bloc">
+      <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', :locals => { :articles => @livres, :category => "livre", :title => :hide } %>
+    </section>
+  </section>
+</section>
+<section id="agenda">
+  <section id="agenda-content" class="content-bloc">
+    <% unless @evenements.nil? %>
+      <div class="rss"><%= link_to icon_medium('rss.png'), militer_rss_feed_path(:format => :xml), :class => :popup %></div>
+      <%= render :partial => 'layouts/index_articles_1col_1_on_3_agenda', 
+                 :locals => { :articles => @evenements, :category => "evenement" } %>
+    <% end %>
+  </section>
+  <section id="tracts">
+    <section id="tracts-content" class="content-bloc">
+      <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', :locals => { :articles => @tracts, :category => "tract", :title => :hide } %>
+    </section>
+  </section>
+</section>
+<script>
+  function nextCommunique() {
+    $('#communique li:first').before($('#communique li:last'));
+  };
+  function nextLivre() {
+    $('#librairie li:first').before($('#librairie li:last'));
+    $('#librairie li').hide();
+    $('#librairie li:first').show(300);
+  };
+  $(document).ready(function() {
+    var speed = 8000;
+    var runCommunique = setInterval('nextCommunique()', speed);
+    var runLivre = setInterval('nextLivre()', speed);
+    $('#communique').hover(
+      function() { clearInterval(runCommunique); }, 
+      function() { runCommunique = setInterval('nextCommunique()', speed); }
+    ); 
+    $('#librairie').hover(
+      function() { clearInterval(runLivre); }, 
+      function() { runLivre = setInterval('nextLivre()', speed); }
+    ); 
+  });
+</script>

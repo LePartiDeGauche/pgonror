@@ -1,0 +1,33 @@
+<% unless articles.nil? %>
+  <hgroup>
+    <h3 class="category">
+      <%= Article::category_option(category, :category_title) %>&nbsp;&bull;<br/>
+    </h3>
+    <% if Article::category_option?(category, :link_all_title) %>
+      <h2 class="main-title">
+        <%= link_to Article::category_option(category, :link_all_title), 
+                    :controller => Article::category_option(category, :controller), 
+                    :action => Article::category_option(category, :action_all) %>
+      </h2>
+    <% end %>
+  </hgroup>
+  <ol>
+    <% for article in articles %>
+      <li>
+        <article class="article">
+          <% if article.category_option?(:parent) %>
+            <p class="photos" title="<%= article.title_display.html_safe %>">
+              <% photo = article.find_published_by_folder_random %>
+              <% if photo.present? and photo.image.present? %>
+                <%= link_to image_tag(photo.image.url(:medium)),
+                            :controller => :photos,
+                            :action => :diaporama,
+                            :uri => article.uri %>
+              <% end %>
+            </p>
+          <% end %>
+        </article>
+      </li>
+    <% end %>
+  </ol>
+<% end %>

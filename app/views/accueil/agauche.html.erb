@@ -1,0 +1,10 @@
+<section>
+  <section class="content-bloc">
+    <% unless @presentation.nil? %>
+      <%= render :partial => 'layouts/article_simplified',  :locals => { :article => @presentation } %>
+    <% end %>
+    <center>
+      <form method="post" action="https://www.paypal.com/cgi-bin/webscr"><input name="cmd" value="_s-xclick" type="hidden" /> <input name="hosted_button_id" value="AF6NYVPM4D3GJ" type="hidden" /> <input name="on0" value="Type d'abonnement" type="hidden" />Type d'abonnement <br /><select name="os0"> <option value="Abonnement standard">Abonnement standard €29,00</option> <option value="Abonnement de soutien">Abonnement de soutien €50,00</option></select> <input name="currency_code" value="EUR" type="hidden" /> <br /><input name="submit" border="0" src="https://www.paypal.com/fr_FR/FR/i/btn/btn_buynowCC_LG.gif" alt="PayPal - la solution de paiement en ligne la plus simple et la plus sécurisée !" type="image" /> <img border="0" width="1" src="https://www.paypal.com/fr_FR/i/scr/pixel.gif" height="1" /> </form>
+    </center>
+  </section>
+</section>

@@ -1,0 +1,2 @@
+<section id="tools">  <section id="searchbar">    <%= form_tag('/search') do %>      <%= search_field_tag :search, params[:search], :placeholder => t('action.search'), :size => "30" %>      <%= submit_tag t('action.search'), :disable_with => t('action.wait') %>    <% end %>  </section>  <%= render :partial => 'layouts/user_menu' %></section><div id="identity"><%= render :partial => 'layouts/identity' %></div>
+<nav id="nav"><%= render :partial => 'layouts/main_menu' %></nav>

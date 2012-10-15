@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+  </head>
+  <body>
+    <p>
+      <strong><%= t('alert.message') %></strong> : <%= @message %>
+      <br/><strong><%= t('alert.request') %></strong> : <%= @request %>
+      <br/><strong><%= t('alert.params') %></strong> : <%= @params %>
+      <% unless @invalid_backtrace.nil? %>
+        <br/><%= @invalid_backtrace.join('<br/>').html_safe %>
+      <% end %>
+    </p>
+  </body>
+</html>

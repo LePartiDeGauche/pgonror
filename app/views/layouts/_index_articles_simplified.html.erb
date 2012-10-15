@@ -1,0 +1,29 @@
+<% unless articles.nil? %>
+  <hgroup>
+    <h3 class="category">
+      <%= Article::category_option(category, :category_title) %>&nbsp;&bull;
+    </h3>
+    <% if Article::category_option?(category, :link_all_title) %>
+      <h2 class="main-title">
+        <%= link_to Article::category_option(category, :link_all_title), 
+                    :controller => Article::category_option(category, :controller), 
+                    :action => Article::category_option(category, :action_all) %>
+      </h2>
+    <% end %>
+  </hgroup>
+  <ol>
+    <% for article in articles %>
+      <li>
+        <hr/>
+        <article class="article">
+          <h1>
+            <%= link_to article.title_display.html_safe,
+                  :controller => Article::category_option(category, :controller),
+                  :action => Article::category_option(category, :action),
+                  :uri => article.uri %>
+          </h1>
+        </article>
+      </li>
+    <% end %>
+  </ol>
+<% end %>

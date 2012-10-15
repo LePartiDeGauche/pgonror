@@ -1,0 +1,65 @@
+<section>
+  <section class="content-bloc">
+    <article class="article">
+      <form method="POST" action="<%= PBX_CGI %>">
+        <%= render :partial => 'layouts/pbx' %>
+        <input id="PBX_TXT" name="PBX_TXT" type="hidden" value="<%= t('action.donation.txt') %>">
+        <input id="PBX_CMD" name="PBX_CMD" type="hidden" value="<%= @donation.payment_identifier %>">
+        <input id="PBX_TOTAL" name="PBX_TOTAL" type="hidden" value="<%= @donation.amount_cents %>">
+        <input id="PBX_PORTEUR" name="PBX_PORTEUR" type="hidden" value="<%= @donation.email %>">
+        <input id="PBX_REFUSE" name="PBX_REFUSE" type="hidden" value="<%= @refuse %>">
+        <input id="PBX_ANNULE" name="PBX_ANNULE" type="hidden" value="<%= @annule %>">
+        <input id="PBX_EFFECTUE" name="PBX_EFFECTUE" type="hidden" value="<%= @effectue %>">
+        <input id="PBX_REPONDRE_A" name="PBX_REPONDRE_A" type="hidden" value="<%= @retour %>">
+        <div class="form-medium">
+          <table>
+            <tr>
+              <td><%= t 'activerecord.attributes.donation.first_name' %></td>
+              <td><%= @donation.first_name %></td>
+              <td><%= t 'activerecord.attributes.donation.last_name' %></td>
+              <td><%= @donation.last_name %></td>
+            </tr>
+            <tr>
+              <td><%= t 'activerecord.attributes.donation.address' %></td>
+              <td><%= @donation.address %></td>
+            </tr>
+            <tr>
+              <td><%= t 'activerecord.attributes.donation.zip_code' %></td>
+              <td><%= @donation.zip_code %></td>
+              <td><%= t 'activerecord.attributes.donation.city' %></td>
+              <td><%= @donation.city %></td>
+            </tr>
+            <tr>
+              <td><%= t 'activerecord.attributes.donation.email' %></td>
+              <td><%= @donation.email %></td>
+              <td><%= t 'activerecord.attributes.donation.phone' %></td>
+              <td><%= @donation.phone %></td>
+            </tr>
+            <tr>
+              <td><%= t 'activerecord.attributes.donation.amount' %></td>
+              <td><%= number_to_currency(@donation.amount) %></td>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+            </tr>
+            <% unless @donation.comment.blank? %>
+              <tr>
+                <td><%= t 'activerecord.attributes.donation.comment' %></td>
+                <td colspan="3"><%= @donation.comment %></td>
+              </tr>
+            <% end %>
+          </table>
+          <br/>
+          <br/>
+          <center>
+            <img src="<%= asset_path 'secu_fr_fondclair.png' %>" class="shadow" width="160">
+          </center>
+        </div>
+        <center>
+          <aside class="actions">
+            <input data-disable-with="<%= t('action.wait') %>" name="commit" type="submit" value="<%= t('action.payment.commit') %>">
+          </aside>
+         </center>
+      </form>
+    </article>
+  </section>
+</section>

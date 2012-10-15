@@ -1,0 +1,140 @@
+<section id="editor-toolbox">
+  <% unless @article.nil? %>
+    <section class="content-bloc">
+      <%= render :partial => 'show_status' %>
+    </section>
+    <% if @article.category_option?(:parent) %>
+      <section class="content-bloc">
+        <%= form_tag new_child_articles_path, :method => :get do %>
+          <%= hidden_field_tag :parent, @article.id %>
+          <%= icon('plus.gif') + ' ' + t('action.article.create_associated') %>
+          <%= select_tag 'category', 
+                          options_for_select(Article::activated_categories(current_user)),
+                          :include_blank => true,
+                          :onchange => 'this.form.submit()' %><br/>
+          <div class="information"><%= t("action.article.create_explain") %></div>
+        <% end %>
+      </section>
+    <% end %>
+    <% if @article.category_option?(:source) %>
+      <section class="content-bloc">
+        <%= form_tag new_child_articles_path, :method => :get do %>
+          <%= hidden_field_tag :source, @article.id %>
+          <%= icon('plus.gif') + ' ' + t('action.article.create_associated') %>
+          <%= select_tag 'category', 
+                          options_for_select(Article::activated_categories(current_user, @article.id)),
+                          :include_blank => true,
+                          :onchange => 'this.form.submit()' %><br/>
+          <div class="information"><%= t("action.article.create_explain") %></div>
+        <% end %>
+      </section>
+    <% end %>
+    <section class="content-bloc">
+      <%= render :partial => 'tags' %>
+    </section>
+    <% if not @article.audits.empty? %>
+      <section class="content-bloc highlighted-bloc">
+        <%= render :partial => 'audit' %>
+      </section>
+    <% end %>
+  <% end %>
+</section>
+<section id="articles-box">
+  <% unless @article.nil? %>
+    <section class="content-bloc">
+      <article class="article">
+        <aside class="actions">
+          <a href="<%= session[:prior_url] %>"><%= t('action.back') %></a> |
+          <%= link_to icon('edit.gif') + ' ' + t('action.update'), 
+                :action => :edit, 
+                :id => @article.id,
+                :category => session[:category], 
+                :status => session[:status],
+                :parent => session[:parent],
+                :search => session[:search],
+                :page => session[:page] %>
+          <% if not @article.draft %> |
+            <%= link_to icon('notice.gif') + ' ' + t('action.change_status'),
+              :action => :edit,
+              :modifier => :change_status, 
+              :id => @article.id,
+              :category => session[:category], 
+              :status => session[:status],
+              :parent => session[:parent],
+              :search => session[:search],
+              :page => session[:page] %>
+          <% end %>
+          | <%= link_to icon('notice.gif') + ' ' + t('action.change_category'),
+            :action => :edit,
+            :modifier => :change_category, 
+            :id => @article.id,
+            :category => session[:category], 
+            :status => session[:status],
+            :parent => session[:parent],
+            :search => session[:search],
+            :page => session[:page] %>
+          <% if current_user.administrator %> |
+            <%= link_to icon('remove.gif') + ' ' + t('action.delete'), 
+                @article, 
+                :data => {:confirm => t("action.confirm")}, 
+                :method => :delete %>
+          <% end %>
+        </aside>
+        <header>
+          <h3 class="category">
+            <%= @article.category_display %>&nbsp;&bull;
+            <% if @article.will_expire_soon? %>
+              <br/><%= t('activerecord.attributes.article.expired_at') %>&nbsp;<%= l @article.expired_at, :format => :long_ordinal %>
+            <% end %>
+            <br/>
+          </h3>
+          <% unless @article.heading.blank? %>
+            <h4><%= @article.heading_display.html_safe %><br/></h4>
+          <% end %>
+          <h1>
+            <%= @article.title_display.html_safe %>
+          </h1>
+          <% unless @article.source_id.nil? %>
+            <br/>
+            <h2 class="main-title">
+              <%= t('activerecord.attributes.article.source_id') %>&nbsp;&bull;
+              <%= link_to @article.source_display.html_safe, 
+                    :action => :show, 
+                    :id => @article.source_id %>
+            </h2>
+          <% end %>
+          <% unless @article.parent_id.nil? %>
+            <br/>
+            <h2 class="main-title">
+              <%= t('activerecord.attributes.article.parent_id') %>&nbsp;&bull;
+              <%= link_to @article.folder_display.html_safe, 
+                    :action => :show, 
+                    :id => @article.parent_id %>
+            </h2>
+          <% end %>
+        </header>
+        <%= render :partial => 'show' %>
+      </article>
+    </section>
+    <% if @article.category_option?(:parent) %>
+      <section class="content-bloc">
+        <h2><%= t("action.article.attached") %>&nbsp;&bull;</h2>
+        <ol>
+          <% @parent_pages = Article.count_pages_by_criteria({:parent => @article.id}) %>
+          <%= render :partial => 'index', :locals => { :articles => @article.find_articles_by_parent(@parent_page) } %>
+          <%= render :partial => 'page_parent_navigator' %>
+        </ol>
+      </section>
+    <% end %>
+    <% if @article.category_option?(:source) %>
+      <section class="content-bloc">
+        <h2><%= t("action.article.attached") %>&nbsp;&bull;</h2>
+        <ol>
+          <% @source_pages = Article.count_pages_by_criteria({:source => @article.id}) %>
+          <%= render :partial => 'index', :locals => { :articles => @article.find_articles_by_source(@source_page) } %>
+          <%= render :partial => 'page_source_navigator' %>
+        </ol>
+      </section>
+    <% end %>
+  <% end %>
+</section>

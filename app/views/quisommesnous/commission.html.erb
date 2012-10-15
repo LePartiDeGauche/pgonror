@@ -1,0 +1,15 @@
+<section id="quisommesnous-liste">
+  <section class="content-bloc">
+     <%= render :partial => 'layouts/article', :locals => { :article => @article } %>
+  </section>
+</section>
+<section id="quisommesnous-vignettes">
+  <section class="content-bloc">
+    <%= render :partial => 'layouts/index_articles_1col_1_on_3', 
+          :locals => { :articles => @identites, :category => 'identite' } %>
+  </section>
+  <section class="content-bloc">
+    <%= render :partial => 'layouts/index_articles_1col_1_on_3', 
+          :locals => { :articles => @instances, :category => 'instance' } %>
+  </section>
+</section>

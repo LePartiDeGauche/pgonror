@@ -1,0 +1,16 @@
+<section id="quisommesnous-identite">
+  <section id="quisommesnous-identite-content" class="content-bloc">
+    <%= render :partial => 'layouts/index_articles_simplified', 
+          :locals => { :articles => @identites, :category => 'identite' } %>
+  </section>
+</section>
+<section id="quisommesnous-instance">
+  <section id="quisommesnous-instances-content" class="content-bloc">
+    <%= render :partial => 'layouts/index_articles_simplified', 
+          :locals => { :articles => @instances, :category => 'instance' } %>
+  </section>
+  <section id="quisommesnous-commission-content" class="content-bloc highlighted-bloc">
+    <%= render :partial => 'layouts/index_articles_simplified', 
+          :locals => { :articles => @commissions, :category => 'commission' } %>
+  </section>
+</section>

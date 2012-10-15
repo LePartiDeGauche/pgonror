@@ -1,0 +1,28 @@
+<section id="vudailleurs-liste">
+  <section id="vudailleurs-articlevdg-content" class="content-bloc">
+    <%= render :partial => 'layouts/index_articles_1col_2_on_3', 
+          :locals => { :articles => @articles, :category => 'articlevdg' } %>
+  </section>
+</section>
+<section id="vudailleurs-vignettes">
+  <section id="vudailleurs-vdg-content" class="content-bloc">
+    <%= render :partial => 'layouts/index_articles_1col_1_on_3', 
+          :locals => { :articles => @journauxvdg, :category => 'vdg' } %>
+  </section>
+  <section id="vudailleurs-editos-content" class="content-bloc">
+    <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', 
+          :locals => { :articles => @editos, :category => 'edito' } %>
+  </section>
+  <section id="vudailleurs-actu-content" class="content-bloc">
+    <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', 
+          :locals => { :articles => @actus, :category => 'actu' } %>
+  </section>
+  <section id="vudailleurs-communique-content" class="content-bloc">
+    <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', 
+          :locals => { :articles => @communiques, :category => 'com' } %>
+  </section>
+  <section id="vudailleurs-international-content" class="content-bloc">
+    <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', 
+          :locals => { :articles => @tout_international, :category => 'inter' } %>
+  </section>
+</section>

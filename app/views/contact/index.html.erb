@@ -1,0 +1,16 @@
+<section id="contact-message">
+  <section id="contact-message-content" class="content-bloc">
+    <%= render :partial => 'envoyer_message' %>
+  </section>
+  <section id="contact-contact-content" class="content-bloc">
+    <% unless @contact.nil? %>
+      <%= render :partial => 'layouts/article_simplified', :locals => { :article => @contact } %>
+    <% end %>                        
+  </section>
+</section>
+<section id="contact-comites">
+  <section id="contact-departement-content" class="content-bloc">
+    <%= render :partial => 'departements', 
+          :locals => { :articles => @departements, :category => 'departement', :multi_columns => true } %>
+  </section>
+</section>

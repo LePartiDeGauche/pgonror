@@ -1,0 +1,33 @@
+<section id="photos-liste">
+  <section class="content-bloc">
+    <% unless @article.nil? or @article.image.nil? %>
+      <article class="article">
+        <header>
+          <h1>
+            <%= link_to @article.title_display.html_safe,
+                  :controller => @article.category_option(:controller),
+                  :action => @article.category_option(:action),
+                  :uri => @article.uri %>
+          </h1>
+        </header>
+          <p class="photos">
+            <%= link_to image_tag(@article.image.url(:inline)),
+                        :controller => :photos,
+                        :action => :diaporama,
+                        :uri => @article.uri %>
+          </p>
+          <% if @article.category_option?(:signature) and not @article.signature.blank? %>
+            <center>
+              <div class="signature">
+                <%= t('activerecord.attributes.article.credit') %>
+                <%= @article.signature %>
+              </div>
+            </center>
+          <% end %>
+      </article>
+    <% else %>
+      <%= render :partial => 'diaporamas', 
+                 :locals => { :articles => @articles, :category => 'diaporama' } %>
+    <% end %>
+  </section>
+</section>

@@ -1,0 +1,19 @@
+<section id="educpop-liste">
+  <section class="content-bloc">
+      <%= render :partial => 'layouts/article', :locals => { :article => @article } %>
+  </section>
+</section>
+<section id="educpop-vignettes">
+  <section class="content-bloc">
+    <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', 
+          :locals => { :articles => @livres, :category => 'livre' } %>
+  </section>
+  <section class="content-bloc">
+    <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', 
+          :locals => { :articles => @dates, :category => 'date' } %>
+  </section>
+  <section class="content-bloc">
+    <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', 
+          :locals => { :articles => @lectures, :category => 'lecture' } %>
+  </section>
+</section>

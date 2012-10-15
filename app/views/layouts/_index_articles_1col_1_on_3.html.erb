@@ -1,0 +1,56 @@
+<% unless articles.nil? %>
+  <hgroup>
+    <h3 class="category">
+      <%= Article::category_option(category, :category_title) %>&nbsp;&bull;
+    </h3>
+    <% if Article::category_option?(category, :link_all_title) %>
+      <h2 class="main-title">
+        <%= link_to Article::category_option(category, :link_all_title), 
+                    :controller => Article::category_option(category, :controller), 
+                    :action => Article::category_option(category, :action_all) %>
+      </h2>
+    <% end %>
+  </hgroup>
+  <ol>
+    <% first_row = true %>
+    <% for article in articles %>
+      <li>
+        <article class="article">
+          <header>
+            <% unless article.heading.blank? %>
+              <h4><%= article.heading_display.html_safe %><br/></h4>
+            <% end %>
+            <h1>
+              <%= link_to article.title_display.html_safe,
+                    :controller => Article::category_option(category, :controller),
+                    :action => Article::category_option(category, :action),
+                    :uri => article.uri %>
+            </h1>
+            <% if not first_row %>
+              <aside class="actions">
+                <%= link_to t('titre.lire'),
+                      :controller => Article::category_option(category, :controller),
+                      :action => Article::category_option(category, :action),
+                      :uri => article.uri %>
+              </aside>
+            <% end %>
+          </header>
+          <% if first_row %>
+            <div class="one-third-column">
+              <%= truncate_html(article.content_with_medium.html_safe) %>
+            </div>
+            <footer class="actions">
+              <%= link_to (Article::category_option?(category, :video) ? 
+                            t('titre.voir_video') :
+                            t('titre.lire_suite')),
+                    :controller => Article::category_option(category, :controller),
+                    :action => Article::category_option(category, :action),
+                    :uri => article.uri %>
+            </footer>
+            <% first_row = false %>
+          <% end %>
+        </article>
+      </li>
+    <% end %>
+  </ol>
+<% end %>

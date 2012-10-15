@@ -1,0 +1,35 @@
+<section class="content-bloc">
+  <aside class="actions">
+    <a href="<%= session[:prior_url] %>"><%= t('action.back') %></a>
+  </aside>
+  <div class="tag">
+    <% for tag in @predefined_tags %>
+      <%= link_to tag.tag.html_safe,
+            :controller => :articles,
+            :action => :index,
+            :status => :all,
+            :search => tag.tag %>
+      (<%= tag.count_tag %>)
+      <%= link_to icon('remove.gif') + ' ' + t('action.delete'),
+                        tag, 
+                        :data => {:confirm => t("action.confirm")},
+                        :method => :delete %>
+      <br/>
+    <% end %>
+  </div>
+  <div class="tag">
+    <% for tag in @unused_tags %>
+      <%= link_to tag.tag.html_safe,
+            :controller => :articles,
+            :action => :index,
+            :status => :all,
+            :search => tag.tag %>
+      (<%= tag.count_tag %>)
+      <%= link_to icon('remove.gif') + ' ' + t('action.delete'),
+                        tag, 
+                        :data => {:confirm => t("action.confirm")},
+                        :method => :delete %>
+      <br/>
+    <% end %>
+  </div>
+</section>

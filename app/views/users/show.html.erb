@@ -1,0 +1,86 @@
+<%= render :partial => 'administration/menu' %>
+
+<section id="administration-work">
+  <section class="content-bloc">
+    <article class="article">
+      <aside class="actions">
+  			<%= link_to t('action.back'), users_path %> |
+  			<%= link_to icon('edit.gif') + ' ' + t('action.update'), edit_user_path(@user) %> |
+  			<%= link_to icon('remove.gif') + ' ' + t('action.delete'), @user, :data => {:confirm => t("action.confirm")}, :method => :delete %>
+  		</aside>
+      <header>
+        <h3 class="category">
+  				<%= t('user.type') %>&nbsp;&bull;
+  		  </h3>
+  		  <h1>
+  				<%= @user.email %>
+  			</h1>
+  	  </header>
+      <% unless @user.access_level.nil? %>
+        <%= t('activerecord.attributes.user.access_level') %> : <%= @user.access_level_display %><br/>
+      <% end %>
+			<%= (t('activerecord.attributes.user.publisher') + "<br/>").html_safe if @user.publisher? %>
+      <%= (t('activerecord.attributes.user.notification_message') + "<br/>").html_safe if @user.notification_message? %>
+      <%= (t('activerecord.attributes.user.notification_subscription') + "<br/>").html_safe if @user.notification_subscription? %>
+      <%= (t('activerecord.attributes.user.notification_donation') + "<br/>").html_safe if @user.notification_donation? %>
+      <%= (t('activerecord.attributes.user.notification_membership') + "<br/>").html_safe if @user.notification_membership? %>
+      <%= ("<strong>" + t('activerecord.attributes.user.administrator') + "</strong><br/>").html_safe if @user.administrator? %>
+      <% unless @user.last_sign_in_at.nil? %>
+        <br/>
+        <%= t('activerecord.attributes.user.sign_in_count') %> : <%= @user.sign_in_count %><br/> 
+        <%= t('activerecord.attributes.user.last_sign_in_at') %> : <%= I18n.l(@user.last_sign_in_at) %><br/>
+        <%= t('activerecord.attributes.user.last_sign_in_ip') %> : <%= @user.last_sign_in_ip %><br/> 
+      <% end %>
+      <% unless @user.locked_at.nil? %>
+        <br/>
+        <%= t('activerecord.attributes.user.locked_at') %> : <%= I18n.l(@user.locked_at) %><br/> 
+      <% end %>
+      <% unless @user.confirmation_sent_at.nil? %>
+        <%= t('activerecord.attributes.user.confirmation_sent_at') %> : <%= I18n.l(@user.confirmation_sent_at) %><br/> 
+      <% end %>
+      <% unless @user.confirmed_at.nil? %>
+        <%= t('activerecord.attributes.user.confirmed_at') %> : <%= I18n.l(@user.confirmed_at) %><br/> 
+      <% end %>
+      <hr/>
+      <h3 class="category">
+        <%= t('activerecord.attributes.user.permissions') %>&nbsp;&bull;
+      </h3>
+      <table>
+        <tr>
+          <td><u><%= t('activerecord.attributes.permission.category') %></u></td>
+          <td class="article-inter-column"></td>
+          <td><u><%= t('activerecord.attributes.permission.authorization') %></u></td>
+         <td class="article-inter-column"></td>
+          <td><u><%= t('activerecord.attributes.permission.notification_level') %></u></td>
+          <td class="article-inter-column"></td>
+          <td></td>
+        </tr>
+        <% for permission in @user.permissions %>
+          <tr>
+            <td><%= permission.category_display %></td>
+            <td class="article-inter-column"></td>
+            <td><%= permission.authorization_display %></td>
+            <td class="article-inter-column"></td>
+            <td><%= permission.notification_level_display %></td>
+            <td class="article-inter-column"></td>
+            <td>
+              <%= link_to t('action.update'), 
+                                :controller => :permissions, 
+                                :action => :edit, 
+                                :user_id => @user.id, 
+                                :id => permission.id %>
+              <%= link_to t('action.delete'),
+                                {:controller => :permissions, :user_id => @user.id, :id => permission.id, :action => "destroy"},
+                                :data => {:confirm => t("action.confirm")},
+                                :method => :delete %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+      <footer class="actions">
+        <br/>
+        <%= link_to icon('plus.gif') + ' ' + t('action.permission.create'), :controller => :permissions, :action => :new, :user_id => @user.id %>
+      </footer>
+  	</article>
+  </section>
+</section>

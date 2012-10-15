@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+  </head>
+  <body>
+    <p>
+      <% if @renew %>
+        <strong><%= t('activerecord.attributes.membership.renew_option_renew') %></strong><br/>
+      <% end %>
+      <strong><%= t('activerecord.attributes.membership.department') %></strong> : <%= @department %>
+      <% if @renew %>
+        <br/><strong><%= t('activerecord.attributes.membership.committee') %></strong> : <%= @committee %>
+      <% end %>
+      <br/><strong><%= t('activerecord.attributes.membership.first_name') %></strong> : <%= @first_name %>
+      <br/><strong><%= t('activerecord.attributes.membership.last_name') %></strong> : <%= @last_name %>
+      <br/><strong><%= t('activerecord.attributes.membership.gender') %></strong> : <%= @gender %>
+      <br/><strong><%= t('activerecord.attributes.membership.email') %></strong> : <%= @email %>
+      <br/><strong><%= t('activerecord.attributes.membership.address') %></strong> : <%= @address %>
+      <br/><strong><%= t('activerecord.attributes.membership.zip_code') %></strong> : <%= @zip_code %>
+      <br/><strong><%= t('activerecord.attributes.membership.city') %></strong> : <%= @city %>
+      <% unless @phone.blank? %>
+        <br/><strong><%= t('activerecord.attributes.membership.phone') %></strong> : <%= @phone %>
+      <% end %>
+      <% unless @mobile.blank? %>
+        <br/><strong><%= t('activerecord.attributes.membership.mobile') %></strong> : <%= @mobile %>
+      <% end %>
+      <br/><strong><%= t('activerecord.attributes.membership.birthdate') %></strong> : <%= @birthdate %>
+      <% unless @job.blank? %>
+        <br/><strong><%= t('activerecord.attributes.membership.job') %></strong> : <%= @job %>
+      <% end %>
+      <% unless @mandate.blank? %>
+        <br/><strong><%= t('activerecord.attributes.membership.mandate') %></strong> : <%= @mandate %>
+        <br/><strong><%= t('activerecord.attributes.membership.mandate_place') %></strong> : <%= @mandate_place %>
+      <% end %>
+      <% unless @union.blank? %>
+        <br/><strong><%= t('activerecord.attributes.membership.union') %></strong> : <%= @union %>
+        <br/><strong><%= t('activerecord.attributes.membership.union_resp') %></strong> : <%= @union_resp %>
+      <% end %>
+      <% unless @assoc.blank? %>
+        <br/><strong><%= t('activerecord.attributes.membership.assoc') %></strong> : <%= @assoc %>
+        <br/><strong><%= t('activerecord.attributes.membership.assoc_resp') %></strong> : <%= @assoc_resp %>
+      <% end %>
+      <% unless @comment.blank? %>
+        <br/><strong><%= t('activerecord.attributes.membership.comment') %></strong> : <%= @comment %>
+      <% end %>
+      <br/><strong><%= t('activerecord.attributes.membership.amount') %></strong> : <%= @amount %>
+      <br/><strong><%= t('activerecord.attributes.membership.payment_identifier') %></strong> : <%= @payment_identifier %>
+    </p>
+  </body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <title><%= current_page_title %></title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="front de gauche,écologie,socialisme,république,gauche,mélenchon,melenchon,billard,cocquerel,coquerel,dolez,europe,socialiste,republicain,PG,melanchon<%= current_page_keywords %>">
+    <meta name="description" content="<%= current_page_description %>">
+    <meta name="copyright" content="<%= t('general.copyright') %>">
+    <meta name="generator" content="Ruby on Rails 3.2.6" />
+    <% if @norobot.present? and @norobot -%><meta name="robots" content="noindex,nofollow"><% end -%>
+    <%= stylesheet_link_tag 'screen', :media => 'screen, projection' %>
+    <%= stylesheet_link_tag 'print', :media => 'print' %>
+    <!--[if lt IE 8]><%= stylesheet_link_tag 'ie', :media => 'screen, projection' %><![endif]-->
+    <%= javascript_include_tag "application" %>
+    <!--[if lt IE 9]>
+    <%= javascript_include_tag "html5.js" %>
+    <![endif]-->
+    <%= csrf_meta_tags %>
+    <%= init_tinymce_hammer_if_required %>
+  </head>
+  <body id="index" class="home">
+    <%= render :partial => 'layouts/facebook_sdk' %>
+    <div id="container">
+      <header id="banner" class="body"><%= render :partial => 'layouts/header' %></header>
+      <% if flash[:notice] or flash[:alert] -%>
+        <div id='notice'><%= flash[:notice] %><%= flash[:alert] %></div>
+      <% end -%>
+      <div id="content">
+        <%= yield %><%= render :partial => 'layouts/footer' %>
+      </div>
+      <% cache 'footer' do %>
+        <footer id="legal"><%= render :partial => 'layouts/legal' %></footer>
+      <% end %>
+    </div>
+    <%= render :partial => 'layouts/analytics' %>
+  </body>
+</html>

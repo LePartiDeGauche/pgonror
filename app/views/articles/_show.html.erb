@@ -1,0 +1,68 @@
+<div class="signature">
+  <div class="date"><%= l @article.published_at, :format => :long_ordinal %></div>&nbsp;
+  <%= @article.signature if @article.category_option?(:signature) %>
+</div>
+<% if @article.category_option?(:parent) and not @article.external_id.blank? and not @article.external_id.blank? %>
+  <strong><%= t('activerecord.attributes.article.external_id') %></strong>&nbsp;:
+  <%= @article.external_id %>
+  <br/>
+<% end %>
+<% if @article.category_option?(:start_end_dates) or not @article.agenda.blank? %>
+  <div class="date"><%= @article.start_end_datetime_display(true) %></div>
+  <% if (@article.category_option?(:address) or not @article.agenda.blank?) and not @article.address.blank? %>
+    <strong><%= @article.address %></strong>
+  <% end %>
+  <br/>
+<% end %>
+<% if @article.category_option?(:email) and not @article.email.blank? %>
+  <strong><%= t('activerecord.attributes.article.email') %></strong>&nbsp;:
+  <%= @article.email %>
+  <br/>
+<% end %>
+<br/>
+<% if @article.document_file_name.present? %>
+  <%= link_to @article.document.url do %>
+    <%= @article.title_display %> 
+    (<%= @article.document_content_type %>) |
+    <%= t("activerecord.attributes.article.file_size") %>&nbsp;:
+    <%= number_to_human_size @article.document_file_size %><br/>
+  <% end %>
+  <br/>
+<% end %>
+<%= @article.content_only_with_inline.html_safe unless @article.content.blank? %>
+<% if @article.category_option?(:image) and @article.image_file_name.present? %>
+  <%= t("activerecord.attributes.article.content_type") %>&nbsp;:
+  <%= @article.image_content_type %> |
+  <%= t("activerecord.attributes.article.file_size") %>&nbsp;:
+  <%= number_to_human_size @article.image_file_size %><br/>
+  <ol>
+    <li>
+      <div class="information"><%= t("activerecord.attributes.article.image_inline") %></div><br/>
+      <%= image_tag @article.image.url(:inline) %>
+    </li>
+    <li>
+      <div class="information"><%= t("activerecord.attributes.article.image_large") %></div><br/>
+      <%= image_tag @article.image.url(:large) %>
+    </li>
+    <li>
+      <div class="information"><%= t("activerecord.attributes.article.image_zoom") %></div><br/>
+      <%= image_tag @article.image.url(:zoom) %>
+    </li>
+    <li>
+      <div class="information"><%= t("activerecord.attributes.article.image_alternate") %></div><br/>
+      <%= image_tag @article.image.url(:alternate) %>
+    </li>
+    <li>
+      <div class="information"><%= t("activerecord.attributes.article.image_medium") %></div><br/>
+      <%= image_tag @article.image.url(:medium) %>
+    </li>
+    <li>
+      <div class="information"><%= t("activerecord.attributes.article.image_small") %></div><br/>
+      <%= image_tag @article.image.url(:small) %>
+    </li>
+    <li>
+      <div class="information"><%= t("activerecord.attributes.article.image_mini") %></div><br/>
+      <%= image_tag @article.image.url(:mini) %>
+    </li>
+  </ol>
+<% end %>

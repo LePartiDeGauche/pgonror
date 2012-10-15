@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+  </head>
+  <body>
+    <p>
+      <strong><%= t('activerecord.attributes.donation.first_name') %></strong> : <%= @first_name %>
+      <br/><strong><%= t('activerecord.attributes.donation.last_name') %></strong> : <%= @last_name %>
+      <br/><strong><%= t('activerecord.attributes.donation.email') %></strong> : <%= @email %>
+      <br/><strong><%= t('activerecord.attributes.donation.address') %></strong> : <%= @address %>
+      <br/><strong><%= t('activerecord.attributes.donation.zip_code') %></strong> : <%= @zip_code %>
+      <br/><strong><%= t('activerecord.attributes.donation.city') %></strong> : <%= @city %>
+      <% unless @phone.blank? %>
+        <br/><strong><%= t('activerecord.attributes.donation.phone') %></strong> : <%= @phone %>
+      <% end %>
+      <% unless @comment.blank? %>
+        <br/><strong><%= t('activerecord.attributes.donation.comment') %></strong> : <%= @comment %>
+      <% end %>
+      <br/><strong><%= t('activerecord.attributes.donation.amount') %></strong> : <%= @amount %>
+      <br/><strong><%= t('activerecord.attributes.membership.payment_identifier') %></strong> : <%= @payment_identifier %>
+    </p>
+  </body>
+</html>

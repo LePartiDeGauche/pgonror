@@ -1,0 +1,125 @@
+<section>
+  <section class="content-bloc">
+    <article class="article">
+      <form method="POST" action="<%= PBX_CGI %>">
+        <%= render :partial => 'layouts/pbx' %>
+        <input id="PBX_TXT" name="PBX_TXT" type="hidden" value="<%= t('action.membership.txt') %>">
+        <input id="PBX_CMD" name="PBX_CMD" type="hidden" value="<%= @membership.payment_identifier %>">
+        <input id="PBX_TOTAL" name="PBX_TOTAL" type="hidden" value="<%= @membership.amount_cents %>">
+        <input id="PBX_PORTEUR" name="PBX_PORTEUR" type="hidden" value="<%= @membership.email %>">
+        <input id="PBX_REFUSE" name="PBX_REFUSE" type="hidden" value="<%= @refuse %>">
+        <input id="PBX_ANNULE" name="PBX_ANNULE" type="hidden" value="<%= @annule %>">
+        <input id="PBX_EFFECTUE" name="PBX_EFFECTUE" type="hidden" value="<%= @effectue %>">
+        <input id="PBX_REPONDRE_A" name="PBX_REPONDRE_A" type="hidden" value="<%= @retour %>">
+        <div class="form-medium">
+          <table>
+            <tr>
+              <td></td>
+              <td>
+                <% if @membership.renew %>
+                  <strong><%= t('activerecord.attributes.membership.renew_option_renew') %></strong>
+                <% else %>
+                  <strong><%= t('activerecord.attributes.membership.renew_option_new') %></strong>
+                <% end %>
+              </td>
+              <td><%= t 'activerecord.attributes.membership.department' %></td>
+              <td><%= @membership.department %></td>
+            </tr>
+            <% unless @membership.committee.blank? %>
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td><%= t 'activerecord.attributes.membership.committee' %></td>
+                <td><%= @membership.committee %></td>
+              </tr>
+            <% end %>
+            <tr>
+              <td><%= t 'activerecord.attributes.membership.first_name' %></td>
+              <td><%= @membership.first_name %></td>
+              <td><%= t 'activerecord.attributes.membership.last_name' %></td>
+              <td><%= @membership.last_name %></td>
+            </tr>
+            <tr>
+              <td><%= t 'activerecord.attributes.membership.gender' %></td>
+              <td><%= @membership.gender %></td>
+              <td><%= t 'activerecord.attributes.membership.address' %></td>
+              <td><%= @membership.address %></td>
+            </tr>
+            <tr>
+              <td><%= t 'activerecord.attributes.membership.zip_code' %></td>
+              <td><%= @membership.zip_code %></td>
+              <td><%= t 'activerecord.attributes.membership.city' %></td>
+              <td><%= @membership.city %></td>
+            </tr>
+            <tr>
+              <td><%= t 'activerecord.attributes.membership.email' %></td>
+              <td><%= @membership.email %></td>
+              <td><%= t 'activerecord.attributes.membership.birthdate' %></td>
+              <td><%= l @membership.birthdate %></td>
+            </tr>
+            <tr>
+              <td><%= t 'activerecord.attributes.membership.phone' %></td>
+              <td><%= @membership.phone %></td>
+              <td><%= t 'activerecord.attributes.membership.mobile' %></td>
+              <td><%= @membership.mobile %></td>
+            </tr>
+            <% unless @membership.job.blank? %>
+              <tr>
+                <td><%= t 'activerecord.attributes.membership.job' %></td>
+                <td><%= @membership.job %></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+              </tr>
+            <% end %>
+            <% unless @membership.mandate.blank? %>
+              <tr>
+                <td><%= t 'activerecord.attributes.membership.mandate' %></td>
+                <td><%= @membership.mandate %></td>
+                <td><%= t 'activerecord.attributes.membership.mandate_place' %></td>
+                <td><%= @membership.mandate_place %></td>
+              </tr>
+            <% end %>
+            <% unless @membership.union.blank? %>
+              <tr>
+                <td><%= t 'activerecord.attributes.membership.union' %></td>
+                <td><%= @membership.union %></td>
+                <td><%= t 'activerecord.attributes.membership.union_resp' %></td>
+                <td><%= @membership.union_resp %></td>
+              </tr>
+            <% end %>
+            <% unless @membership.assoc.blank? %>
+              <tr>
+                <td><%= t 'activerecord.attributes.membership.assoc' %></td>
+                <td><%= @membership.assoc %></td>
+                <td><%= t 'activerecord.attributes.membership.assoc_resp' %></td>
+                <td><%= @membership.assoc_resp %></td>
+              </tr>
+            <% end %>
+            <tr>
+              <td><%= t 'activerecord.attributes.membership.amount' %></td>
+              <td><%= number_to_currency(@membership.amount) %></td>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+            </tr>
+            <% unless @membership.comment.blank? %>
+              <tr>
+                <td><%= t 'activerecord.attributes.membership.comment' %></td>
+                <td colspan="3"><%= @membership.comment %></td>
+              </tr>
+            <% end %>
+          </table>
+          <br/>
+          <br/>
+          <center>
+            <img src="<%= asset_path 'secu_fr_fondclair.png' %>" class="shadow" width="160">
+          </center>
+        </div>
+        <center>
+          <aside class="actions">
+            <input data-disable-with="<%= t('action.wait') %>" name="commit" type="submit" value="<%= t('action.payment.commit') %>">
+          </aside>
+         </center>
+      </form>
+    </article>
+  </section>
+</section>

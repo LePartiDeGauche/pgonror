@@ -1,0 +1,15 @@
+<section id="arguments-liste">
+  <section class="content-bloc">
+    <%= render :partial => 'layouts/article', :locals => { :article => @article } %>
+  </section>
+</section>
+<section id="arguments-vignettes">
+  <section class="content-bloc">
+    <%= render :partial => 'layouts/index_articles_1col_1_on_3', 
+          :locals => { :articles => @programmes, :category => 'programme' } %>
+  </section>
+  <section class="content-bloc highlighted-bloc">
+    <%= render :partial => 'layouts/index_articles_simplified', 
+          :locals => { :articles => @legislatives, :category => 'legislative' } %>
+  </section>
+</section>
