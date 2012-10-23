@@ -45,7 +45,7 @@
       <article class="article">
         <aside class="actions">
           <a href="<%= session[:prior_url] %>"><%= t('action.back') %></a> |
-          <%= link_to icon('edit.gif') + ' ' + t('action.update'), 
+          <%= link_to t('action.update'), 
                 :action => :edit, 
                 :id => @article.id,
                 :category => session[:category], 
@@ -54,7 +54,7 @@
                 :search => session[:search],
                 :page => session[:page] %>
           <% if not @article.draft %> |
-            <%= link_to icon('notice.gif') + ' ' + t('action.change_status'),
+            <%= link_to t('action.change_status'),
               :action => :edit,
               :modifier => :change_status, 
               :id => @article.id,
@@ -64,7 +64,7 @@
               :search => session[:search],
               :page => session[:page] %>
           <% end %>
-          | <%= link_to icon('notice.gif') + ' ' + t('action.change_category'),
+          | <%= link_to t('action.change_category'),
             :action => :edit,
             :modifier => :change_category, 
             :id => @article.id,
@@ -74,7 +74,7 @@
             :search => session[:search],
             :page => session[:page] %>
           <% if current_user.administrator %> |
-            <%= link_to icon('remove.gif') + ' ' + t('action.delete'), 
+            <%= link_to t('action.delete'), 
                 @article, 
                 :data => {:confirm => t("action.confirm")}, 
                 :method => :delete %>

@@ -19,7 +19,7 @@ class QuisommesnousController < ApplicationController
                                           :commission]
   before_filter :load_side_articles
   
-  caches_action :index, :layout => false
+  caches_action :index, :layout => false, :if => Proc.new { not user_signed_in? }
 
   def index
   end

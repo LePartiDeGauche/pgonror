@@ -18,10 +18,10 @@ class ArticlesController < ApplicationController
   before_filter :authenticate_publisher!
   before_filter :authenticate_administrator!, :only => [:destroy]
   before_filter :find, :only => [:show, :update, :destroy]
-  before_filter :load_side_data, :only => [:new, :new_child, :create, :create_image, :create_document, :edit, :update]
+  before_filter :load_side_data, :only => [:new, :new_child, :create, :edit, :update]
   before_filter :pre_control_authorization, :only => [:new]
-  cache_sweeper :article_sweeper, :only => [:create, :create_image, :create_document, :update, :destroy]
-  
+  cache_sweeper :article_sweeper, :only => [:create, :update, :destroy]
+
   # Prepares data for display in the index page.  
   def prepare_index
     @uploaded_image = Article.new
@@ -62,7 +62,7 @@ class ArticlesController < ApplicationController
     reset_backtrace
     save_backtrace
   end
-  
+
   # Triggers article search.
   def search
     prepare_index
@@ -111,141 +111,72 @@ class ArticlesController < ApplicationController
   # Prepares an article defined as a child for creation.
   def new_child
     new
-    respond_to do |format|
-      format.html { render :action => "new" }
-    end
+    render :action => "new"
   end
 
   # Prepares an article for editing.
   def edit
     @article = Article.find_by_id(params[:id])
     if "change_status" == params[:modifier]
-      respond_to do |format|
-        format.html { render :action => "change_status" }
-      end
+      render :action => "change_status"
     elsif "change_category" == params[:modifier]
-      respond_to do |format|
-        format.html { render :action => "change_category" }
-      end
+      render :action => "change_category"
     end
   end
-  
+
   # Creates new article.
   def create
-    @article = Article.new(params[:article])
     saved = false
-    begin
-      @article.transaction do
-        @article.created_by = current_user.email
-        @article.updated_by = current_user.email
-        if @article.control_authorization
-          @article.save!
-          @article.create_audit! @article.status, @article.updated_by
-          # Double-save is required in order to retrieve article.id
-          @article.save!
-          saved = true
-        else
-          raise ActiveRecord::Rollback, "No permission"
-        end
-      end
-    rescue ActiveRecord::RecordInvalid => invalid
-      log_warning "create", invalid
-      saved = false
-    rescue Exception => invalid
-      log_error "create", invalid
-      saved = false
-    end
-    respond_to do |format|
-      if saved
-        notification_article
-        flash[:notice] = t('action.article.created')
-        format.html { redirect_to(@article) }
-      else
-        format.html { render :action => "new" }
-      end
-    end
-  end
-
-  # Creates new article as an image.
-  def create_image
+    signature = params[:article][:signature]
+    params[:article][:signature] = nil
     @article = Article.new(params[:article])
-    saved = false
-    begin
-      @article.transaction do
-        @article.defaults "image", params[:parent]
-        @article.created_by = current_user.email
-        @article.updated_by = current_user.email
-        if @article.control_authorization
-          @article.save!
-          @article.create_audit! @article.status, @article.updated_by
-          saved = true
-        else
-          raise ActiveRecord::Rollback, "No permission"
+    if @article.errors.empty?
+      begin
+        @article.transaction do
+          @article.created_by = @article.updated_by = current_user.email
+          if @article.control_authorization
+            @article.save!
+            @article.create_audit! @article.status, @article.updated_by
+            # Double-save is required in order to retrieve article.id
+            @article.signature = signature
+            @article.save!
+            saved = true
+          else
+            raise ActiveRecord::Rollback, "No permission"
+          end
         end
-      end
-    rescue ActiveRecord::RecordInvalid => invalid
-      log_warning "create_image", invalid
-      saved = false
-    rescue Exception => invalid
-      log_error "create_image", invalid
-      saved = false
-    end
-    respond_to do |format|
-      if saved
-        notification_article
-        flash[:notice] = t('action.image.created')
-        format.html { redirect_to(@article) }
-      else
-        format.html { render :action => "new" }
+      rescue ActiveRecord::RecordInvalid => invalid
+        log_warning "create", invalid
+        saved = false
+      rescue Exception => invalid
+        log_error "create", invalid
+        saved = false
       end
     end
-  end
-
-  # Creates new article as a document.
-  def create_document
-    @article = Article.new(params[:article])
-    saved = false
-    begin
-      @article.transaction do
-        @article.defaults "document", params[:parent]
-        @article.created_by = current_user.email
-        @article.updated_by = current_user.email
-        if @article.control_authorization
-          @article.save!
-          @article.create_audit! @article.status, @article.updated_by
-          saved = true
-        else
-          raise ActiveRecord::Rollback, "No permission"
-        end
-      end
-    rescue ActiveRecord::RecordInvalid => invalid
-      log_warning "create_document", invalid
-      saved = false
-    rescue Exception => invalid
-      log_error "create_document", invalid
-      saved = false
-    end
-    respond_to do |format|
-      if saved
-        notification_article
-        flash[:notice] = t('action.document.created')
-        format.html { redirect_to(@article) }
-      else
-        format.html { render :action => "new" }
-      end
+    if saved
+      notification_article
+      flash[:notice] = t('action.article.created')
+      redirect_to @article
+    else
+      render :action => "new"
     end
   end
 
   # Updates an article.
   def update
     saved = false
+    signature = params[:article][:signature]
+    params[:article][:signature] = nil
     @comments = params[:comments]
     begin
       @article.transaction do
         @article.updated_by = current_user.email
+        @article.signature = nil
         @article.update_attributes!(params[:article])
         if @article.control_authorization
           @article.create_audit! @article.status, @article.updated_by, @comments
+          @article.signature = signature
+          @article.save!
           saved = true
         else
           raise ActiveRecord::Rollback, "No permission"
@@ -258,19 +189,17 @@ class ArticlesController < ApplicationController
       log_error "update", invalid
       saved = false
     end
-    respond_to do |format|
-      if saved
-        notification_article true
-        flash[:notice] = t('action.article.updated')
-        format.html { redirect_to(@article) }
+    if saved
+      notification_article true
+      flash[:notice] = t('action.article.updated')
+      redirect_to @article
+    else
+      if params[:article].present? and params[:article][:status].present? 
+        render :action => "change_status"
+      elsif params[:article].present? and params[:article][:category].present? 
+        render :action => "change_category"
       else
-        if params[:article].present? and params[:article][:status].present? 
-          format.html { render :action => "change_status" }
-        elsif params[:article].present? and params[:article][:category].present? 
-          format.html { render :action => "change_category" }
-        else
-          format.html { render :action => "edit" }
-        end
+        render :action => "edit"
       end
     end
   end
@@ -293,16 +222,14 @@ class ArticlesController < ApplicationController
       log_error "destroy", invalid
       saved = false
     end
-    respond_to do |format|
-      if saved
-        flash[:notice] = t('action.article.deleted')
-        format.html { redirect_to session[:prior_url] }
-      else
-        format.html { redirect_to(@article) }
-      end
+    if saved
+      flash[:notice] = t('action.article.deleted')
+      redirect_to session[:prior_url]
+    else
+      redirect_to @article
     end
   end
-  
+
 private
 
   def load_side_data
@@ -316,10 +243,8 @@ private
     message = Article::pre_control_authorization(current_user.email, params[:category], params[:source].to_i)
     if message.present?
       flash.now[:notice] = message.html_safe
-      respond_to do |format|
-        prepare_index
-        format.html { render :action => "index" }
-      end
+      prepare_index
+      render :action => "index"
     end
   end
 
@@ -339,13 +264,15 @@ private
                                         :only_path => false),
                                 url_for(:controller => :articles, 
                                         :action => :show, 
-                                        :id => @article.id),
+                                        :id => @article.id,
+                                        :only_path => false),
                                 (@article.status == Article::ONLINE and
                                 @article.category_option?(:controller) and
                                 @article.category_option?(:action)) ?
                                   url_for(:controller => @article.category_option(:controller),
                                           :action => @article.category_option(:action),
-                                          :uri => @article.uri) : nil,
+                                          :uri => @article.uri,
+                                          :only_path => false) : nil,
                                 update,
                                 @comments)
   end

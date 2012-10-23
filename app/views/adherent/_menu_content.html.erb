@@ -5,5 +5,6 @@
   <li><%= render :partial => 'articles/categories', 
                  :locals => { :categories => @categories_online, 
                               :status => Article::ONLINE,
-                              :important => false } %></li>
+                              :important => false,
+                              :zoom => 0 } %></li>
 </ol>

@@ -1,22 +1,23 @@
 xml.instruct!
-xml.rss("version" => "2.0", "xmlns:atom" => "http://www.w3.org/2005/Atom") do
+xml.rss("version" => "2.0") do
   xml.channel do
     xml.title current_page_title
     xml.subtitle current_page_description
-    xml.link url_for(:controller => :rss, :format => 'xml', :only_path => false)
+    xml.link url_for accueil_rss_path(:only_path => false)
     xml.lastBuildDate Time.now.to_s(:rfc822)
     xml.language "fr-fr"
     xml.rights t('general.copyright')
+    coder = HTMLEntities.new
     for article in @articles
       if article.category_option?(:controller) and
          article.category_option?(:action)
         xml.item do
           xml.pubDate article.published_at.to_s(:rfc822)
-          xml.title h((article.heading.present? ? article.heading + " - " : "") + article.title)
+          xml.title coder.decode((article.heading.present? ? article.heading + " - " : "") + article.title)
           xml.guid article.uri
           if article.category_option?(:signature) and not article.signature.blank?
             xml.author do
-              xml.name article.signature
+              xml.name coder.decode(article.signature)
             end
           end
           xml.link url_for(:controller => article.category_option(:controller),

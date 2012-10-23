@@ -8,4 +8,9 @@
         :controller => @article.category_option(:controller),
         :action => @article.category_option(:action),
         :uri => @article.uri %>
+  <%= link_to icon('external.png'),
+        {:controller => @article.category_option(:controller),
+        :action => @article.category_option(:action),
+        :uri => @article.uri},
+        :target => "_blank" %>
 <% end %>

@@ -1,0 +1,27 @@
+<section>
+  <section class="content-bloc">
+    <header>
+      <h3 class="category">RSS&nbsp;&bull;</h3>
+    </header>
+    <%= t('identity.rss_explain_more') %>
+    <br/>
+    <br/>
+    <table>
+      <tr>
+        <td><h1><%= icon_medium('rss.png') %> <%= t('identity.rss_1_explain') %></h1></td>
+        <td><%= link_to "XML", rss_feed_path, :target => "_blank" %></td>
+        <td><a target="_blank" href="http://add.my.yahoo.com/rss?url=<%= url_for rss_feed_path(:only_path => false) %>">Mon Yahoo!</a></td>
+        <td><a target="_blank" href="http://fusion.google.com/add?feedurl=<%= url_for rss_feed_path(:only_path => false) %>">Google+</a></td>
+        <td><a target="_blank" href="http://www.netvibes.com/subscribe.php?url=<%= url_for rss_feed_path(:only_path => false) %>">netvibes</a></td>
+      </tr>
+      <tr>
+        <td><h1><%= icon_medium('rss.png') %> <%= t('identity.rss_2_explain') %></h1></td>
+        <td><%= link_to "XML", militer_rss_feed_path, :target => "_blank" %></td>
+        <td><a target="_blank" href="http://add.my.yahoo.com/rss?url=<%= url_for militer_rss_feed_path(:only_path => false) %>">Mon Yahoo!</a></td>
+        <td><a target="_blank" href="http://fusion.google.com/add?feedurl=<%= url_for militer_rss_feed_path(:only_path => false) %>">Google+</a></td>
+        <td><a target="_blank" href="http://www.netvibes.com/subscribe.php?url=<%= url_for militer_rss_feed_path(:only_path => false) %>">netvibes</a></td>
+      </tr>
+    </table>
+    <br/>
+  </section>
+</section>

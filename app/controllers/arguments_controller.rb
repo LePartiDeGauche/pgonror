@@ -19,9 +19,9 @@ class ArgumentsController < ApplicationController
                                                :programme, :leprogramme, 
                                                :argument, :arguments,
                                                :legislative, :legislatives]
-  caches_action :index, :layout => false
-  caches_action :leprogramme, :layout => false, :if => Proc.new { @page == 1 }
-  caches_action :arguments, :layout => false, :if => Proc.new { @page == 1 }
+  caches_action :index, :layout => false, :if => Proc.new { not user_signed_in? }
+  caches_action :leprogramme, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
+  caches_action :arguments, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
   caches_action :legislatives, :layout => false, :if => Proc.new { @page == 1 and params[:heading].blank? }
   
   def index

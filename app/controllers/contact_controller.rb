@@ -17,7 +17,7 @@ class ContactController < ApplicationController
   before_filter :find_article, :only => [:departement]
   before_filter :load_index
 
-  caches_action :index, :layout => false, :if => Proc.new { params[:commission].blank? }
+  caches_action :index, :layout => false, :if => Proc.new { params[:commission].blank? and not user_signed_in? }
 
   def index
     create_request

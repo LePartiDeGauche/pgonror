@@ -69,6 +69,7 @@ MENU = [
 #  :link_all_title sets the title of a link to a list of article of the same category to be displayed in the website.
 #  :start_end_dates includes a start and a end date and time.
 #  :address includes an address.
+#  :audio indicates the content is an audio file.
 #  :video indicates the content is a video.
 #  :searchable includes the article category in the searches.
 #  :unfeedable excludes the article category from the feeds.
@@ -297,6 +298,8 @@ CATEGORIES = [
                                              :action => :date,
                                              :category_title => "UNE DATE, UN JOUR",
                                              :link_all_title => "VOIR LES ARCHIVES"}],
+              ["SON", 'son', {:audio => true,
+                              :unfeedable => true}],
               ["VENDREDI DU PARTI", 'vendredi', {:searchable => true,
                                                  :controller => :educpop,
                                                  :action_all => :vendredis,
@@ -310,7 +313,8 @@ CATEGORIES = [
                                                :action => :video,
                                                :category_title => "VIDÉOS ÉDUC POP",
                                                :link_all_title => "VOIR TOUTES LES VIDÉOS ÉDUC POP"}],
-              ["VIDÉO", 'video', {:searchable => true,
+              ["VIDÉO", 'video', {:signature => true,
+                                  :searchable => true,
                                   :video => true,
                                   :controller => :videos,
                                   :action_all => :index,

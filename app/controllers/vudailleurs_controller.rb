@@ -20,9 +20,9 @@ class VudailleursController < ApplicationController
                                                :blogs, :blog,
                                                :envoyer_message]
 
-  caches_action :index, :layout => false
-  caches_action :articlesweb, :layout => false, :if => Proc.new { @page == 1 }
-  caches_action :articlesblog, :layout => false, :if => Proc.new { @page == 1 }
+  caches_action :index, :layout => false, :if => Proc.new { not user_signed_in? }
+  caches_action :articlesweb, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
+  caches_action :articlesblog, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
 
   def index
     @articlesweb = Article.find_published 'web', 1, 3

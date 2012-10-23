@@ -16,7 +16,7 @@
 class PhotosController < ApplicationController
   before_filter :find_article, :only => [:diaporama]
 
-  caches_action :index, :layout => false, :if => Proc.new { @page == 1 }
+  caches_action :index, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
 
   def index
     @pages = Article.count_pages_published 'diaporama'

@@ -30,9 +30,9 @@ fr:
     toc_explain:      "Sélectionnez un thème parmi la liste ci-dessous pour afficher les articles correspondants."
     permissions:      "Accréditations"
     administration:   "Administration"
-    sign_out:         "Déconnexion "
+    sign_out:         "Déconnexion"
     sign_out_explain: "Cliquez sur le lien ci-dessous pour vous déconnecter."
-    mypage:           "Changer mon mot de passe"
+    mypage:           "Mot de passe"
     user_access:      "Accès adhérents"
     sign_up:          "Inscrivez-vous"
     mandatory:        "Information obligatoire"
@@ -47,7 +47,11 @@ fr:
     support:              "Nous soutenir"
     fdg:                  "Place au peuple !"
     reserved:             "ESPACE ADHÉRENT"
-    reserved_link:        "Retrouvez prochainement ici les informations publiées pour les adhérents."
+    reserved_link:        "Site interne Agit’Prop"
+    reserved_web:         "http://agitprop.lepartidegauche.fr"
+    reserved_contact:     "Contact"
+    reserved_email:       "agitprop@lepartidegauche.fr"
+    reserved_explain:     "Retrouvez sur le site interne du pôle Agit’Prop les outils militants, les documents de formation, les fiches pratiques pour l’action et les lettres des assemblées citoyennes."
     follow:               "RÉSEAUX SOCIAUX"
     agauche:              "À GAUCHE"
     agauche_title:        "Abonnez-vous à À Gauche, l’hebdomadaire du Parti de Gauche."
@@ -56,7 +60,10 @@ fr:
     agauche_premium:      "Abonnement de soutien €50,00"
     gavroche:             "RÉSEAU JEUNE"
     gavroche_title:       "Retrouvez le Gavroche, le journal des jeunes du Parti de Gauche."
-    rss_explain:          "Abonnez-vous au fil d’actualités en utilisant un lecteur ou aggrégateur RSS avec cette addresse."
+    rss_explain:          "Abonnez-vous au fil d’actualités en utilisant un lecteur ou aggrégateur RSS."
+    rss_explain_more:     "Pour vous abonner, cliquez sur la vignette d’abonnement de votre choix."
+    rss_1_explain:        "Toutes les actualités"
+    rss_2_explain:        "Agenda"
     txt_explain:          "Téléchargez les derniers articles sous forme d’un fichier portable (.txt)."
     
   alert:
@@ -85,7 +92,9 @@ fr:
     administration: "Sélectionnez une rubrique pour l’administration du site."
     select:         "Sélectionnez"
     download:       "Téléchargez le document"
+    download_audio: "Téléchargez le contenu audio"
     share:          "Partagez cet article sur les réseaux sociaux à l’aide des liens ci-dessous ou copiez le lien court suivant dans vos messages :"
+    insert:         "Inserer dans l’article"
     article:
       create:             "Créer du contenu"
       create_explain:     "Sélectionnez une catégorie d'article afin de créer du contenu."
@@ -197,6 +206,7 @@ fr:
     lire_suite:          "+ lire la suite"
     voir_video:          "+ voir la vidéo"
     autres:              "Articles récents"
+    same_heading:        "Sur le même thème"
 
   date:
     formats:
@@ -333,6 +343,7 @@ fr:
         odd: "doit être impair."
         even: "doit être pair."
         record_invalid: "%{errors} erreur(s)."
+        bad_image: "L’image ne peut être importée, un problème est survenu pendant la lecture de l’image."
     attributes:
       article:
         heading:                    "Surtitre"

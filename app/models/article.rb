@@ -304,6 +304,14 @@ class Article < ArticleBase
     calc_count_pages count_by_criteria({:status => ONLINE, :searchable => true, :search => search})
   end
 
+  def find_published_by_heading
+    articles = []
+    for article in self.class.find_by_criteria({:status => Article::ONLINE, :heading => self.heading}, 1, 5)
+      articles << article if self.uri != article.uri
+    end
+    articles
+  end
+
   # Returns the list of published articles that include an email address  
   def self.find_published_email_articles
     articles = []
@@ -326,7 +334,7 @@ class Article < ArticleBase
     group('heading').
     order('heading')
   end
-
+  
 private
  
   # Defines the SQL where clause for selecting articles based on various criteria.

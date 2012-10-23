@@ -17,7 +17,7 @@
     <%= javascript_include_tag "html5.js" %>
     <![endif]-->
     <%= csrf_meta_tags %>
-    <%= init_tinymce_hammer_if_required %>
+    <%= render :partial => 'layouts/scripts' %>
   </head>
   <body id="index" class="home">
     <%= render :partial => 'layouts/facebook_sdk' %>
@@ -33,6 +33,5 @@
         <footer id="legal"><%= render :partial => 'layouts/legal' %></footer>
       <% end %>
     </div>
-    <%= render :partial => 'layouts/analytics' %>
   </body>
 </html>

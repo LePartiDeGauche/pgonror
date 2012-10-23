@@ -18,8 +18,8 @@ class ViedegaucheController < ApplicationController
   before_filter :load_side_articles, :only => [:index, :article, 
                                                :journalvdg, :journauxvdg]
 
-  caches_action :index, :layout => false, :if => Proc.new { @page == 1 }
-  caches_action :journauxvdg, :layout => false, :if => Proc.new { @page == 1 }
+  caches_action :index, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
+  caches_action :journauxvdg, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
 
   def index
     @pages = Article.count_pages_published 'articlevdg'

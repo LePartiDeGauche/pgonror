@@ -1,6 +1,6 @@
 <section id="militer-liste">
   <section class="content-bloc">
-    <div class="rss"><%= link_to icon_medium('rss.png'), militer_rss_feed_path(:format => :xml), :class => :popup %></div>
+    <div class="rss"><%= link_to icon_medium('rss.png'), militer_rss_feed_path, :target => "_blank" %></div>
     <%= render :partial => 'layouts/index_articles_1col_2_on_3_agenda', 
           :locals => { :articles => @articles, :category => 'evenement' } %>
   </section>

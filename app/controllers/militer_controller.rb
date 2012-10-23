@@ -21,11 +21,11 @@ class MiliterController < ApplicationController
                                                :tracts, :tract, 
                                                :affiches, :affiche]
 
-  caches_action :index, :layout => false, :if => Proc.new { @page == 1 }
-  caches_action :agenda, :layout => false, :if => Proc.new { @page == 1 }
-  caches_action :tracts, :layout => false, :if => Proc.new { @page == 1 }
-  caches_action :kits, :layout => false, :if => Proc.new { @page == 1 }
-  caches_action :affiches, :layout => false, :if => Proc.new { @page == 1 }
+  caches_action :index, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
+  caches_action :agenda, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
+  caches_action :tracts, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
+  caches_action :kits, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
+  caches_action :affiches, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
   caches_action :rss
 
   def index

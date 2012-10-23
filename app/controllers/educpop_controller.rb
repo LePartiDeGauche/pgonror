@@ -22,12 +22,12 @@ class EducpopController < ApplicationController
                                                :lecture, :lectures,
                                                :revue, :revues]
 
-  caches_action :index, :layout => false
-  caches_action :dates, :layout => false, :if => Proc.new { @page == 1 }
-  caches_action :vendredis, :layout => false, :if => Proc.new { @page == 1 }
-  caches_action :librairie, :layout => false, :if => Proc.new { @page == 1 }
-  caches_action :lectures, :layout => false, :if => Proc.new { @page == 1 }
-  caches_action :revues, :layout => false, :if => Proc.new { @page == 1 }
+  caches_action :index, :layout => false, :if => Proc.new { not user_signed_in? }
+  caches_action :dates, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
+  caches_action :vendredis, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
+  caches_action :librairie, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
+  caches_action :lectures, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
+  caches_action :revues, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
 
   def index
   end

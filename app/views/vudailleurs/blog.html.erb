@@ -1,8 +1,6 @@
 <section id="vudailleurs-liste">
   <section class="content-bloc">
-    <%= render :partial => 'layouts/article', 
-               :locals => { 
-                 :article => @article } %>
+    <%= render :partial => 'layouts/article' %>
   </section>
   <% unless @attached_articles.nil? or @attached_articles.empty? %>
     <section class="content-bloc">

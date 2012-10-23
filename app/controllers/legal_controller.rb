@@ -18,7 +18,7 @@
 class LegalController < ApplicationController
   before_filter :find_article, :only => [:archive, :source]
 
-  caches_action :index, :layout => false
+  caches_action :index, :layout => false, :if => Proc.new { not user_signed_in? }
   
   # Legal information page.
   def index

@@ -1,43 +1,51 @@
-<% unless article.nil? %>
+<% unless @article.nil? %>
   <article class="article">
     <hgroup>
       <% if user_signed_in? and current_user.publisher %>
-        <%= link_to icon('edit.gif'), article %>
+        <%= link_to icon('edit.gif'), @article %>
+        <%= link_to icon('external.png'), @article, :target => "_blank" %>
       <% end %>
-      <% if not article.category_option?(:hide_category_name) %>
-        <h3 class="category"><%= article.category_display %>&nbsp;&bull;</h3>
+      <% if not @article.category_option?(:hide_category_name) %>
+        <h3 class="category"><%= @article.category_display %>&nbsp;&bull;</h3>
       <% end %>
-      <% if article.category_option?(:link_all_title) %>
+      <% if @article.category_option?(:link_all_title) %>
         <h2 class="main-title">
-          <%= link_to article.category_option(:link_all_title),
-                :controller => article.category_option(:controller),
-                :action => article.category_option(:action_all) %>
+          <%= link_to @article.category_option(:link_all_title),
+                :controller => @article.category_option(:controller),
+                :action => @article.category_option(:action_all) %>
         </h2>
       <% end %>
       <br/>
     </hgroup>
     <header>
-      <% unless article.heading.blank? %>
-        <h4><%= article.heading_display.html_safe %><br/></h4>
+      <% unless @article.heading.blank? %>
+        <h4><%= @article.heading_display.html_safe %><br/></h4>
       <% end %>
-      <h1 class="large-title"><%= article.title_display.html_safe %></h1>
-      <div class="tag">
-        <% for tag in article.tags %>
-          <%= link_to tag.tag, global_search_path(:search => tag.tag) %>
-        <% end %>
-      </div>
-      <% unless article.source_id.nil? %>
+      <h1 class="large-title"><%= @article.title_display.html_safe %></h1>
+      <% unless @tags.nil? and @article.heading.blank? %>
+        <div class="tag">
+          <% unless @article.heading.blank? %>
+            <%= link_to @article.heading_display.html_safe, global_search_path(:search => @article.heading_display.html_safe) %>
+          <% end %>
+          <% unless @tags.nil? %>
+            <% for tag in @tags %>
+              <%= link_to tag.tag, global_search_path(:search => tag.tag) %>
+            <% end %>
+          <% end %>
+        </div>
+      <% end %>
+      <% unless @article.source_id.nil? %>
         <h2 class="main-title">
-          <%= link_to article.source_display.html_safe, 
-                :controller => article.source.category_option(:controller),
-                :action => article.source.category_option(:action),
-                :uri => article.source.uri %>
+          <%= link_to @article.source_display.html_safe, 
+                :controller => @article.source.category_option(:controller),
+                :action => @article.source.category_option(:action),
+                :uri => @article.source.uri %>
         </h2>
       <% end %>
-      <% if article.category_option?(:start_end_dates) or not article.agenda.blank? %>
-        <div class="date"><%= article.start_end_datetime_display(true) %></div>
-        <% if (article.category_option?(:address) or not article.agenda.blank?) and not article.address.blank? %>
-          <strong><%= article.address %></strong>
+      <% if @article.category_option?(:start_end_dates) or not @article.agenda.blank? %>
+        <div class="date"><%= @article.start_end_datetime_display(true) %></div>
+        <% if (@article.category_option?(:address) or not @article.agenda.blank?) and not @article.address.blank? %>
+          <strong><%= @article.address %></strong>
           <div id="carte" style="width:612px;height:260px;"></div>
           <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyARG0BrRKKXVO06jeS5NamKyW5SX8sVBbw&sensor=false" type="text/javascript"></script>
           <script type="text/javascript">
@@ -53,7 +61,7 @@
               }
               map = new google.maps.Map(document.getElementById('carte'), mapOptions);
               geocoder.geocode(
-                  { address: "<%= article.address %>", region: "FR" },
+                  { address: "<%= @article.address %>", region: "FR" },
                   function(results, status) {
                 if (status == google.maps.GeocoderStatus.OK) {
                   map.setCenter(results[0].geometry.location);
@@ -70,19 +78,19 @@
         <% end %>
       <% else %>
         <div class="signature">
-          <div class="date"><%= l article.published_at, :format => :long_ordinal %></div>&nbsp;
-          <%= article.signature if article.category_option?(:signature) %>
+          <div class="date"><%= l @article.published_at, :format => :long_ordinal %></div>&nbsp;
+          <%= @article.signature if @article.category_option?(:signature) %>
         </div>
       <% end %>
     </header>
-    <%= article.content_only_with_inline.html_safe unless article.content.blank? %>
+    <%= @article.content_only_with_inline.html_safe unless @article.content.blank? %>
     <footer>
       <hr/>
       <%= render :partial => 'layouts/share_article' %>
-      <hr/>
-      <% if not article.category_option?(:hide_category_name) %>
+      <% unless @last_published.nil? or @last_published.empty? %>
+        <hr/>
         <h3 class="category"><%=t 'titre.autres' %>&nbsp;&bull;</h3><br/>
-        <% for previous_article in article.find_last_published %>
+        <% for previous_article in @last_published %>
           <% if previous_article.category_option?(:start_end_dates) or not previous_article.agenda.blank? %>
             <div class="date"><%= previous_article.start_end_datetime_display(true) %></div>
           <% else %>
@@ -90,6 +98,25 @@
           <% end %>
           <% unless previous_article.heading.blank? %>
             <h4><%= previous_article.heading_display.html_safe %></h4>&nbsp;-
+          <% end %>
+          <h1><%= link_to previous_article.title_display.html_safe, 
+                :controller => previous_article.category_option(:controller),
+                :action => previous_article.category_option(:action),
+                :uri => previous_article.uri %></h1>
+          <br/>
+        <% end %>
+      <% end %>
+      <% unless @same_heading.nil? or @same_heading.empty? %>
+        <hr/>
+        <h3 class="category"><%=t 'titre.same_heading' %>&nbsp;&bull;</h3><br/>
+        <% for previous_article in @same_heading %>
+          <% if previous_article.category_option?(:start_end_dates) or not previous_article.agenda.blank? %>
+            <div class="date"><%= previous_article.start_end_datetime_display(true) %></div>
+          <% else %>
+            <div class="date"><%= l previous_article.published_at, :format => :long_ordinal %></div>&nbsp;
+          <% end %>
+          <% if not previous_article.category_option?(:hide_category_name) %>
+            <h3 class="category"><%= previous_article.category_display %>&nbsp;&bull;</h3>
           <% end %>
           <h1><%= link_to previous_article.title_display.html_safe, 
                 :controller => previous_article.category_option(:controller),

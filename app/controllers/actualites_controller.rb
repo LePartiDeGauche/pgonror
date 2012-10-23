@@ -21,12 +21,12 @@ class ActualitesController < ApplicationController
                                                :international, :tout_international,
                                                :dossier, :dossiers]
 
-  caches_action :index, :layout => false
-  caches_action :editos, :layout => false, :if => Proc.new { @page == 1 } 
-  caches_action :actualites, :layout => false, :if => Proc.new { @page == 1 }
-  caches_action :communiques, :layout => false, :if => Proc.new { @page == 1 }
-  caches_action :tout_international, :layout => false, :if => Proc.new { @page == 1 }
-  caches_action :dossiers, :layout => false, :if => Proc.new { @page == 1 }
+  caches_action :index, :layout => false, :if => Proc.new { not user_signed_in? }
+  caches_action :editos, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? } 
+  caches_action :actualites, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
+  caches_action :communiques, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
+  caches_action :tout_international, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
+  caches_action :dossiers, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
 
   def index
     @editos = Article.find_published 'edito', 1, 15

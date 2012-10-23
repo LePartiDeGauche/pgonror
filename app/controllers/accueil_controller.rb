@@ -16,7 +16,7 @@
 
 # Controller for the web site home page.
 class AccueilController < ApplicationController
-  caches_action :index, :layout => false
+  caches_action :index, :layout => false, :if => Proc.new { not user_signed_in? }
   caches_action :rss
   caches_action :sitemap
   caches_action :channel
@@ -65,6 +65,10 @@ class AccueilController < ApplicationController
   # Young network.
   def gavroche
     @presentation = Article.find_published('presentation_gavroche', 1, 1)[0]
+  end
+
+  # Home page for RSS flows.
+  def accueil_rss
   end
 
   # RSS output based on recent articles.

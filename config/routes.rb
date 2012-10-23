@@ -60,7 +60,7 @@ PartiDeGauche::Application.routes.draw do
   match '/editos' => 'actualites#editos'
   match '/article/*uri' => 'actualites#actualite'
   match '/international/' => 'actualites#tout_international'
-  match '/adherent' => 'adherent#index'
+  match '/adherent' => 'adherent#index', :as => 'adherents'
   match '/adherent/article/*uri(.format)' => 'adherent#article'
   match '/adherent/search' => 'adherent#search', :as => 'adherent_search'
   match '/arguments' => 'arguments#index'
@@ -105,7 +105,7 @@ PartiDeGauche::Application.routes.draw do
   match '/militer-eduquer/tracts' => 'militer#tracts'
   match '/militer-eduquer/affiches/*uri(.format)' => 'militer#affiche'
   match '/militer-eduquer/affiches' => 'militer#affiches'
-  match '/militer/rss' => 'militer#rss', :as => 'militer_rss_feed'
+  match '/militer/rss' => 'militer#rss', :format => :xml, :as => 'militer_rss_feed'
   match '/agenda/details/*uri(.format)' => 'militer#evenement'
   match '/agenda' => 'militer#agenda'
   match '/quisommesnous' => 'quisommesnous#index'
@@ -142,7 +142,8 @@ PartiDeGauche::Application.routes.draw do
   match '/index.php' => "accueil#rss", :format => :xml
   match '/index' => 'accueil#index'
   match '/administration' => 'administration#index'
-  match '/rss' => 'accueil#rss', :as => 'rss_feed'
+  match '/rss' => 'accueil#rss', :format => :xml, :as => 'rss_feed'
+  match '/accueil_rss' => 'accueil#accueil_rss', :as => 'accueil_rss'
   match '/export_txt' => 'accueil#export_txt'
   match '/sitemap' => 'accueil#sitemap', :format => :xml
   match '/channel' => 'accueil#channel'
@@ -158,9 +159,7 @@ PartiDeGauche::Application.routes.draw do
   resources :users do
     get 'search', :on => :collection
     resources :permissions
-  end  
-  
-  match '/javascripts/tinymce_hammer.js' => 'tinymce/hammer#combine', :as => 'tinymce_hammer_js'
+  end
 
   # Insures backward comptability with legacy system
   match "/images/stories/:filename.:format", :to => redirect("/system/images/inline/stories-%{filename}.%{format}")
@@ -173,6 +172,6 @@ PartiDeGauche::Application.routes.draw do
   match '/editos/actualites/695', :to => redirect("/don")
   match '/editos/1735', :to => redirect("/accueil")
   match '/component/content/frontpage', :to => redirect("/accueil")
-  
+
   match '*id', :to => 'accueil#default', :as => 'default'
 end

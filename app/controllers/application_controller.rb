@@ -127,6 +127,7 @@ protected
       uri = request.fullpath.downcase.gsub(URL_HTTP, "http\\2://\\3")
       redirect_to(URI.encode(uri.to_s))
     else
+      @source = @last_published = @same_heading = @tags = nil
       @article = Article.find_published_by_uri params[:uri]
       if @article.nil?
         log_warning "find_article: not found"
@@ -145,7 +146,10 @@ protected
           @page_keywords = ""
           @article.tags.each { |tag| @page_keywords << "," + tag.tag }
           @page_description = @article.description
-          @source = (@article.present? and not @article.source_id.nil?) ? @article.source : nil
+          @source = @article.source if @article.present? and not @article.source_id.nil?
+          @last_published = @article.find_last_published if not @article.category_option?(:hide_category_name)
+          @same_heading = @article.find_published_by_heading if not @article.heading.blank?
+          @tags = @article.tags
         end
       end
     end

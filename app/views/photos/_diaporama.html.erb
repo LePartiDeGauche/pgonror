@@ -26,51 +26,48 @@
     <%= article.content_with_large.html_safe %>
     <section id="photos" class="photos">
       <% if article.category_option?(:parent) %>
-        <ol>
-          <% first = true %>
-          <% for photo in article.find_published_by_folder(1,999) %>
-            <% unless photo.image.nil? %>
-              <li style="<%= first ? "" : "display: none" %>">
-                <a class="previous" style="display: none"><%= icon_large 'previous.png' %></a>
-                <% unless photo.image.nil? %>
-                  <%= image_tag(photo.image.url(:inline)) %>
-                <% end %>
-                <a class="next" style="display: none"><%= icon_large 'next.png' %></a>
-                <br/>
-                <% if photo.category_option?(:signature) and not photo.signature.blank? %>
-                  <center>
-                    <div class="signature">
-                      <%= t('activerecord.attributes.article.credit') %>
-                      <%= photo.signature %>
-                    </div>
-                  </center>
-                <% end %>
-              </li>
-              <% first = false %>
-            <% end %>
+        <% first = true %>
+        <% for photo in article.find_published_by_folder(1,999) %>
+          <% unless photo.image.nil? %>
+            <div style="<%= first ? "" : "display: none" %>">
+              <a class="previous" style="display: none"><%= icon_large 'previous.png' %></a>
+              <% unless photo.image.nil? %>
+                <%= link_to image_tag(photo.image.url(:inline)), photo.image.url(:original), :target => "_blank" %>
+              <% end %>
+              <a class="next" style="display: none"><%= icon_large 'next.png' %></a>
+              <br/>
+              <% if photo.category_option?(:signature) and not photo.signature.blank? %>
+                <center>
+                  <div class="signature">
+                    <%= t('activerecord.attributes.article.credit') %>
+                    <%= photo.signature %>
+                  </div>
+                </center>
+              <% end %>
+            </div>
+            <% first = false %>
           <% end %>
-        </ol>
+        <% end %>
       <% end %>
     </section>
     <%= render :partial => 'layouts/share_article' %>
   </article>
 <% end %>
-
 <script>
   function hideButtons() { $('.previous').hide(); $('.next').hide(); };
   function showButtons() { $('.previous').fadeIn(300); $('.next').fadeIn(300); };
   function previous() {
-    $('#photos li:first').before($('#photos li:last'));
-    showOnlyFirst();                  
+    $('#photos div:first').before($('#photos div:last'));
+    showOnlyFirst();
   };
   function next() {
-    $('#photos li:last').after($('#photos li:first'));
-    showOnlyFirst();                  
-  };        
+    $('#photos div:last').after($('#photos div:first'));
+    showOnlyFirst();
+  };
   function showOnlyFirst() {
-    $('#photos li').hide();
-    $('#photos li:first').fadeIn(1000);
-    hideButtons();           
+    $('#photos div').hide();
+    $('#photos div:first').fadeIn(1000);
+    hideButtons();
   };  
   $(document).ready(function() {
     var speed = 3000;
@@ -84,7 +81,7 @@
       next();
       showButtons();
       return false;
-    });        
+    });
     $('#photos').hover(
       function() {  showButtons(); clearInterval(run); }, 
       function() {  hideButtons(); run = setInterval('next()', speed); }

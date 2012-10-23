@@ -1,8 +1,9 @@
+<%= render :partial => 'tinymce' %>
 <section id="editor-toolbox">
   <section class="content-bloc">
     <%= render :partial => 'show_status' %>
   </section>
-  <section class="content-bloc">
+  <section id="article-panel-search" class="content-bloc">
     <%= render :partial => 'panel_search' %>
   </section>
 </section>
@@ -21,10 +22,9 @@
           <%= render :partial => 'layouts/error_messages', :locals => { :item => @article } %>
           <table class="edit">
             <tr>
-              <td></td>
-              <td>
+              <td colspan="2">
                 <div class="information"><%= t 'activerecord.attributes.audits.comments_explain' %></div>
-                <%= text_area_tag 'comments', '', :size => "80x3" %>
+                <%= text_field_tag 'comments', '', :size => "90x3" %>
               </td>
             </tr>
           </table>

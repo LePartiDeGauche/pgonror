@@ -6,18 +6,3 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require_tree .
-
-$(document).ready(function() {
-	// Open external links in new tab
-	openExternalLink('a[class~=popup]');
-});
-
-function openExternalLink (selector) {
-	$(selector).click(function(e){
-			if(this.href){
-					window.open(this.href);
-					e.preventDefault();
-			}
-	});
-}

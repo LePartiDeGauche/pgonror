@@ -1,4 +1,7 @@
 <section id="editor-toolbox">
+  <section class="content-bloc">
+    <%= render :partial => 'layouts/logged_user_menu' %>
+  </section>
   <section id="new-content" class="content-bloc">
     <%= form_tag new_article_path, :method => :get do %>
       <%= icon('plus.gif') %>

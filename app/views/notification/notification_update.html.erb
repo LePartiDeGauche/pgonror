@@ -5,8 +5,12 @@
     <title><%= @title %></title>
   </head>
   <p>
-    <% unless @comments.nil? %>
+    <% unless @comments.nil? or @comments.blank? %>
+      <br/>
+      <br/>
       <strong><%= t('activerecord.attributes.audits.comments') %></strong> : <%= @comments %><br/>
+      <br/>
+      <br/>
     <% end %>
     <% unless @url.nil? %>
       <strong><%= t('activerecord.attributes.article.link_to') %></strong> : <%= @url %><br/>

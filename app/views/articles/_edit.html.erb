@@ -1,7 +1,49 @@
 <div class="edit">
   <%= f.hidden_field :category %>
   <table>
-    <% if not @article.category_option?(:image) and not @article.category_option?(:document) %>
+    <% if @article.category_option?(:image) %>
+      <tr>
+        <td colspan="2">
+          <div class="information"><%= t('action.image.create') %></div>
+          <%= f.file_field :image, :accept => 'image/jpeg, image/png, image/gif' %><br/>
+          <span class="information"><%= t('action.image.external') %></span>
+          <%= f.text_field :image_remote_url_input, :size => "60" %>
+          <br/>
+          <br/>
+          <% if @article.image_file_name.present? %>
+            <%= image_tag @article.image.url(:medium) if @article.image_file_name.present? %>
+          <% end %>
+        </td>
+      </tr>
+    <% elsif @article.category_option?(:audio) %>
+      <tr>
+        <td colspan="2">
+          <div class="information"><%= t('action.document.create') %></div>
+          <%= f.file_field :document, :accept => 'audio/mpeg' %>
+          <br/>
+          <% if @article.document_file_name.present? %>
+            <%= @article.title_display %> 
+            (<%= @article.document_content_type %>) |
+            <%= t("activerecord.attributes.article.file_size") %>&nbsp;:
+            <%= number_to_human_size @article.document_file_size %><br/>
+          <% end %>
+        </td>
+      </tr>
+    <% elsif @article.category_option?(:document) %>
+      <tr>
+        <td colspan="2">
+          <div class="information"><%= t('action.document.create') %></div>
+          <%= f.file_field :document, :accept => 'application/pdf' %>
+          <br/>
+          <% if @article.document_file_name.present? %>
+            <%= @article.title_display %> 
+            (<%= @article.document_content_type %>) |
+            <%= t("activerecord.attributes.article.file_size") %>&nbsp;:
+            <%= number_to_human_size @article.document_file_size %><br/>
+          <% end %>
+        </td>
+      </tr>
+    <% else %>
       <tr>
         <td><%= f.label :heading %></td>
         <td><%= f.text_field :heading, :size => "80x1" %></td>
@@ -10,26 +52,6 @@
         <td><div class="mandatory">*</div><%= f.label :title %></td>
         <td><%= f.text_field :title, :size => "80x1", :required => true %></td>
       </tr>
-    <% else %>
-      <% if @article.category_option?(:image) %>
-        <tr>
-          <td><%= icon 'image.gif' %></td>
-          <td><div class="information"><%= t('action.image.create') %></div>
-          <%= f.file_field :image, :accept => 'image/jpeg, image/png, image/gif' %><br/>
-          <span class="information"><%= t('action.image.external') %></span>
-          <%= f.text_field :image_remote_url, :size => "45" %>
-          <% if @article.image_file_name.present? %>
-            <%= image_tag @article.image.url(:medium) if @article.image_file_name.present? %>
-          <% end %></td>
-        </tr>
-      <% end %>
-      <% if @article.category_option?(:document) %>
-        <tr>
-          <td><%= icon 'document.gif' %></td>
-          <td><div class="information"><%= t('action.document.create') %></div>
-          <%= f.file_field :document, :accept => 'application/pdf' %></td>
-        </tr>
-      <% end %>
     <% end %>
     <% if @article.category_option?(:start_end_dates) %>
       <tr>
@@ -92,6 +114,5 @@
       </td>
     </tr>
   </table>
-  <strong><%= t('activerecord.attributes.article.content') %></strong>
-  <%= f.tinymce :content, :size => "80x40" %>
+  <%= f.text_area :content, :size => "80x40" %>
 </div>

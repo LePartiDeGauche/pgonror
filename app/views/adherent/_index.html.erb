@@ -37,9 +37,6 @@
       <% if article.category_option?(:image) and article.image_file_name.present? %>
         <%= image_tag article.image.url(:large) %>
       <% end %>
-      <% if article.category_option?(:document) and article.document_file_name.present? %>
-        <%= link_to icon_large('pdficon_large.gif', article.title_display), article.document.url %>
-      <% end %>
     </article>
   </li>
   <% first_row = false %>

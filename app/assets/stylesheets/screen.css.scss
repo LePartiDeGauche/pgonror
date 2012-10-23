@@ -11,7 +11,6 @@
 @import "compass/typography/lists/horizontal-list";
 @import "compass/typography/lists/inline-list";
 @import "compass/typography/links/link-colors";
-@import "compass/typography/lists/bullets";
 @import "compass/typography/links/hover-link";
 
 // To configure blueprint, edit the partials/base.sass file.
@@ -66,7 +65,7 @@ body {
   padding-bottom:2px;
   padding-left:$pg-padding;
   padding-right:$pg-padding;
-  margin-top:8px;
+  margin-top:$pg-padding;
   margin-right:2px;
   margin-bottom:2px;
   @include pg-shadow;
@@ -144,6 +143,12 @@ body {
       color:white;
     }
   }
+   .add-link {
+    font-weight:bolder;
+    cursor:pointer;
+    background-color:$pg-green; 
+    color:white;
+   }
   .actions {
     display:inline;
     input {
@@ -167,6 +172,16 @@ body {
       border-spacing:0px;
       @include pg-transition;
     }
+    input[type=search] {
+      height:20px;
+      background-color:white;
+      color:black;
+      margin:0;
+      padding:0;
+      border:0;
+    }
+    input[type=search]:hover {
+    }
     select {
       margin:0;
       vertical-align:middle;
@@ -185,6 +200,16 @@ body {
     .date-title {
       display:inline;
       font-size:85%;
+    }
+    ul {
+      list-style:disc;
+      margin-bottom:$pg-padding;
+      padding-left:$pg-padding*4;
+    }
+    ol {
+      list-style:decimal;
+      margin-bottom:$pg-padding;
+      padding-left:$pg-padding*4;
     }
     .edit {
       line-height:24px;
@@ -210,7 +235,7 @@ body {
       textarea {
         width:98%; 
         padding:0;
-        height:auto;       
+        height:auto;
       }
     }
     .photos {
@@ -286,7 +311,7 @@ body {
       margin:0;
       padding:0;
       vertical-align:middle;
-      width:150px;        
+      width:150px;
       border-spacing:0px;
       @include pg-transition;
     }
@@ -295,8 +320,8 @@ body {
       vertical-align:middle;
       margin:0;
       padding:0;
-      width:150px;        
-      height:100px;       
+      width:150px;
+      height:100px;
     }
   }
   .form-medium {
@@ -371,23 +396,28 @@ body {
       } 
     }
   }
-  ol {
-    @include no-bullets;
-    padding:0;
-    margin:0;
-  }
   p {
     margin-left:0;
     margin-right:0;
     margin-top:0;
-    margin-bottom:8px;
+    margin-bottom:$pg-padding;
     text-align:justify;
     font-size:90%;
     line-height:140%;
   }
+  ul, ol {
+    list-style:none;
+    margin:0;
+    padding-left:0;
+  }
   a {
     @include link-colors($pg-red);
     @include hover-link;
+    img {
+      &:hover {
+        @include pg-shadow;
+      } 
+    }
   }
   img {
     @include border-radius;
@@ -415,6 +445,9 @@ body {
   }
   .panel-search-item {
     text-align:center;
+    &:hover { 
+      background-color:$pg-green;
+    }
   }
   .zoom-article-panel-search {
     position:absolute;
@@ -456,7 +489,7 @@ body {
   @include column($blueprint-grid-columns);
   @include pg-shadow;
   @include border-radius;
-  margin-top:8px;
+  margin-top:$pg-padding;
   background-color:black;
   text-align:center;
   color:$pg-green;
@@ -475,7 +508,7 @@ body {
     color:black;
   }
   ul {
-    margin-bottom:8px;
+    margin-bottom:$pg-padding;
   }
 }
 
@@ -502,7 +535,7 @@ body {
   background-color:$pg-lightgreen;
   font-weight:bold;
   text-align:right;
-  margin-bottom:8px;
+  margin-bottom:$pg-padding;
 }
 
 .online {
@@ -510,7 +543,7 @@ body {
   background-color:$pg-red;
   font-weight:bold;
   text-align:right;
-  margin-bottom:8px;
+  margin-bottom:$pg-padding;
 }
 
 .sharing {
@@ -723,6 +756,10 @@ $zoom-height:225px;
 
 #editos-content, #actualites-content {
   height:$top-height;
+  .inner-list {
+    height:$top-height - 10;
+    overflow:hidden;
+  }
 }
 
 #zoom {
@@ -831,10 +868,18 @@ $zoom-height:225px;
 
 #actualites-editos-content, #actualites-dossiers-content {
   height:576px;
+  .inner-list {
+    height:566px;
+    overflow:hidden;
+  }
 }
 
 #actualites-actus-content, #actualites-communiques-content, #actualites-international-content {
   height:380px;
+  .inner-list {
+    height:370px;
+    overflow:hidden;
+  }
 }
 
 @include two-columns-2third-1third("#actualites-liste", "#actualites-vignettes");
@@ -903,6 +948,10 @@ $zoom-height:225px;
 
 #vudailleurs-web-content, #vudailleurs-directblog-content {
   height:500px;
+  .inner-list {
+    height:490px;
+    overflow:hidden;
+  }
 }
 
 @include two-columns-half("#educpop-dates", "#educpop-revues");

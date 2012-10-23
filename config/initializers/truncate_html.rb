@@ -14,7 +14,7 @@
 # 
 # See doc/COPYRIGHT.rdoc for more details.
 TruncateHtml.configure do |config|
-  config.length        = 560
+  config.length        = 600
   config.omission      = '&hellip;'
   config.word_boundary = true
 end

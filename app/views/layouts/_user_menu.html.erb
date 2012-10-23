@@ -1,15 +1,18 @@
 <section id="usermenubar" class="inline-menu">
   <% if user_signed_in? %>
     <% if current_user.access_level == 'reserved' %>
-      <%= link_to_unless_current t('identity.reserved'), :controller => '/adherent' %> |
+      <%= link_to_unless_current t('identity.reserved'), adherents_path %> |
     <% end %>
     <% if current_user.publisher %>
-      <%= link_to_unless_current t('general.content'), :controller => '/articles', :action => :index, :status => :new %> |
+      <%= link_to_unless_current t('general.content'), articles_path(:status => :new) %>
+      <%= link_to icon('external.png'), articles_path(:status => :new) %> |
     <% end %>
     <% if current_user.administrator %>
-      <%= link_to_unless_current t('general.administration'), :controller => '/users', :action => :index %> |
+      <%= link_to_unless_current t('general.administration'), users_path %>
+      <%= link_to icon('external.png'), users_path, :target => "_blank" %> |
     <% end %>
   <% end %>
   <span title="<%= t('identity.txt_explain') %>"><%= link_to '.txt', :controller => :accueil, :action => :export_txt %></span> |
-	<span title="<%= t('identity.rss_explain') %>"><%= link_to 'RSS', rss_feed_path(:format => :xml), :class => :popup %> <%= icon_medium('rss.png') %></span>
+	<span title="<%= t('identity.rss_explain') %>"><%= link_to 'RSS', accueil_rss_path %></span>
+  <span title="<%= t('identity.rss_explain') %>"><%= link_to icon_medium('rss.png'), rss_feed_path, :target => "_blank" %></span>
 </section>

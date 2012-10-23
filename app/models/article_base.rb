@@ -67,7 +67,8 @@ class ArticleBase < ActiveRecord::Base
            :order => 'updated_at desc'
 
   # Setup accessible (or protected) attributes for the model.
-  attr_accessible :category, 
+  attr_accessible :category,
+                  :uri,
                   :published_at,
                   :expired_at,
                   :status, 
@@ -75,7 +76,7 @@ class ArticleBase < ActiveRecord::Base
                   :parent_id,
                   :source_id,
                   :heading,
-                  :title, 
+                  :title,
                   :signature, 
                   :content,
                   :start_datetime,
@@ -88,7 +89,7 @@ class ArticleBase < ActiveRecord::Base
                   :zoom,
                   :agenda,
                   :legacy,
-                  :image_remote_url, 
+                  :image_remote_url_input,
                   :image,
                   :document,
                   :created_by,
@@ -98,7 +99,7 @@ class ArticleBase < ActiveRecord::Base
   Paperclip.interpolates :uri do |attachment, style|
     attachment.instance.uri
   end
-  
+
   # Thumbnail dimensions.
   INLINE_WIDTH = 612 ; INLINE_HEIGHT = 345
   LARGE_WIDTH = 612 ; LARGE_HEIGHT = 153
@@ -148,7 +149,7 @@ class ArticleBase < ActiveRecord::Base
   
   # Defines the watermark to be applied on thumbnails using PaperClip.
   def watermark()
-    self.signature.present? and self.signature.match(/photosdegauche.fr/) ? 
+    not(self.signature.blank?) and self.signature.match(/photosdegauche.fr/) ? 
       "#{Rails.root}/public/phototheque.png" : ""
   end
   
@@ -202,7 +203,9 @@ class ArticleBase < ActiveRecord::Base
 
   # List of articles (array) defined as folders used in lists of values.
   def self.folders
-    array_of_articles_by_categories_by_parent
+    array_of_articles_by_categories_by_parent self.
+                                              where("category in #{where_clause_by_categories(:parent)}").
+                                              order('category, title')
   end
   
   # List of articles (array) defined as sources of information used in lists of values.
@@ -432,9 +435,29 @@ class ArticleBase < ActiveRecord::Base
   def content_to_txt
     convert_to_txt self.content
   end
-  
+
+  # Returns the attribute used in the form in order to copy an image from an external URL.
+  def image_remote_url_input
+    self.image_remote_url
+  end
+
+  # Sets the attribute used from the form in order to copy an image from an external URL.
+  require 'open-uri'
+  def image_remote_url_input=(url)
+    if url != self.image_remote_url
+      self.image_remote_url = url
+      if not url.blank?
+        begin
+          self.image = open(URI.parse(url))
+        rescue => invalid
+          errors[:base] << I18n.t('activerecord.errors.messages.bad_image')
+        end
+      end
+    end
+  end
+
 protected
-  
+
   # Returns a clean URI given as parameter.
   def self.clean_uri(uri)
     uri.downcase.
@@ -470,23 +493,13 @@ private
 
   # Sets the article title as file name if the article is an image or a document.
   def update_title
-    if self.image_file_name.present?
-      self.title = self.image_file_name
-    elsif self.image_remote_url.present?
+    if self.image_remote_url.present? and not self.image_remote_url.blank?
       self.title = self.image_remote_url.split('/').last
-      self.image = do_download_remote_image
+    elsif self.image_file_name.present?
+      self.title = self.image_file_name
     elsif self.document_file_name.present?
       self.title = self.document_file_name
     end
-  end
-
-  require 'open-uri'
-  # Uploads an image based on a URL.
-  def do_download_remote_image
-    io = open(URI.parse(image_remote_url))
-    def io.original_filename; base_uri.path.split('/').last; end
-    io.original_filename.blank? ? nil : io
-  rescue # catch url errors with validations instead of exceptions (Errno::ENOENT, OpenURI::HTTPError, etc...)
   end
 
   # Updates article URI: makes the concatenation of parent or source title, if any, and the article title.
@@ -586,31 +599,34 @@ private
   end
 
   # Builds an array with articles for a given set of categories for a give parent.
-  def self.array_of_articles_by_categories_by_parent(parent_id = nil, level=0)
+  def self.array_of_articles_by_categories_by_parent(all_folders, parent_id = nil, level=0)
     articles = []
-    self.where("category in #{where_clause_by_categories(:parent)} and (parent_id = ? or (parent_id is null and ? is null))", 
-          parent_id, parent_id).
-    order('category, title').
-    each { |item|
+    sub_folfers = []
+    all_folders.each do |item|
+      sub_folfers << item if ((parent_id.nil? and item.parent_id.nil?) or (item.parent_id == parent_id))
+    end
+    sub_folfers.each do |item|
       articles << [ (("&nbsp;&nbsp;" * level) + "[" + item.category_display + "] " + item.title_display).html_safe, item.id ] 
-      sub_articles = array_of_articles_by_categories_by_parent(item.id, level+1)
+      sub_articles = array_of_articles_by_categories_by_parent(all_folders, item.id, level+1)
       if not sub_articles.empty?
         for sub_item in sub_articles
           articles << sub_item 
         end
-      end 
-    }
+      end
+    end
     articles
   end
 
   # Regular expressions used to transform references to images and videos.
-  INTERNAL_IMAGE_EL = /<img(.*)src="(\S+)\/images\/(large|medium|small|mini|inline|alternate|zoom|)\/(\S+)(.jpg|.jpeg|.png|.gif|.JPG|.JPEG|.PNG|.GIF)(\S*)"([^>]*)>/
-  INTERNAL_DOCUMENT_EL = /<a(.*)href="(\S+)\/documents\/(\S+)(.pdf|.PDF|.doc|.DOC|.odt|.ODT|.zip|.ZIP|.txt|.TXT)(\S*)"([^>]*)>/
-  ANY_IMAGE_EL = /<img(.*)src="(\S+)"([^>]*)>/
-  DMOTION_TAG = /\{dmotion\}(\S+)\{\/dmotion\}/
-  DAILYMOTION_OLD = /<object(.*)>(.*)<embed(.*)src="(\S+)"([^>]*)>(.*)<\/object>/
-  DAILYMOTION_NEW = /<iframe(.*)src="(\S+)"([^>]*)><\/iframe>/
-  INLINE_REFERENCE_EL = /src=\"\/system\/([^\"]*)\"/
+  INTERNAL_IMAGE_EL = /<img(.*)src="(\S*)\/system\/images\/(large|medium|small|mini|inline|alternate|zoom)\/(\S+)(.jpg|.jpeg|.png|.gif)(\S*)"([^>]*)>/i
+  INTERNAL_IMAGE_LINK_EL = /<a(.*)href="(\S*)\/system\/images\/(original|large|medium|small|mini|inline|alternate|zoom)\/(\S+)(.jpg|.jpeg|.png|.gif)(\S*)"([^>]*)>/i
+  INTERNAL_DOCUMENT_LINK_EL = /<a(.*)href="(\S*)\/system\/documents\/(\S+)(.pdf|.doc|.docx|.odt|.zip|.txt|.mp3)(\S*)"([^>]*)>/i
+  INTERNAL_AUDIO_LINK_EL = /<a(.*)href="(\S*)\/system\/documents\/(\S+)(.mp3)(\S*)"([^>]*)>/i
+  ANY_IMAGE_EL = /<img(.*)src="(\S+)"([^>]*)>/i
+  DMOTION_TAG = /\{dmotion\}(\S+)\{\/dmotion\}/i
+  DAILYMOTION_OLD = /<object(.*)>(.*)<embed(.*)src="(\S+)"([^>]*)>(.*)<\/object>/i
+  DAILYMOTION_NEW = /<iframe(.*)src="(\S+)"([^>]*)><\/iframe>/i
+  INLINE_REFERENCE_EL = /src=\"\/system\/([^\"]*)\"/i
 
   # Returns the content of the article with the reference of images or videos transformed with appropriate format.
   def content_with(target, width, height)
@@ -642,8 +658,9 @@ private
   # Returns the content of the given source of text with the reference of images and documents transformed for storage.
   def normalize_links(source)
     source.present? ? 
-      source.gsub(INTERNAL_IMAGE_EL, "<img\\1src=\"/system/images/inline/\\4\\5\\6\"\\7>").
-             gsub(INTERNAL_DOCUMENT_EL, "<a\\1href=\"/system/documents/\\3\\4\"\\5>") : 
+      source.gsub(INTERNAL_IMAGE_EL, "<img\\1 src=\"/system/images/inline/\\4\\5\\6\"\\7>").
+             gsub(INTERNAL_IMAGE_LINK_EL, "<a\\1 href=\"/system/images/\\3\/\\4\\5\\6\"\\7>").
+             gsub(INTERNAL_DOCUMENT_LINK_EL, "<a\\1 href=\"/system/documents/\\3\\4\\5\"\\6>") :
     ""
   end
 
@@ -656,10 +673,20 @@ private
   # No transformation is made of 'inline' format, which is format used for storage.
   def convert_content_with(source, target, width, height)
     return "" if source.nil?
-    converted = source.gsub(DMOTION_TAG, "<iframe src=\"http://www.dailymotion.com/embed/video/\\1?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>"). 
-                       gsub(DAILYMOTION_OLD, "<iframe src=\"\\4?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>"). 
-                       gsub(DAILYMOTION_NEW, "<iframe src=\"\\2?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>") 
-    converted = converted.gsub(INTERNAL_IMAGE_EL, "<img src=\"\\2/images/#{target}/\\4\\5\">") if target != "inline"
+    converted = source.gsub(DMOTION_TAG, "<iframe src=\"http://www.dailymotion.com/embed/video/\\1?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>").
+                       gsub(DAILYMOTION_OLD, "<iframe src=\"\\4?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>").
+                       gsub(DAILYMOTION_NEW, "<iframe src=\"\\2?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>")
+    converted = converted.gsub(INTERNAL_IMAGE_EL, "<img src=\"\\2/system/images/#{target}/\\4\\5\">") if target != "inline"
+    converted = converted.gsub(INTERNAL_AUDIO_LINK_EL,
+          "<object type=\"application/x-shockwave-flash\" data=\"/swf/dewplayer.swf\" width=\"300\" height=\"20\" class=\"player-fallback\">" +
+          "<param name=\"movie\" value=\"/swf/dewplayer.swf\" />" +
+          "<param name=\"flashvars\" value=\"mp3=\\2/system/documents/\\3\\4\" />" +
+          "<param name=\"wmode\" value=\"transparent\" />" +
+          "</object>" +
+          "<audio controls=\"controls\" src=\"\\2/system/documents/\\3\\4\" type=\"audio/mp3\">" +
+          "</audio>" +
+          "<br/>" +
+          "<a\\1href=\"\\2/system/documents/\\3\\4\\5\"\\6>") if target == "inline"
     converted
   end
   

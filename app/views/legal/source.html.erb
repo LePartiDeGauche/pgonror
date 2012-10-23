@@ -22,9 +22,12 @@
           <div class="date"><%= l @article.published_at, :format => :long_ordinal %></div>&nbsp;
           <%= @article.signature if @article.category_option?(:signature) %>
         </div>
-        <%= render :partial => 'layouts/share_article' %>
       </header>
       <%= coderay(@article.content).html_safe unless @article.content.blank? %>
+      <footer>
+        <hr/>
+        <%= render :partial => 'layouts/share_article' %>
+      </footer>
     </article>
   <% end %>
 </section>
