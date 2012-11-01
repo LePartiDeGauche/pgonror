@@ -19,34 +19,21 @@
 <% end %>
 <br/>
 <% if @article.category_option?(:audio) and @article.document_file_name.present? %>
-  <object type="application/x-shockwave-flash" data="/swf/dewplayer.swf" width="300" height="20" class="player-fallback">
-    <param name="movie" value="/swf/dewplayer.swf" />
-    <param name="flashvars" value="mp3=<%= @article.document.url %>" />
-    <param name="wmode" value="transparent" />
-  </object>
-  <audio controls="controls" src="<%= @article.document.url %>" type="<%= @article.document_content_type %>"></audio>
-  <br/>
-  <%= link_to @article.document.url do %>
-    <%= @article.title_display %> 
-    (<%= @article.document_content_type %>) |
-    <%= t("activerecord.attributes.article.file_size") %>&nbsp;:
-    <%= number_to_human_size @article.document_file_size %><br/>
-  <% end %>
-  <br/>
+  <%= render :partial => 'layouts/audio', :locals => {:article => @article} %>
 <% elsif @article.category_option?(:document) and @article.document_file_name.present? %>
   <%= link_to @article.document.url do %>
     <%= @article.title_display %> 
-    (<%= @article.document_content_type %>) |
+    (<%= @article.document_content_type %>)&nbsp;&bull;
     <%= t("activerecord.attributes.article.file_size") %>&nbsp;:
     <%= number_to_human_size @article.document_file_size %><br/>
   <% end %>
   <br/>
 <% elsif @article.category_option?(:image) and @article.image_file_name.present? %>
   <% if @article.image_remote_url.present? %>
-    <%= @article.image_remote_url %> |
+    <%= @article.image_remote_url %>&nbsp;&bull;
   <% end %>
   <%= t("activerecord.attributes.article.content_type") %>&nbsp;:
-  <%= @article.image_content_type %> |
+  <%= @article.image_content_type %>&nbsp;&bull;
   <%= t("activerecord.attributes.article.file_size") %>&nbsp;:
   <%= number_to_human_size @article.image_file_size %><br/>
   <br/>

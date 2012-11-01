@@ -15,8 +15,8 @@
             <% end %>
             <h1>
               <%= link_to article.title_display.html_safe,
-                    :controller => Article::category_option(category, :controller),
-                    :action => Article::category_option(category, :action),
+                    :controller => article.category_option(:controller),
+                    :action => article.category_option(:action),
                     :uri => article.uri %>
             </h1>
             <% unless article.source_id.nil? %>
@@ -34,13 +34,16 @@
             </div>
           </header>
           <br/>
+          <% if article.category_option?(:audio) %>
+            <%= render :partial => 'layouts/audio', :locals => {:article => article} %>
+          <% end %>
           <%= truncate_html(article.content_with_large.html_safe) %>
           <footer class="actions">
-            <%= link_to (Article::category_option?(category, :video) ? 
+            <%= link_to (article.category_option?(:video) ? 
                             t('titre.voir_video') :
                             t('titre.lire_suite')),
-                  :controller => Article::category_option(category, :controller),
-                  :action => Article::category_option(category, :action),
+                  :controller => article.category_option(:controller),
+                  :action => article.category_option(:action),
                   :uri => article.uri %>
           </footer>
         </article>

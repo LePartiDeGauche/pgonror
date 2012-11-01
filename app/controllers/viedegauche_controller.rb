@@ -19,11 +19,12 @@ class ViedegaucheController < ApplicationController
                                                :journalvdg, :journauxvdg]
 
   caches_action :index, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
-  caches_action :journauxvdg, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
+  caches_action :journauxvdg, :layout => false, :if => Proc.new { @page == 1 and params[:heading].blank? and not user_signed_in? }
 
   def index
-    @pages = Article.count_pages_published 'articlevdg'
-    @articles = Article.find_published 'articlevdg', @page
+    @pages = Article.count_pages_published_by_heading 'articlevdg', params[:heading]
+    @articles = Article.find_published_by_heading 'articlevdg', params[:heading], @page
+    session[:heading] = params[:heading]
   end
 
   def article
@@ -40,11 +41,8 @@ class ViedegaucheController < ApplicationController
 private
 
   def load_side_articles
+    @headings = Article.find_published_group_by_heading 'articlevdg'
     @journauxvdg = Article.find_published 'vdg', 1, 1
     @articlesvdg = Article.find_published 'articlevdg', 1, 1
-    @editos = Article.find_published 'edito', 1, 1
-    @communiques = Article.find_published 'com', 1, 1
-    @actus = Article.find_published 'actu', 1, 1
-    @tout_international = Article.find_published 'inter', 1, 1
   end
 end

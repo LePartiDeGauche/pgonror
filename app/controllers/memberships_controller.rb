@@ -39,17 +39,15 @@ class MembershipsController < PaymentController
       log_error "valider_adhesion", invalid
       saved = false
     end
-    respond_to do |format|
-      if saved
-        flash.now[:notice] = t('action.membership.payment')
-        @effectue = url_for(:controller => :memberships, :action => :adhesion_enregistree)
-        @refuse = url_for(:controller => :memberships, :action => :adhesion_rejetee)
-        @retour = url_for(:controller => :memberships, :action => :retour_paiement_adhesion)
-        @annule = url_for(:controller => :payment, :action => :paiement_annule)
-        format.html { render :action => :paiement_adhesion }
-      else
-        format.html { render :action => :adhesion }
-      end
+    if saved
+      flash.now[:notice] = t('action.membership.payment')
+      @effectue = url_for(:controller => :memberships, :action => :adhesion_enregistree)
+      @refuse = url_for(:controller => :memberships, :action => :adhesion_rejetee)
+      @retour = url_for(:controller => :memberships, :action => :retour_paiement_adhesion)
+      @annule = url_for(:controller => :payment, :action => :paiement_annule)
+      render :action => :paiement_adhesion
+    else
+      render :action => :adhesion
     end
   end
   
@@ -97,10 +95,7 @@ class MembershipsController < PaymentController
                                    @membership.email,
                                    t('mailer.receipt_membership_subject'),
                                    @membership.first_name,
-                                   @membership.last_name,
-                                   url_for(:controller => :accueil,
-                                        :action => :index,
-                                        :only_path => false)).deliver
+                                   @membership.last_name).deliver
       elsif @membership.nil?
         log_error "retour_paiement_adhesion: invalid membership"
       end

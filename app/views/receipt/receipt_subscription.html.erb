@@ -4,12 +4,12 @@
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
   </head>
   <body>
-    <center><img alt="PG.png" src="<%= @url_root %>/assets/PG.png"></center>
+    <center><img alt="PG.png" src="<%= root_url %>assets/PG.png"></center>
     <p></p>
     <p><%= t('mailer.hello') %> <%= @first_name %> <%= @last_name %></p>
     <p></p>
     <p><%= t('action.subscription.created') %></p>
     <p></p>
-    <a href="<%= @url_root %>"><%= t('general.title') %></a>
+    <a href="<%= root_url %>"><%= t('general.title') %></a>
   </body>
 </html>

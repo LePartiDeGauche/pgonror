@@ -22,7 +22,7 @@ class ArgumentsController < ApplicationController
   caches_action :index, :layout => false, :if => Proc.new { not user_signed_in? }
   caches_action :leprogramme, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
   caches_action :arguments, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
-  caches_action :legislatives, :layout => false, :if => Proc.new { @page == 1 and params[:heading].blank? }
+  caches_action :legislatives, :layout => false, :if => Proc.new { @page == 1 and params[:heading].blank? and not user_signed_in? }
   
   def index
   end
@@ -44,12 +44,8 @@ class ArgumentsController < ApplicationController
   end
   
   def legislatives
-    @articles = Article.find_by_criteria({:status => Article::ONLINE, 
-                                          :category => 'legislative', 
-                                          :heading => params[:heading]}, @page)
-    @pages = Article.count_pages_by_criteria({:status => Article::ONLINE, 
-                                              :category => 'legislative', 
-                                              :heading => params[:heading]})
+    @pages = Article.count_pages_published_by_heading 'legislative', params[:heading]
+    @articles = Article.find_published_by_heading 'legislative', params[:heading], @page
     @headings = Article.find_published_group_by_heading 'legislative'
     session[:heading] = params[:heading]
   end

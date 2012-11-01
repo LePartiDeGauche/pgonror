@@ -1,25 +1,19 @@
 <%= render :partial => 'administration/menu' %>
-
 <section id="administration-work">
   <section class="content-bloc">
     <article class="article">
       <aside class="actions">
-  			<%= link_to t('action.back'), users_path %> |
-  			<%= link_to icon('edit.gif') + ' ' + t('action.update'), edit_user_path(@user) %> |
-  			<%= link_to icon('remove.gif') + ' ' + t('action.delete'), @user, :data => {:confirm => t("action.confirm")}, :method => :delete %>
-  		</aside>
+        <%= link_to t('action.update'), edit_user_path(@user) %>&nbsp;&bull;
+        <%= link_to t('action.delete'), @user, :data => {:confirm => t("action.confirm")}, :method => :delete %>
+      </aside>
       <header>
-        <h3 class="category">
-  				<%= t('user.type') %>&nbsp;&bull;
-  		  </h3>
-  		  <h1>
-  				<%= @user.email %>
-  			</h1>
-  	  </header>
+        <h3 class="category"><%= t('user.type') %>&nbsp;&bull;</h3>
+        <h1><%= @user.email %></h1>
+      </header>
       <% unless @user.access_level.nil? %>
         <%= t('activerecord.attributes.user.access_level') %> : <%= @user.access_level_display %><br/>
       <% end %>
-			<%= (t('activerecord.attributes.user.publisher') + "<br/>").html_safe if @user.publisher? %>
+      <%= (t('activerecord.attributes.user.publisher') + "<br/>").html_safe if @user.publisher? %>
       <%= (t('activerecord.attributes.user.notification_message') + "<br/>").html_safe if @user.notification_message? %>
       <%= (t('activerecord.attributes.user.notification_subscription') + "<br/>").html_safe if @user.notification_subscription? %>
       <%= (t('activerecord.attributes.user.notification_donation') + "<br/>").html_safe if @user.notification_donation? %>

@@ -116,13 +116,6 @@ class Article < ArticleBase
     '</div>'
   end
 
-  # Return a concatenated list of tags  
-  def tags_display
-    tags = ""
-    self.tags.each { |tag| tags << tag.tag + " " }
-    tags.strip
-  end
-  
   # Selects published article based on uri.  
   def self.find_published_by_uri(uri)
     where('uri = ? and status = ?', uri, ONLINE).first
@@ -259,6 +252,11 @@ class Article < ArticleBase
     find_by_criteria({:status => ONLINE, :searchable => true}, page, limit)
   end
 
+  # Selects published articles for a given category and heading.  
+  def self.find_published_by_heading(category, heading, page = 1, limit = ARTICLES_PER_PAGE)
+    find_by_criteria({:status => ONLINE, :category => category, :heading => heading}, page, limit)
+  end
+
   # Selects published articles for a given category.  
   def self.find_published_order_by_title(category, page = 1, limit = ARTICLES_PER_PAGE)
     where(criteria({:status => ONLINE, :category => category})).
@@ -299,6 +297,11 @@ class Article < ArticleBase
     calc_count_pages count_by_criteria({:status => ONLINE, :category => category})
   end
   
+  # Returns the number of pages to be displayed for published articles of a given category and heading.
+  def self.count_pages_published_by_heading(category, heading)
+    calc_count_pages count_by_criteria({:status => ONLINE, :category => category, :heading => heading})
+  end
+
   # Returns the number of pages to be displayed for searched published articles.
   def self.count_pages_search_published(search)
     calc_count_pages count_by_criteria({:status => ONLINE, :searchable => true, :search => search})
@@ -306,7 +309,7 @@ class Article < ArticleBase
 
   def find_published_by_heading
     articles = []
-    for article in self.class.find_by_criteria({:status => Article::ONLINE, :heading => self.heading}, 1, 5)
+    for article in self.class.find_by_criteria({:status => Article::ONLINE, :searchable => true, :heading => self.heading}, 1, 5)
       articles << article if self.uri != article.uri
     end
     articles
@@ -331,6 +334,7 @@ class Article < ArticleBase
     select('heading').
     where(criteria({:status => ONLINE, :category => category})).
     where('heading is not null').
+    where('show_heading = ?', true).
     group('heading').
     order('heading')
   end

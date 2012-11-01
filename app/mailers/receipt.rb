@@ -18,11 +18,9 @@ class Receipt < ActionMailer::Base
                       recipient, 
                       subject, 
                       first_name,
-                      last_name,
-                      url_root)
+                      last_name)
     @first_name = first_name
     @last_name = last_name
-    @url_root = url_root
     mail(:from => from, :to => recipient, :subject => subject)
   end  
 
@@ -30,11 +28,9 @@ class Receipt < ActionMailer::Base
                            recipient, 
                            subject, 
                            first_name,
-                           last_name,
-                           url_root)
+                           last_name)
     @first_name = first_name
     @last_name = last_name
-    @url_root = url_root
     mail(:from => from, :to => recipient, :subject => subject)
   end  
 
@@ -42,11 +38,9 @@ class Receipt < ActionMailer::Base
                          recipient, 
                            subject, 
                          first_name,
-                         last_name,
-                         url_root)
+                         last_name)
     @first_name = first_name
     @last_name = last_name
-    @url_root = url_root
     mail(:from => from, :to => recipient, :subject => subject)
   end  
 
@@ -54,11 +48,9 @@ class Receipt < ActionMailer::Base
                        recipient, 
                        subject, 
                        first_name,
-                       last_name,
-                       url_root)
+                       last_name)
     @first_name = first_name
     @last_name = last_name
-    @url_root = url_root
     mail(:from => from, :to => recipient, :subject => subject)
   end  
 end

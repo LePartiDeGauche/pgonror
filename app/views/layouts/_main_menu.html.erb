@@ -5,7 +5,7 @@
       <% if first %>
         <% first = false %>
       <% else %>
-        &nbsp;&nbsp;|&nbsp;&nbsp;
+        &nbsp;&nbsp;&bull;&nbsp;&nbsp;
       <% end %>
       <%= link_to_unless_current(menu, { :controller => options[:controller], 
                                          :action => options[:action] }) do |name| %>

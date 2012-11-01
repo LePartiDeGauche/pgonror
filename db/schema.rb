@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120927065658) do
+ActiveRecord::Schema.define(:version => 20121027111934) do
 
   create_table "articles", :force => true do |t|
     t.string   "title"
@@ -51,6 +51,7 @@ ActiveRecord::Schema.define(:version => 20120927065658) do
     t.date     "expired_at"
     t.boolean  "zoom"
     t.string   "image_remote_url"
+    t.boolean  "show_heading"
   end
 
   add_index "articles", ["agenda"], :name => "index_articles_on_agenda"
@@ -59,6 +60,7 @@ ActiveRecord::Schema.define(:version => 20120927065658) do
   add_index "articles", ["external_id"], :name => "index_articles_on_external_id"
   add_index "articles", ["heading"], :name => "index_articles_on_heading"
   add_index "articles", ["published_at", "updated_at"], :name => "index_articles_on_published_at_and_updated_at"
+  add_index "articles", ["show_heading"], :name => "index_articles_on_show_heading"
   add_index "articles", ["status"], :name => "index_articles_on_status"
   add_index "articles", ["title"], :name => "index_articles_on_title"
   add_index "articles", ["uri"], :name => "index_articles_on_uri"

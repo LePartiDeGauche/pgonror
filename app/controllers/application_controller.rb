@@ -143,8 +143,7 @@ protected
           render :template => '/layouts/error.html.erb', :status => '404'
         else
           @page_title = (@article.heading.present? ? @article.heading + " - " : "") + @article.title
-          @page_keywords = ""
-          @article.tags.each { |tag| @page_keywords << "," + tag.tag }
+          @page_keywords = @article.tags_display
           @page_description = @article.description
           @source = @article.source if @article.present? and not @article.source_id.nil?
           @last_published = @article.find_last_published if not @article.category_option?(:hide_category_name)

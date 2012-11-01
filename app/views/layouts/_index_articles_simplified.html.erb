@@ -17,10 +17,14 @@
         <hr/>
         <article class="article">
           <h1>
-            <%= link_to article.title_display.html_safe,
-                  :controller => Article::category_option(category, :controller),
-                  :action => Article::category_option(category, :action),
-                  :uri => article.uri %>
+            <%= link_to :controller => article.category_option(:controller),
+                        :action => article.category_option(:action),
+                        :uri => article.uri do %>
+              <% unless article.heading.blank? %>
+                <%= article.heading_display.html_safe %> -
+              <% end %>
+              <%= article.title_display.html_safe %>
+            <% end %>
           </h1>
         </article>
       </li>

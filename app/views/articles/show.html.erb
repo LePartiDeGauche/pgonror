@@ -44,7 +44,7 @@
     <section class="content-bloc">
       <article class="article">
         <aside class="actions">
-          <a href="<%= session[:prior_url] %>"><%= t('action.back') %></a> |
+          <a href="<%= session[:prior_url] %>"><%= t('action.back') %></a>&nbsp;&bull;
           <%= link_to t('action.update'), 
                 :action => :edit, 
                 :id => @article.id,
@@ -53,7 +53,7 @@
                 :parent => session[:parent],
                 :search => session[:search],
                 :page => session[:page] %>
-          <% if not @article.draft %> |
+          <% if not @article.draft %>&nbsp;&bull;
             <%= link_to t('action.change_status'),
               :action => :edit,
               :modifier => :change_status, 
@@ -64,7 +64,7 @@
               :search => session[:search],
               :page => session[:page] %>
           <% end %>
-          | <%= link_to t('action.change_category'),
+          &bull; <%= link_to t('action.change_category'),
             :action => :edit,
             :modifier => :change_category, 
             :id => @article.id,
@@ -73,7 +73,7 @@
             :parent => session[:parent],
             :search => session[:search],
             :page => session[:page] %>
-          <% if current_user.administrator %> |
+          <% if current_user.administrator %>&nbsp;&bull;
             <%= link_to t('action.delete'), 
                 @article, 
                 :data => {:confirm => t("action.confirm")}, 

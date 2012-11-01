@@ -166,16 +166,13 @@ class ArticlesController < ApplicationController
   def update
     saved = false
     signature = params[:article][:signature]
-    params[:article][:signature] = nil
     @comments = params[:comments]
     begin
       @article.transaction do
         @article.updated_by = current_user.email
-        @article.signature = nil
         @article.update_attributes!(params[:article])
         if @article.control_authorization
           @article.create_audit! @article.status, @article.updated_by, @comments
-          @article.signature = signature
           @article.save!
           saved = true
         else

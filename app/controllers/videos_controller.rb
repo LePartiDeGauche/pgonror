@@ -16,13 +16,23 @@
 class VideosController < ApplicationController
   before_filter :find_article, :only => [:video]
 
-  caches_action :index, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
+  caches_action :index, :layout => false, :if => Proc.new { @page == 1 and params[:heading].blank? and not user_signed_in? }
 
   def index
-    @pages = Article.count_pages_published 'video'
-    @articles = Article.find_published 'video', @page
+    @pages = Article.count_pages_published_by_heading 'video', params[:heading]
+    @articles = Article.find_published_by_heading 'video', params[:heading], @page
+    @headings = Article.find_published_group_by_heading 'video'
+    session[:heading] = params[:heading]
   end
 
   def video
+    @headings = Article.find_published_group_by_heading 'video'
+  end
+
+  def lateledegauche
+    @pages = Article.count_pages_published_by_heading 'video', params[:heading]
+    @articles = Article.find_published_by_heading 'video', params[:heading], @page
+    @headings = Article.find_published_group_by_heading 'video'
+    session[:heading] = params[:heading]
   end
 end

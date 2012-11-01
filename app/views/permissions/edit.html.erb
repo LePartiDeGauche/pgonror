@@ -2,8 +2,8 @@
   <%= form_for([@user, @permission]) do |f| %>
     <article class="article">
       <aside class="actions">
-				<%= t('action.permission.update') %>	|
-				<%= link_to t('action.cancel'), @user %>	|
+				<%= t('action.permission.update') %>&nbsp;&bull;
+				<%= link_to t('action.cancel'), @user %>&nbsp;&bull;
 				<%= f.submit t('action.ok'), :disable_with => t('action.wait') %>
 			</aside>
       <header>

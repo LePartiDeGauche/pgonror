@@ -135,6 +135,11 @@ private
       if category == 'diaporama' or category_was == 'diaporama'
         expire_action(:controller => 'photos', :action => 'index')
       end   
+
+      # Sons
+      if category == 'son' or category_was == 'son'
+        expire_action(:controller => 'podcast', :action => 'index')
+      end
     end
   end
 end

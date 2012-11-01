@@ -2,8 +2,8 @@
   <%= form_for([@article, @tag]) do |f| %>
     <article class="article">
       <aside class="actions">
-				<%= t('action.tag.create') %> |
-				<%= link_to t('action.cancel'), @article %> |
+				<%= t('action.tag.create') %>&nbsp;&bull;
+				<%= link_to t('action.cancel'), @article %>&nbsp;&bull;
 				<%= f.submit t('action.ok'), :disable_with => t('action.wait') %>
 			</aside>
       <%= render :partial => 'layouts/error_messages', :locals => { :item => @tag } %>

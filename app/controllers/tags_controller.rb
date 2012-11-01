@@ -34,14 +34,12 @@ class TagsController < ApplicationController
         @tag.created_by = current_user.email
         @tag.updated_by = current_user.email
         Article.create_default_tag @tag.tag, current_user.email
-        respond_to do |format|
-          if @tag.save
-            flash[:notice] = t('action.tag.added')
-            format.html { redirect_to(@article, :only_path => true) }
-          else
-            @unused_tags = @article.unused_tags
-            format.html { render :action => "new" }
-          end
+        if @tag.save
+          flash[:notice] = t('action.tag.added')
+          redirect_to(@article, :only_path => true)
+        else
+          @unused_tags = @article.unused_tags
+          render :action => "new"
         end
       end
     else
@@ -57,14 +55,12 @@ class TagsController < ApplicationController
       @tag.created_by = current_user.email
       @tag.updated_by = current_user.email
       Article.create_default_tag @tag.tag, current_user.email
-      respond_to do |format|
-        if @tag.save
-          flash[:notice] = t('action.tag.created')
-          format.html { redirect_to(@article, :only_path => true) }
-        else
-          @unused_tags = @article.unused_tags
-          format.html { render :action => "new" }
-        end
+      if @tag.save
+        flash[:notice] = t('action.tag.created')
+        redirect_to(@article, :only_path => true)
+      else
+        @unused_tags = @article.unused_tags
+        render :action => "new"
       end
     end
   end
@@ -76,14 +72,12 @@ class TagsController < ApplicationController
       @tag.delete_all_references if @article.nil?
       @tag.destroy
       flash[:notice] = t('action.tag.deleted')
-      respond_to do |format|
-        unless @article.nil?
-          format.html { redirect_to(@article, :only_path => true) }
-        else
-          @predefined_tags = Tag.predefined_tags
-          @unused_tags = Tag.unused_tags
-          format.html { render :action => "index" }
-        end
+      unless @article.nil?
+        redirect_to(@article, :only_path => true)
+      else
+        @predefined_tags = Tag.predefined_tags
+        @unused_tags = Tag.unused_tags
+        render :action => "index"
       end
     end 
   end

@@ -60,7 +60,7 @@
       <%= render :partial => 'layouts/index_articles_simplified', :locals => { :articles => @arguments, :category => "argument" } %>
     </section>
   </section>
-  <section id="blogss">
+  <section id="blogs">
     <section id="blogs-content" class="content-bloc">
       <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', :locals => { :articles => @directblogs, :category => "directblog", :title => :zoom } %>
     </section>
@@ -86,25 +86,75 @@
   </section>
 </section>
 <script>
+  function nextActualite() {
+    $('#zoom li:last').after($('#zoom li:first'));
+    showOnlyFirstActualite();
+  };
+  function showOnlyFirstActualite() {
+    $('#zoom li').hide();
+    $('#zoom li:first').show(300);
+    var top = -34-$('#zoom li:first section').height();
+    $('#zoom li:first section').css({top:top}).show(300);
+  };
+  var runActualite = setInterval('nextActualite()', 6000);
+  showOnlyFirstActualite();
+  $('.zoom-button1').click(function() {
+    $('#zoom li#zoom-article2').insertAfter($('#zoom li#zoom-article1'));
+    $('#zoom li#zoom-article3').insertAfter($('#zoom li#zoom-article2'));
+    $('#zoom li#zoom-article4').insertAfter($('#zoom li#zoom-article3'));
+    $('#zoom li#zoom-article5').insertAfter($('#zoom li#zoom-article4'));
+    showOnlyFirstActualite();
+  });
+  $('.zoom-button2').click(function() {
+    $('#zoom li#zoom-article3').insertAfter($('#zoom li#zoom-article2'));
+    $('#zoom li#zoom-article4').insertAfter($('#zoom li#zoom-article3'));
+    $('#zoom li#zoom-article5').insertAfter($('#zoom li#zoom-article4'));
+    $('#zoom li#zoom-article1').insertAfter($('#zoom li#zoom-article5'));
+    showOnlyFirstActualite();
+  });
+  $('.zoom-button3').click(function() {
+    $('#zoom li#zoom-article4').insertAfter($('#zoom li#zoom-article3'));
+    $('#zoom li#zoom-article5').insertAfter($('#zoom li#zoom-article4'));
+    $('#zoom li#zoom-article1').insertAfter($('#zoom li#zoom-article5'));
+    $('#zoom li#zoom-article2').insertAfter($('#zoom li#zoom-article1'));
+    showOnlyFirstActualite();
+  });
+  $('.zoom-button4').click(function() {
+    $('#zoom li#zoom-article5').insertAfter($('#zoom li#zoom-article4'));
+    $('#zoom li#zoom-article1').insertAfter($('#zoom li#zoom-article5'));
+    $('#zoom li#zoom-article2').insertAfter($('#zoom li#zoom-article1'));
+    $('#zoom li#zoom-article3').insertAfter($('#zoom li#zoom-article2'));
+    showOnlyFirstActualite();
+  });
+  $('.zoom-button5').click(function() {
+    $('#zoom li#zoom-article1').insertAfter($('#zoom li#zoom-article5'));
+    $('#zoom li#zoom-article2').insertAfter($('#zoom li#zoom-article1'));
+    $('#zoom li#zoom-article3').insertAfter($('#zoom li#zoom-article2'));
+    $('#zoom li#zoom-article4').insertAfter($('#zoom li#zoom-article3'));
+    showOnlyFirstActualite();
+  });
+  $('#zoom').hover(
+    function() { clearInterval(runActualite); },
+    function() { runActualite = setInterval('nextActualite()', 6000); }
+  ); 
   function nextCommunique() {
     $('#communique li:first').before($('#communique li:last'));
   };
+  var runCommunique = setInterval('nextCommunique()', 8000);
+  $('#communique').hover(
+    function() { clearInterval(runCommunique); },
+    function() { runCommunique = setInterval('nextCommunique()', 8000); }
+  );
   function nextLivre() {
     $('#librairie li:first').before($('#librairie li:last'));
     $('#librairie li').hide();
     $('#librairie li:first').show(300);
   };
-  $(document).ready(function() {
-    var speed = 8000;
-    var runCommunique = setInterval('nextCommunique()', speed);
-    var runLivre = setInterval('nextLivre()', speed);
-    $('#communique').hover(
-      function() { clearInterval(runCommunique); }, 
-      function() { runCommunique = setInterval('nextCommunique()', speed); }
-    ); 
-    $('#librairie').hover(
-      function() { clearInterval(runLivre); }, 
-      function() { runLivre = setInterval('nextLivre()', speed); }
-    ); 
-  });
+  var runLivre = setInterval('nextLivre()', 5000);
+  $('#librairie').hover(
+    function() { clearInterval(runLivre); },
+    function() { runLivre = setInterval('nextLivre()', 5000); }
+  );
+  $('#librairie li').hide();
+  $('#librairie li:first').show();
 </script>

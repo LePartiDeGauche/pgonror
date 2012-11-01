@@ -18,13 +18,11 @@ class PermissionsController < ApplicationController
   before_filter :authenticate_administrator!
 
   def index
-    respond_to do |format|
-      @user = User.find(params[:user_id])
-      if @user.present?
-        format.html { redirect_to(@user, :only_path => true) }
-      else
-        format.html { render :action => "new" }
-      end
+    @user = User.find(params[:user_id])
+    if @user.present?
+      redirect_to(@user, :only_path => true)
+    else
+      render :action => "new"
     end
   end
 
@@ -41,13 +39,11 @@ class PermissionsController < ApplicationController
       @permission = @user.permissions.new(params[:permission])
       @permission.created_by = current_user.email
       @permission.updated_by = current_user.email
-      respond_to do |format|
-        if @permission.save
-          flash[:notice] = t('action.permission.created')
-          format.html { redirect_to(@user, :only_path => true) }
-        else
-          format.html { render :action => "new" }
-        end
+      if @permission.save
+        flash[:notice] = t('action.permission.created')
+        redirect_to(@user, :only_path => true)
+      else
+        render :action => "new"
       end
     end
   end
@@ -64,13 +60,11 @@ class PermissionsController < ApplicationController
     if @permission.present?
       @user = @permission.user
       @permission.updated_by = current_user.email
-      respond_to do |format|
-        if @permission.update_attributes(params[:permission])
-          flash[:notice] = t('action.permission.updated')
-          format.html { redirect_to(@user, :only_path => true) }
-        else
-          format.html { render :action => "edit" }
-        end
+      if @permission.update_attributes(params[:permission])
+        flash[:notice] = t('action.permission.updated')
+        redirect_to(@user, :only_path => true)
+      else
+        render :action => "edit"
       end
     end 
   end
@@ -81,9 +75,7 @@ class PermissionsController < ApplicationController
       @user = @permission.user
       @permission.destroy
       flash[:notice] = t('action.permission.deleted')
-      respond_to do |format|
-        format.html { redirect_to(@user, :only_path => true) }
-      end
+      redirect_to(@user, :only_path => true)
     end 
   end
 end

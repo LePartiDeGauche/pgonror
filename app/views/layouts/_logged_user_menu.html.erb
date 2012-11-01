@@ -1,4 +1,4 @@
 <% if user_signed_in? %>
-  <%= link_to_unless_current t('general.mypage'), edit_user_registration_path %> |
+  <%= link_to_unless_current t('general.mypage'), edit_user_registration_path %> &bull;
   <%= link_to_unless_current t('general.sign_out'), destroy_user_session_path, :method => :delete %> 
 <% end %>

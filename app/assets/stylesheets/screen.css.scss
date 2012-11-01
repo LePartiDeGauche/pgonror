@@ -688,6 +688,7 @@ $list-spacing:8px;
   color:$color-menu-bg-hover;
   a {
     @include link-colors($color-menu-fg-normal, $color-menu-fg-hover);
+    @include undecored-link;
     @include border-radius;
     background-color:$color-menu-bg-normal;
     padding:$pg-padding / 2;

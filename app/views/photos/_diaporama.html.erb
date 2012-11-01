@@ -38,10 +38,10 @@
               <br/>
               <% if photo.category_option?(:signature) and not photo.signature.blank? %>
                 <center>
-                  <div class="signature">
+                  <small>
                     <%= t('activerecord.attributes.article.credit') %>
                     <%= photo.signature %>
-                  </div>
+                  </small>
                 </center>
               <% end %>
             </div>
@@ -68,7 +68,7 @@
     $('#photos div').hide();
     $('#photos div:first').fadeIn(1000);
     hideButtons();
-  };  
+  };
   $(document).ready(function() {
     var speed = 3000;
     var run = setInterval('next()', speed);
@@ -83,8 +83,8 @@
       return false;
     });
     $('#photos').hover(
-      function() {  showButtons(); clearInterval(run); }, 
+      function() {  showButtons(); clearInterval(run); },
       function() {  hideButtons(); run = setInterval('next()', speed); }
-    ); 
+    );
   });
 </script>

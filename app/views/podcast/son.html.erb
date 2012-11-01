@@ -1,0 +1,21 @@
+<section id="videos-liste">
+  <section class="content-bloc">
+    <%= render :partial => 'layouts/article' %>
+  </section>
+</section>
+<section id="videos-vignettes">
+  <% unless @headings.empty? %>
+    <section class="content-bloc">
+      <%= render :partial => 'layouts/table_of_content', 
+            :locals => { :headings => @headings, :category => 'son' } %>
+    </section>
+  <% end %>
+  <section class="content-bloc">
+    <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', 
+          :locals => { :articles => @editos, :category => 'edito' } %>
+  </section>
+  <section class="content-bloc">
+    <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', 
+          :locals => { :articles => @actus, :category => 'actu' } %>
+  </section>
+</section>

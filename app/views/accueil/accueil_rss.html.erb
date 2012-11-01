@@ -21,6 +21,13 @@
         <td><a target="_blank" href="http://fusion.google.com/add?feedurl=<%= url_for militer_rss_feed_path(:only_path => false) %>">Google+</a></td>
         <td><a target="_blank" href="http://www.netvibes.com/subscribe.php?url=<%= url_for militer_rss_feed_path(:only_path => false) %>">netvibes</a></td>
       </tr>
+      <tr>
+        <td><h1><%= icon_medium('rss.png') %> <%= t('identity.rss_3_explain') %></h1></td>
+        <td><%= link_to "XML", podcast_feed_path, :target => "_blank" %></td>
+        <td><a target="_blank" href="http://add.my.yahoo.com/rss?url=<%= url_for podcast_feed_path(:only_path => false) %>">Mon Yahoo!</a></td>
+        <td><a target="_blank" href="http://fusion.google.com/add?feedurl=<%= url_for podcast_feed_path(:only_path => false) %>">Google+</a></td>
+        <td><a target="_blank" href="http://www.netvibes.com/subscribe.php?url=<%= url_for podcast_feed_path(:only_path => false) %>">netvibes</a></td>
+      </tr>
     </table>
     <br/>
   </section>

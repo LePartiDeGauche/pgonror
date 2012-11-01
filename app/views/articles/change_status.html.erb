@@ -8,8 +8,8 @@
     <%= form_for(@article) do |f| %>
       <article class="article">
         <aside class="actions">
-          <%= f.label :status %> <%= f.select :status, Article::statuses %> |
-          <a href="<%= session[:last_url] %>"><%= t('action.back') %></a> |
+          <%= f.label :status %> <%= f.select :status, Article::statuses %>&nbsp;&bull;
+          <a href="<%= session[:last_url] %>"><%= t('action.back') %></a>&nbsp;&bull;
           <%= f.submit t('action.ok'), :disable_with => t('action.wait') %>
         </aside>
         <header>

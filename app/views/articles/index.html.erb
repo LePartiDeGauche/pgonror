@@ -1,7 +1,4 @@
 <section id="editor-toolbox">
-  <section class="content-bloc">
-    <%= render :partial => 'layouts/logged_user_menu' %>
-  </section>
   <section id="new-content" class="content-bloc">
     <%= form_tag new_article_path, :method => :get do %>
       <%= icon('plus.gif') %>
@@ -12,6 +9,9 @@
     <% end %>
     <div class="information"><%=t "action.article.create_explain" %></div>
   </section>
+  <%= render :partial => 'menu_content' %>
+</section>
+<section id="articles-box">
   <section id="search-box" class="content-bloc">
     <aside class="actions">
       <%= form_tag(search_articles_path,
@@ -28,36 +28,28 @@
       <% end %>
     </aside>
     <script>
-      $(document).ready(function(){
-        var output = "#articles-search-list";
-        $('#search-form')
-          .bind("ajax:beforeSend", function(evt, xhr, settings){
-          })
-          .bind("ajax:success", function(evt, data, status, xhr){
-            $(output).html(xhr.responseText);
-          })
-          .bind("ajax:error", function(evt, xhr, status, error){
-            var errors, errorText;
-            try {
-              errors = $.parseJSON(xhr.responseText);
-            } catch(err) {
-              errors = {message: err};
-            }
-            errorText = "<ul>";
-            for( error in errors ) {
-              errorText += "<li>" + errors[error] + "</li> ";
-            }
-            errorText += "</ul>";
-            $(output).html(errorText);
-          });
-      });
+      $('#search-form')
+        .bind("ajax:beforeSend", function(evt, xhr, settings){
+        })
+        .bind("ajax:success", function(evt, data, status, xhr){
+          $("#articles-search-list").html(xhr.responseText);
+        })
+        .bind("ajax:error", function(evt, xhr, status, error){
+          var errors, errorText;
+          try {
+            errors = $.parseJSON(xhr.responseText);
+          } catch(err) {
+            errors = {message: err};
+          }
+          errorText = "<ul>";
+          for( error in errors ) {
+            errorText += "<li>" + errors[error] + "</li> ";
+          }
+          errorText += "</ul>";
+          $("#articles-search-list").html(errorText);
+        });
     </script>
   </section>
-  <section id="categories-list" class="content-bloc highlighted-bloc">
-    <%= render :partial => 'menu_content' %>
-  </section>
-</section>
-<section id="articles-box">
   <section id="articles-search-list" class="content-bloc">
     <%= render :partial => 'search_list' %>
   </section>

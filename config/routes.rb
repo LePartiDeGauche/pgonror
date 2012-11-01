@@ -116,6 +116,7 @@ PartiDeGauche::Application.routes.draw do
   match '/qui-sommes-nous' => 'quisommesnous#index'
   match '/photos' => 'photos#index'
   match '/photos/diaporama/*uri(.format)' => 'photos#diaporama'
+  match '/lateledegauche' => 'videos#lateledegauche'
   match '/videos' => 'videos#index'
   match '/videos/video/*uri(.format)' => 'videos#video'
   match '/viedegauche' => 'viedegauche#index'
@@ -141,7 +142,10 @@ PartiDeGauche::Application.routes.draw do
   match '/running' => 'accueil#index'
   match '/index.php' => "accueil#rss", :format => :xml
   match '/index' => 'accueil#index'
-  match '/administration' => 'administration#index'
+  match '/administration' => 'administration#index', :as => "administration"
+  match '/podcast' => 'podcast#index'
+  match '/podcast/rss' => 'podcast#rss', :format => :xml, :as => 'podcast_feed'
+  match '/podcast/*uri(.format)' => 'podcast#son'
   match '/rss' => 'accueil#rss', :format => :xml, :as => 'rss_feed'
   match '/accueil_rss' => 'accueil#accueil_rss', :as => 'accueil_rss'
   match '/export_txt' => 'accueil#export_txt'

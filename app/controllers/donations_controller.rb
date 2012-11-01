@@ -36,17 +36,15 @@ class DonationsController < PaymentController
       log_error "valider_don", invalid
       saved = false
     end
-    respond_to do |format|
-      if saved
-        flash.now[:notice] = t('action.donation.payment')
-        @effectue = url_for(:controller => :donations, :action => :don_enregistre)
-        @refuse = url_for(:controller => :donations, :action => :don_rejete)
-        @retour = url_for(:controller => :donations, :action => :retour_paiement_don)
-        @annule = url_for(:controller => :payment, :action => :paiement_annule)
-        format.html { render :action => :paiement_don }
-      else
-        format.html { render :action => :don }
-      end
+    if saved
+      flash.now[:notice] = t('action.donation.payment')
+      @effectue = url_for(:controller => :donations, :action => :don_enregistre)
+      @refuse = url_for(:controller => :donations, :action => :don_rejete)
+      @retour = url_for(:controller => :donations, :action => :retour_paiement_don)
+      @annule = url_for(:controller => :payment, :action => :paiement_annule)
+      render :action => :paiement_don
+    else
+      render :action => :don
     end
   end
   
@@ -79,10 +77,7 @@ class DonationsController < PaymentController
                                  @donation.email,
                                  t('mailer.receipt_donation_subject'),
                                  @donation.first_name,
-                                 @donation.last_name,
-                                 url_for(:controller => :accueil,
-                                        :action => :index,
-                                        :only_path => false)).deliver
+                                 @donation.last_name).deliver
       elsif @donation.nil?
         log_error "retour_paiement_don: invalid donation"
       end

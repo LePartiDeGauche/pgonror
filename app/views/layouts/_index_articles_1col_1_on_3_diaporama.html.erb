@@ -23,6 +23,17 @@
                             :controller => :photos,
                             :action => :diaporama,
                             :uri => article.uri %>
+                <div class="zoom-title">
+                  <% unless article.heading.blank? %>
+                    <h4><%= article.heading_display.html_safe %><br/></h4>
+                  <% end %>
+                  <h1>
+                    <%= link_to article.title_display.html_safe,
+                                    :controller => article.category_option(:controller),
+                                    :action => article.category_option(:action),
+                                    :uri => article.uri %>
+                  </h1>
+                </div>
               <% end %>
             </p>
           <% end %>

@@ -96,18 +96,17 @@ class Permission < ActiveRecord::Base
   # Returns the list of recipients for notification
   def self.notification_recipients(status, category, source_id = nil)
     recipients = []
-    permissions = Permission.where("(category is null or category = '' or category = ?) and (source_id is null or source_id = ?) and notification_level is not null and notification_level != ''", category, source_id)
-    for permission in permissions
-      include = false
-      if permission.notification_level == Article::NEW
-        include = true
-      elsif permission.notification_level == Article::REVIEWED
-        include = (status == Article::REVIEWED) or (status == Article::ONLINE) 
-      end
-      if include
-        user = User.where("id = ? and publisher = ?", permission.user_id, true).first
-        if user.present?
-          recipients << user.email
+    for permission in Permission.where("category = ? and notification_level != ''", category)
+      unless permission.notification_level.nil?
+        include = false
+        if permission.notification_level == Article::NEW
+          include = true
+        elsif permission.notification_level == Article::REVIEWED
+          include = ((status == Article::REVIEWED) or (status == Article::ONLINE))
+        end
+        if include
+          user = User.where("id = ? and publisher = ?", permission.user_id, true).first
+          recipients << user.email if user.present?
         end
       end
     end

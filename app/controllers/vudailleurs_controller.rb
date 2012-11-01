@@ -72,44 +72,39 @@ class VudailleursController < ApplicationController
     rescue Exception => invalid
       log_error "envoyer_message", invalid
     end
-    respond_to do |format|
-      if saved
-        flash.now[:notice] = t('action.request.created')
-        recipients = nil
-        if @request.recipient.present?
-          recipient = Article::find_by_uri(@request.recipient)
-          if recipient.present? and recipient.email.present?
-            recipients = [recipient.email]
-          end
+    if saved
+      flash.now[:notice] = t('action.request.created')
+      recipients = nil
+      if @request.recipient.present?
+        recipient = Article::find_by_uri(@request.recipient)
+        if recipient.present? and recipient.email.present?
+          recipients = [recipient.email]
         end
-        recipients = User.notification_recipients("notification_message") if recipients.nil?
-        if not recipients.empty?
-          Notification.notification_message(@request.email, 
-                                            recipients.join(', '),
-                                            t('mailer.notification_message_subject'),
-                                            @request.first_name,
-                                            @request.last_name, 
-                                            @request.email, 
-                                            @request.address, 
-                                            @request.zip_code,
-                                            @request.city, 
-                                            @request.phone,
-                                            @request.comment).deliver
-        end
-        Receipt.receipt_message(Devise.mailer_sender, 
-                                @request.email,
-                                t('mailer.receipt_message_subject'),
-                                @request.first_name,
-                                @request.last_name,
-                                url_for(:controller => :accueil,
-                                        :action => :index,
-                                        :only_path => false)).deliver
-        create_request
       end
-      @pages = Article.count_pages_published 'web'
-      @articles = Article.find_published 'web', @page
-      format.html { render :action => "articlesweb" }
+      recipients = User.notification_recipients("notification_message") if recipients.nil?
+      if not recipients.empty?
+        Notification.notification_message(@request.email, 
+                                          recipients.join(', '),
+                                          t('mailer.notification_message_subject'),
+                                          @request.first_name,
+                                          @request.last_name, 
+                                          @request.email, 
+                                          @request.address, 
+                                          @request.zip_code,
+                                          @request.city, 
+                                          @request.phone,
+                                          @request.comment).deliver
+      end
+      Receipt.receipt_message(Devise.mailer_sender, 
+                              @request.email,
+                              t('mailer.receipt_message_subject'),
+                              @request.first_name,
+                              @request.last_name).deliver
+      create_request
     end
+    @pages = Article.count_pages_published 'web'
+    @articles = Article.find_published 'web', @page
+    render :action => "articlesweb"
   end
 
 private

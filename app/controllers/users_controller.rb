@@ -36,13 +36,11 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
     @user.updated_by = current_user.email
-    respond_to do |format|
-      if @user.update_attributes(params[:user])
-        flash[:notice] = t('action.user.updated')
-        format.html { redirect_to(@user) }
-      else
-        format.html { render :action => "edit" }
-      end
+    if @user.update_attributes(params[:user])
+      flash[:notice] = t('action.user.updated')
+      redirect_to(@user)
+    else
+      render :action => "edit"
     end
   end
 
@@ -50,8 +48,6 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @user.destroy
     flash[:notice] = t('action.user.deleted')
-    respond_to do |format|
-      format.html { redirect_to(users_url) }
-    end
+    redirect_to(users_url)
   end
 end

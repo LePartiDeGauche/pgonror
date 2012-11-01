@@ -28,6 +28,7 @@ gem 'active_cmis','0.2.6', :require => 'active_cmis'
 gem 'kaminari'
 gem 'htmlentities'
 gem 'coderay'
+gem 'ruby-mp3info'
 
 platforms :ruby do
   gem 'libv8' # necessary to be installed on Ubuntu

@@ -1,9 +1,8 @@
 <%= render :partial => 'administration/menu' %>
 <section id="administration-work">
-  <%= form_tag '/administration/index' do %>
+  <%= form_tag administration_path do %>
   <%= hidden_field_tag :type, @type %>
     <section class="content-bloc">
-      <h1><%= @label %></h1>
       <aside class="actions">
         <%= search_field_tag :search,
                              params[:search],
@@ -13,7 +12,6 @@
       </aside>
     </section>
   <% end if @type %>
-
   <% unless @logs.empty? %>
     <section class="content-bloc">
       <%= paginate @logs %>

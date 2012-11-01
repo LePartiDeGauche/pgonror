@@ -9,20 +9,10 @@
     <%= render :partial => 'layouts/index_articles_1col_1_on_3', 
           :locals => { :articles => @articlesvdg, :category => 'articlevdg' } %>
   </section>
-  <section class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', 
-          :locals => { :articles => @editos, :category => 'edito' } %>
-  </section>
-  <section class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', 
-          :locals => { :articles => @actus, :category => 'actu' } %>
-  </section>
-  <section class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', 
-          :locals => { :articles => @communiques, :category => 'com' } %>
-  </section>
-  <section class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', 
-          :locals => { :articles => @tout_international, :category => 'inter' } %>
-  </section>
+  <% unless @headings.empty? %>
+    <section class="content-bloc">
+      <%= render :partial => 'layouts/table_of_content', 
+            :locals => { :headings => @headings, :category => 'articlevdg' } %>
+    </section>
+  <% end %>
 </section>

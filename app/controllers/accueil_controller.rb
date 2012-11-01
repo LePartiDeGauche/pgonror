@@ -74,7 +74,7 @@ class AccueilController < ApplicationController
   # RSS output based on recent articles.
   def rss
     @articles = Article.find_by_criteria({:status => Article::ONLINE, :feedable => true}, 1, 50)
-    render :template => 'layouts/rss.xml'
+    render :template => 'layouts/rss'
   end
 
   # Renders most recent articles in a text format.  
@@ -118,7 +118,7 @@ class AccueilController < ApplicationController
   # Default action that shows a message due to an invalid route.  
   def default
     id = params[:id]
-    if id.to_i > 0
+    if id.present? and id.to_i > 0
       article = Article.find_published_by_id id
       if article.present?
         redirect_to :controller => article.category_option(:controller),

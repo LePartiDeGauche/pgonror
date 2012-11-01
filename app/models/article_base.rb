@@ -76,6 +76,7 @@ class ArticleBase < ActiveRecord::Base
                   :parent_id,
                   :source_id,
                   :heading,
+                  :show_heading,
                   :title,
                   :signature, 
                   :content,
@@ -328,11 +329,6 @@ class ArticleBase < ActiveRecord::Base
     searchable
   end
 
-  # Returns the list of users that should be notified of changes for the article category and status.  
-  def notification_recipients
-    Permission.notification_recipients(self.status, self.category, self.source_id)
-  end
-  
   # Returns available tags, unused by any article.
   def unused_tags
     Tag.select("tag").
@@ -391,9 +387,16 @@ class ArticleBase < ActiveRecord::Base
     self.content.present? ? self.content : "" 
   end
 
+  # Return a concatenated list of tags  
+  def tags_display
+    tags = ""
+    self.tags.each{|tag| tags << (tags.blank? ? "" : ",") + tag.tag}
+    tags
+  end
+  
   # Returns a description of the article.
   def description
-    description = self.available_content.gsub(/<([^>]*)>/,"").html_safe.strip
+    description = content_to_txt
     description << " [" + self.tags_display + "]" if not self.tags.empty?
     description
   end
@@ -405,7 +408,7 @@ class ArticleBase < ActiveRecord::Base
                          published_url = nil, 
                          update = false,
                          comments = nil)
-    recipients = notification_recipients
+    recipients = Permission.notification_recipients(self.status, self.category, self.source_id)
     recipients << current_user_email if not recipients.include?(current_user_email)
     if not recipients.empty?
       Notification.notification_update(current_user_email, 
@@ -440,7 +443,7 @@ class ArticleBase < ActiveRecord::Base
   def image_remote_url_input
     self.image_remote_url
   end
-
+  
   # Sets the attribute used from the form in order to copy an image from an external URL.
   require 'open-uri'
   def image_remote_url_input=(url)
@@ -449,11 +452,21 @@ class ArticleBase < ActiveRecord::Base
       if not url.blank?
         begin
           self.image = open(URI.parse(url))
-        rescue => invalid
+        rescue
           errors[:base] << I18n.t('activerecord.errors.messages.bad_image')
         end
       end
     end
+  end
+
+  # Returns the duration of associated mp3 file.
+  def mp3_duration
+    if self.category_option?(:audio) and 
+       self.document_file_name.present? and
+       self.document_file_name.match(/.mp3/i)
+       return self.class.mp3_duration(self.document.path)
+    end
+    ""
   end
 
 protected
@@ -493,11 +506,11 @@ private
 
   # Sets the article title as file name if the article is an image or a document.
   def update_title
-    if self.image_remote_url.present? and not self.image_remote_url.blank?
+    if self.image_remote_url.present? and not self.image_remote_url.blank? and self.title.blank?
       self.title = self.image_remote_url.split('/').last
-    elsif self.image_file_name.present?
+    elsif self.image_file_name.present? and self.title.blank?
       self.title = self.image_file_name
-    elsif self.document_file_name.present?
+    elsif self.document_file_name.present? and self.title.blank?
       self.title = self.document_file_name
     end
   end
@@ -625,7 +638,7 @@ private
   ANY_IMAGE_EL = /<img(.*)src="(\S+)"([^>]*)>/i
   DMOTION_TAG = /\{dmotion\}(\S+)\{\/dmotion\}/i
   DAILYMOTION_OLD = /<object(.*)>(.*)<embed(.*)src="(\S+)"([^>]*)>(.*)<\/object>/i
-  DAILYMOTION_NEW = /<iframe(.*)src="(\S+)"([^>]*)><\/iframe>/i
+  IFRAME_EL = /<iframe(.*)src="(\S+)"([^>]*)>([^<]*)<\/iframe>/i
   INLINE_REFERENCE_EL = /src=\"\/system\/([^\"]*)\"/i
 
   # Returns the content of the article with the reference of images or videos transformed with appropriate format.
@@ -650,8 +663,8 @@ private
     return extract.gsub(DMOTION_TAG, "<iframe src=\"http://www.dailymotion.com/embed/video/\\1?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>") if extract.present? 
     extract = source[DAILYMOTION_OLD]
     return extract.gsub(DAILYMOTION_OLD, "<iframe src=\"\\4?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>") if extract.present? 
-    extract = source[DAILYMOTION_NEW]
-    return extract.gsub(DAILYMOTION_NEW, "<iframe src=\"\\2?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>") if extract.present? 
+    extract = source[IFRAME_EL]
+    return extract.gsub(IFRAME_EL, "<iframe src=\"\\2?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>") if extract.present? 
     source
   end
 
@@ -675,9 +688,10 @@ private
     return "" if source.nil?
     converted = source.gsub(DMOTION_TAG, "<iframe src=\"http://www.dailymotion.com/embed/video/\\1?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>").
                        gsub(DAILYMOTION_OLD, "<iframe src=\"\\4?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>").
-                       gsub(DAILYMOTION_NEW, "<iframe src=\"\\2?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>")
+                       gsub(IFRAME_EL, "<iframe src=\"\\2?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>")
     converted = converted.gsub(INTERNAL_IMAGE_EL, "<img src=\"\\2/system/images/#{target}/\\4\\5\">") if target != "inline"
     converted = converted.gsub(INTERNAL_AUDIO_LINK_EL,
+          "<br/>" +
           "<object type=\"application/x-shockwave-flash\" data=\"/swf/dewplayer.swf\" width=\"300\" height=\"20\" class=\"player-fallback\">" +
           "<param name=\"movie\" value=\"/swf/dewplayer.swf\" />" +
           "<param name=\"flashvars\" value=\"mp3=\\2/system/documents/\\3\\4\" />" +
@@ -692,7 +706,23 @@ private
   
   # Returns the content into a pure text format.
   def convert_to_txt(source)
+    return "" if source.blank?
     coder = HTMLEntities.new
     coder.decode source.gsub(/<\/p>/, "\n").gsub(/<br\s*\/>/,"\n").gsub(/<([^>]*)>/,"").strip
+  end
+  
+  # Returns the duration of associated mp3 file.
+  require "mp3info"
+  def self.mp3_duration(source)
+    if source.present?
+      begin
+        Mp3Info.open(source) do |mp3|
+          return Time.at(mp3.length).utc.strftime("%H:%M:%S")
+        end
+      rescue
+        return "?"
+      end
+    end
+    ""
   end
 end

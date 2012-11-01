@@ -72,34 +72,29 @@ class MiliterController < ApplicationController
 
   def inscription
     @subscription = Subscription.new(params[:subscription])
-    respond_to do |format|
-      if @subscription.save
-        flash.now[:notice] = t('action.subscription.created')
-        recipients = User.notification_recipients "notification_subscription"
-        if not recipients.empty?
-          Notification.notification_subscription(@subscription.email, 
-                                                 recipients.join(', '),
-                                                 t('mailer.notification_subscription_subject'),
-                                                 @subscription.first_name,
-                                                 @subscription.last_name, 
-                                                 @subscription.email, 
-                                                 @subscription.address, 
-                                                 @subscription.zip_code,
-                                                 @subscription.city, 
-                                                 @subscription.phone).deliver
-        end
-        Receipt.receipt_subscription(Devise.mailer_sender, 
-                                     @subscription.email,
-                                     t('mailer.receipt_subscription_subject'),
-                                     @subscription.first_name,
-                                     @subscription.last_name,
-                                     url_for(:controller => :accueil,
-                                        :action => :index,
-                                        :only_path => false)).deliver
-        create_subscription
+    if @subscription.save
+      flash.now[:notice] = t('action.subscription.created')
+      recipients = User.notification_recipients "notification_subscription"
+      if not recipients.empty?
+        Notification.notification_subscription(@subscription.email, 
+                                               recipients.join(', '),
+                                               t('mailer.notification_subscription_subject'),
+                                               @subscription.first_name,
+                                               @subscription.last_name, 
+                                               @subscription.email, 
+                                               @subscription.address, 
+                                               @subscription.zip_code,
+                                               @subscription.city, 
+                                               @subscription.phone).deliver
       end
-      format.html { render :action => "index" }
+      Receipt.receipt_subscription(Devise.mailer_sender, 
+                                   @subscription.email,
+                                   t('mailer.receipt_subscription_subject'),
+                                   @subscription.first_name,
+                                   @subscription.last_name).deliver
+      create_subscription
     end
+    render :action => "index"
   end
 
 private

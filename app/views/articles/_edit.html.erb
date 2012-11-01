@@ -23,7 +23,7 @@
           <br/>
           <% if @article.document_file_name.present? %>
             <%= @article.title_display %> 
-            (<%= @article.document_content_type %>) |
+            (<%= @article.document_content_type %>)&nbsp;&bull;
             <%= t("activerecord.attributes.article.file_size") %>&nbsp;:
             <%= number_to_human_size @article.document_file_size %><br/>
           <% end %>
@@ -37,22 +37,26 @@
           <br/>
           <% if @article.document_file_name.present? %>
             <%= @article.title_display %> 
-            (<%= @article.document_content_type %>) |
+            (<%= @article.document_content_type %>)&nbsp;&bull;
             <%= t("activerecord.attributes.article.file_size") %>&nbsp;:
             <%= number_to_human_size @article.document_file_size %><br/>
           <% end %>
         </td>
       </tr>
-    <% else %>
-      <tr>
-        <td><%= f.label :heading %></td>
-        <td><%= f.text_field :heading, :size => "80x1" %></td>
-      </tr>
-      <tr>
-        <td><div class="mandatory">*</div><%= f.label :title %></td>
-        <td><%= f.text_field :title, :size => "80x1", :required => true %></td>
-      </tr>
     <% end %>
+    <tr>
+      <td><%= f.label :heading %></td>
+      <td><%= f.text_field :heading, :size => "80x1" %></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td><%= f.check_box :show_heading %> <%= f.label :show_heading %>
+      </td>
+    </tr>
+    <tr>
+      <td><%= f.label :title %></td>
+      <td><%= f.text_field :title, :size => "80x1" %></td>
+    </tr>
     <% if @article.category_option?(:start_end_dates) %>
       <tr>
         <td><%= f.label :schedule %></td>

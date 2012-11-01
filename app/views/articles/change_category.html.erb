@@ -8,8 +8,8 @@
     <%= form_for(@article) do |f| %>
       <article class="article">
         <aside class="actions">
-          <%= f.label :category %> <%= f.select :category, Article::activated_categories(current_user) %> |
-          <a href="<%= session[:last_url] %>"><%= t('action.back') %></a> |
+          <%= f.label :category %> <%= f.select :category, Article::activated_categories(current_user) %>&nbsp;&bull;
+          <a href="<%= session[:last_url] %>"><%= t('action.back') %></a>&nbsp;&bull;
           <%= f.submit t('action.ok'), :disable_with => t('action.wait') %>
         </aside>
         <header>

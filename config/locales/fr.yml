@@ -64,6 +64,7 @@ fr:
     rss_explain_more:     "Pour vous abonner, cliquez sur la vignette d’abonnement de votre choix."
     rss_1_explain:        "Toutes les actualités"
     rss_2_explain:        "Agenda"
+    rss_3_explain:        "Podcast"
     txt_explain:          "Téléchargez les derniers articles sous forme d’un fichier portable (.txt)."
     
   alert:
@@ -382,12 +383,14 @@ fr:
         file_name:                  "Nom de fichier"
         content_type:               "Type de fichier"
         file_size:                  "Taille du fichier"
+        duration:                   "Durée"
         created_by:                 "Créé par"
         updated_by:                 "Modifié par"
         no_endtime:                 "Pas d’heure de fin"
         all_day:                    "Toute la journée"
         link_to:                    "Accès chaîne éditoriale"
         tags:                       "Mots-clés"
+        show_heading:               "Afficher le sur-titre dans les tables de matières"
       user:
         email:                      "Adresse électronique"
         password:                   "Mot de passe"
