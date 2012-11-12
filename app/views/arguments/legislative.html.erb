@@ -5,11 +5,9 @@
 </section>
 <section id="arguments-vignettes">
   <section class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_1_on_3', 
-          :locals => { :articles => @programmes, :category => 'programme' } %>
+    <%= render :partial => 'layouts/articles_1col_1_on_3', :locals => { :articles => @programmes } %>
   </section>
   <section class="content-bloc highlighted-bloc">
-    <%= render :partial => 'layouts/index_articles_simplified', 
-          :locals => { :articles => @legislatives, :category => 'legislative' } %>
+    <%= render :partial => 'layouts/articles_simplified', :locals => { :articles => @legislatives } %>
   </section>
 </section>

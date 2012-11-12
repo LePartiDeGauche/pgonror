@@ -1,12 +1,10 @@
 <section id="vudailleurs-liste">
   <section class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_2_on_3', 
-          :locals => { :articles => @blogs, :category => 'blog' } %>
+    <%= render :partial => 'layouts/articles_1col_2_on_3', :locals => { :articles => @blogs } %>
   </section>
 </section>
 <section id="vudailleurs-vignettes">
   <section class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_1_on_3', 
-          :locals => { :articles => @articlesweb, :category => 'web' } %>
+    <%= render :partial => 'layouts/articles_1col_1_on_3', :locals => { :articles => @articlesweb } %>
   </section>
 </section>

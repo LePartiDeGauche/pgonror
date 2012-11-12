@@ -1,16 +1,13 @@
 <section id="arguments-programme">
   <section id="arguments-programmes-content" class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_1_on_2', 
-          :locals => { :articles => @programmes, :category => 'programme' } %>
+    <%= render :partial => 'layouts/articles_1col_1_on_2', :locals => { :articles => @programmes } %>
   </section>
   <section id="arguments-legislatives-content" class="content-bloc highlighted-bloc">
-    <%= render :partial => 'layouts/index_articles_simplified', 
-          :locals => { :articles => @legislatives, :category => 'legislative' } %>
+    <%= render :partial => 'layouts/articles_simplified', :locals => { :articles => @legislatives } %>
   </section>
 </section>
 <section id="arguments-arguments">
   <section id="arguments-arguments-content" class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_1_on_2', 
-          :locals => { :articles => @arguments, :category => 'argument' } %>
+    <%= render :partial => 'layouts/articles_1col_1_on_2', :locals => { :articles => @arguments } %>
   </section>
 </section>

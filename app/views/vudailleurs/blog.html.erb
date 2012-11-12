@@ -5,7 +5,7 @@
   <% unless @attached_articles.nil? or @attached_articles.empty? %>
     <section class="content-bloc">
       <h1><%= t("action.article.attached") %>&nbsp;&bull;</h1>
-      <%= render :partial => 'layouts/index_articles_1col_2_on_3_search', 
+      <%= render :partial => 'layouts/articles_1col_2_on_3_search', 
                  :locals => { 
                    :articles => @attached_articles } %>
     </section>
@@ -13,7 +13,7 @@
 </section>
 <section id="vudailleurs-vignettes">
   <section class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_1_on_3', 
+    <%= render :partial => 'layouts/articles_1col_1_on_3', 
                :locals => { 
                  :articles => @articlesweb, 
                  :category => 'web' } %>

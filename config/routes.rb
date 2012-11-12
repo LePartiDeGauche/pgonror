@@ -34,32 +34,17 @@ PartiDeGauche::Application.routes.draw do
   match '/agauche' => 'accueil#agauche'
   match '/gavroche' => 'accueil#gavroche'
   match '/accueil' => 'accueil#index'
-  match '/actualites' => 'actualites#index'
+  match '/actualites' => 'actualites#index', :as => 'actualites'
   match '/actualites/editos' => 'actualites#editos'
   match '/actualites/edito/*uri(.format)' => 'actualites#edito'
   match '/actualites/actualites' => 'actualites#actualites'
   match '/actualites/actualite/*uri(.format)' => 'actualites#actualite'
-  match '/en-france/119-arguments/*uri(.format)' => 'actualites#actualite'
   match '/actualites/communiques' => 'actualites#communiques'
   match '/actualites/communique/*uri(.format)' => 'actualites#communique'
   match '/actualites/tout_international' => 'actualites#tout_international'
   match '/actualites/international/*uri(.format)' => 'actualites#international'
   match '/actualites/dossiers' => 'actualites#dossiers'
   match '/actualites/dossier/*uri(.format)' => 'actualites#dossier'
-  match '/legal/archive/*uri(.format)' => 'legal#archive'
-  match '/legal/source/*uri(.format)' => 'legal#source'
-  match '/editos/arguments/*uri(.format)' => 'arguments#argument'
-  match '/editos/arguments' => 'arguments#arguments'
-  match '/editos/actualites-internationales/*uri(.format)' => 'actualites#international'
-  match '/editos/actualites-internationales' => 'actualites#tout_international'
-  match '/editos/internationale-autre-gauche/*uri(.format)' => 'actualites#international'
-  match '/editos/internationale-autre-gauche' => 'actualites#tout_international'
-  match '/editos/actualites/*uri' => 'actualites#edito'
-  match '/editos/actualites' => 'actualites#actualites'
-  match '/editos/*uri' => 'actualites#edito'
-  match '/editos' => 'actualites#editos'
-  match '/article/*uri' => 'actualites#actualite'
-  match '/international/' => 'actualites#tout_international'
   match '/adherent' => 'adherent#index', :as => 'adherents'
   match '/adherent/article/*uri(.format)' => 'adherent#article'
   match '/adherent/search' => 'adherent#search', :as => 'adherent_search'
@@ -73,16 +58,10 @@ PartiDeGauche::Application.routes.draw do
   match '/contact' => 'contact#index'
   match '/comites/*uri(.format)' => 'contact#departement'
   match '/comites' => 'contact#index'
-  match '/contact/departement/*uri(.format)' => 'contact#departement'
-  match '/contacts-locaux-2/*uri(.format)' => 'contact#departement'
-  match '/contact/contacts-locaux-2/*uri(.format)' => 'contact#departement'
-  match '/contact/contacts-locaux-2' => 'contact#index'
   match '/envoyer_message' => 'contact#envoyer_message'
   match '/educpop' => 'educpop#index'
   match '/educpop/dates' => 'educpop#dates'
   match '/educpop/date/*uri(.format)' => 'educpop#date'
-  match '/educpop/vendredis' => 'educpop#vendredis'
-  match '/educpop/vendredi/*uri(.format)' => 'educpop#vendredi'
   match '/educpop/librairie' => 'educpop#librairie'
   match '/educpop/livre/*uri(.format)' => 'educpop#livre'
   match '/educpop/lectures' => 'educpop#lectures'
@@ -91,7 +70,7 @@ PartiDeGauche::Application.routes.draw do
   match '/educpop/revue/*uri(.format)' => 'educpop#revue'
   match '/educpop' => 'educpop#index'
   match '/militer' => 'militer#index'
-  match '/militer/agenda' => 'militer#agenda'
+  match '/militer/agenda' => 'militer#agenda', :as => "agenda"
   match '/militer/evenement/*uri(.format)' => 'militer#evenement'
   match '/militer/tracts' => 'militer#tracts'
   match '/militer/tract/*uri(.format)' => 'militer#tract'
@@ -117,33 +96,38 @@ PartiDeGauche::Application.routes.draw do
   match '/photos' => 'photos#index'
   match '/photos/diaporama/*uri(.format)' => 'photos#diaporama'
   match '/lateledegauche' => 'videos#lateledegauche'
+  match '/lateledegauche/conferences' => 'videos#conferences'
+  match '/lateledegauche/conference/*uri(.format)' => 'videos#conference'
+  match '/lateledegauche/videospresdechezvous' => 'videos#videospresdechezvous'
+  match '/lateledegauche/presdechezvous/*uri(.format)' => 'videos#presdechezvous'
+  match '/lateledegauche/medias' => 'videos#medias'
+  match '/lateledegauche/media/*uri(.format)' => 'videos#media'
+  match '/lateledegauche/videosagitprop' => 'videos#videosagitprop'
+  match '/lateledegauche/agitprop/*uri(.format)' => 'videos#agitprop'
+  match '/lateledegauche/touteducpop' => 'videos#touteducpop'
+  match '/lateledegauche/educpop/*uri(.format)' => 'videos#educpop'
+  match '/lateledegauche/videosencampagne' => 'videos#videosencampagne'
+  match '/lateledegauche/encampagne/*uri(.format)' => 'videos#encampagne'
+  match '/lateledegauche/videosfdg' => 'videos#videosfdg'
+  match '/lateledegauche/fdg/*uri(.format)' => 'videos#fdg'
   match '/videos' => 'videos#index'
   match '/videos/video/*uri(.format)' => 'videos#video'
   match '/viedegauche' => 'viedegauche#index'
   match '/viedegauche/article/*uri(.format)' => 'viedegauche#article'
   match '/viedegauche/journauxvdg' => 'viedegauche#journauxvdg'
   match '/viedegauche/journalvdg/*uri(.format)' => 'viedegauche#journalvdg'
-  match '/vie-du-pg/vie-de-gauche/' => 'viedegauche#index'
-  match '/vie-du-pg' => 'viedegauche#index'
-  match '/chroniques' => 'viedegauche#index'
   match '/vudailleurs' => 'vudailleurs#index'
   match '/vudailleurs/articlesweb' => 'vudailleurs#articlesweb'
   match '/vudailleurs/articleweb/*uri(.format)' => 'vudailleurs#articleweb'
-  match '/editos/vues-dailleurs/*uri(.format)' => 'vudailleurs#articleweb'
-  match '/international/vue-d-ailleurs/*uri(.format)' => 'vudailleurs#articleweb'
   match '/vudailleurs/blogs' => 'vudailleurs#blogs'
   match '/vudailleurs/blog/*uri(.format)' => 'vudailleurs#blog'
   match '/vudailleurs/articlesblog' => 'vudailleurs#articlesblog'
   match '/vudailleurs/articleblog/*uri(.format)' => 'vudailleurs#articleblog'
   match '/vudailleurs/envoyer_message' => 'vudailleurs#envoyer_message'
-  match '/editos/vues-dailleurs/*uri(.format)' => 'vudailleurs#articleweb'
-  match '/editos/vues-dailleurs' => 'vudailleurs#articlesweb'
-  match '/en-france' => 'actualites#index'
-  match '/running' => 'accueil#index'
-  match '/index.php' => "accueil#rss", :format => :xml
-  match '/index' => 'accueil#index'
+  match '/legal/archive/*uri(.format)' => 'legal#archive'
+  match '/legal/source/*uri(.format)' => 'legal#source'
   match '/administration' => 'administration#index', :as => "administration"
-  match '/podcast' => 'podcast#index'
+  match '/podcast' => 'podcast#index', :as => "podcast"
   match '/podcast/rss' => 'podcast#rss', :format => :xml, :as => 'podcast_feed'
   match '/podcast/*uri(.format)' => 'podcast#son'
   match '/rss' => 'accueil#rss', :format => :xml, :as => 'rss_feed'
@@ -166,6 +150,34 @@ PartiDeGauche::Application.routes.draw do
   end
 
   # Insures backward comptability with legacy system
+  match '/running', :to => redirect('/')
+  match '/index.php', :to => redirect('/rss')
+  match '/index', :to => redirect('/')
+  match '/editos/arguments/*uri', :to => redirect('/arguments/argument/%{uri}')
+  match '/editos/arguments', :to => redirect('/arguments/arguments')
+  match '/editos/actualites-internationales/*uri', :to => redirect('/actualites/international/%{uri}')
+  match '/editos/actualites-internationales', :to => redirect('/actualites/tout_international')
+  match '/editos/internationale-autre-gauche/*uri', :to => redirect('/actualites/international/%{uri}')
+  match '/editos/internationale-autre-gauche', :to => redirect('/actualites/tout_international')
+  match '/editos/actualites/*uri', :to => redirect('/actualites/edito/%{uri}')
+  match '/editos/actualites', :to => redirect('/actualites/actualites')
+  match '/editos/*uri', :to => redirect('/actualites/edito/%{uri}')
+  match '/editos', :to => redirect('/actualites/editos')
+  match '/article/*uri', :to => redirect('/actualites/actualite/%{uri}')
+  match '/international/', :to => redirect('/actualites/tout_international')
+  match '/en-france/119-arguments/*uri', :to => redirect('/actualites/actualite/%{uri}')
+  match '/editos/vues-dailleurs/*uri', :to => redirect('/vudailleurs/articleweb/%{uri}')
+  match '/editos/vues-dailleurs', :to => redirect('/vudailleurs/articlesweb')
+  match '/en-france', :to => redirect('/actualites/index')
+  match '/contact/departement/*uri', :to => redirect('/comites/%{uri}')
+  match '/contacts-locaux-2/*uri', :to => redirect('/comites/%{uri}')
+  match '/contact/contacts-locaux-2/*uri', :to => redirect('/comites/%{uri}')
+  match '/contact/contacts-locaux-2', :to => redirect('/contact')
+  match '/editos/vues-dailleurs/*uri', :to => redirect('/vudailleurs/articleweb/%{uri}')
+  match '/international/vue-d-ailleurs/*uri', :to => redirect('/vudailleurs/articleweb/%{uri}')
+  match '/vie-du-pg/vie-de-gauche/', :to => redirect('/viedegauche')
+  match '/vie-du-pg', :to => redirect('/viedegauche')
+  match '/chroniques', :to => redirect('/viedegauche')
   match "/images/stories/:filename.:format", :to => redirect("/system/images/inline/stories-%{filename}.%{format}")
   match "/images/stories/illustrations/:filename.:format", :to => redirect("/system/images/inline/illustrations-%{filename}.%{format}")
   match "/images/stories/tracts/:filename.:format", :to => redirect("/system/documents/tracts-%{filename}.%{format}")

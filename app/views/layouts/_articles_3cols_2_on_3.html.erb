@@ -1,0 +1,39 @@
+<div class="inner-list">
+  <% unless articles.nil? or articles.empty? %>
+    <hgroup>
+      <h3 class="category"><%= articles[0].category_option(:category_title) %>&nbsp;&bull;</h3>
+      <% if articles[0].category_option?(:link_all_title) %>
+        <h2 class="main-title">
+          <%= link_to articles[0].category_option(:link_all_title), 
+                      :controller => articles[0].category_option(:controller), 
+                      :action => articles[0].category_option(:action_all) %>
+        </h2>
+      <% end %>
+    </hgroup>
+    <table>
+      <tr>
+        <% first_row = true %>
+        <% for article in articles %>
+          <% if not first_row %><td class="article-inter-column"></td><% end %>
+          <td class="article-one-third-column">
+            <article class="article">
+              <header>
+                <% unless article.heading.blank? %>
+                  <h4><%= article.heading_display.html_safe %></h4><br/>
+                <% end %>
+                <h1><%= link_to article.title_display.html_safe, article.path %></h1>
+              </header>
+              <%= truncate_html(article.content_with_mini.html_safe) %>
+              <footer class="actions">
+                <%= link_to (article.category_option?(:video) ? 
+                              t('titre.voir_video') :
+                              t('titre.lire_suite')), article.path %>
+              </footer>
+            </article>
+          </td>
+          <% first_row = false %>
+        <% end %>
+      </tr>
+    </table>
+  <% end %>
+</div>

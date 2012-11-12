@@ -18,13 +18,12 @@
 class PodcastController < ApplicationController
   before_filter :find_article, :only => [:son]
 
-  caches_action :index, :layout => false, :if => Proc.new { @page == 1 and params[:heading].blank? and not user_signed_in? }
+  caches_action :index, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
 
   def index
-    @pages = Article.count_pages_published_by_heading 'son', params[:heading]
-    @articles = Article.find_published_by_heading 'son', params[:heading], @page
+    @pages = Article.count_pages_published_by_heading 'son', @page_heading
+    @articles = Article.find_published_by_heading 'son', @page_heading, @page
     @headings = Article.find_published_group_by_heading 'son'
-    session[:heading] = params[:heading]
     @editos = Article.find_published 'edito', 1, 1
     @actus = Article.find_published 'actu', 1, 1
   end
@@ -38,5 +37,6 @@ class PodcastController < ApplicationController
   # RSS podcast output.
   def rss
     @articles = Article.find_published('son', 1, 50)
+    render :template => '/layouts/rss'
   end
 end

@@ -1,0 +1,36 @@
+<% unless articles.nil? or articles.empty? %>
+  <hgroup>
+    <h3 class="category"><%= articles[0].category_option(:category_title) %>&nbsp;&bull;</h3>
+    <% if articles[0].category_option?(:link_all_title) %>
+      <h2 class="main-title">
+        <%= link_to articles[0].category_option(:link_all_title), 
+                    :controller => articles[0].category_option(:controller), 
+                    :action => articles[0].category_option(:action_all) %>
+      </h2>
+    <% end %>
+  </hgroup>
+  <table>
+    <% for article in articles %>
+      <tr>
+        <td class="article-mini-column">
+          <article class="article">
+            <div class="date"><%= l article.start_datetime, :format => :short %></div>&nbsp;
+          </article>
+        </td>
+        <td>
+          <article class="article">
+            <div class="date-title">
+              <% if article.content.present? and article.content.length > 0 %>
+                <strong>
+              <% end %>
+              <%= link_to article.title_display.html_safe, article.path %>
+              <% if article.content.present? and article.content.length > 0 %>
+                </strong>
+              <% end %>
+            </div>
+          </article>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+<% end %>

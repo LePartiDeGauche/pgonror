@@ -1,6 +1,6 @@
 <section id="editos">
   <section id="editos-content" class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_1_on_4', :locals => { :articles => @edito, :category => "edito" } %>
+    <%= render :partial => 'layouts/articles_1col_1_on_4', :locals => { :articles => @edito } %>
   </section>
 </section>
 <section id="recent">
@@ -9,7 +9,7 @@
   </section>
   <section id="communique">
     <section id="communique-content" class="content-bloc">
-      <%= render :partial => 'layouts/index_articles_simplified', :locals => { :articles => @communiques, :category => "com" } %>
+      <%= render :partial => 'layouts/articles_simplified', :locals => { :articles => @communiques } %>
     </section>
   </section>
   <section id="inter">
@@ -20,7 +20,7 @@
 </section>
 <section id="actualites">
   <section id="actualites-content" class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_1_on_4', :locals => { :articles => @dossier, :category => "dossier" } %>
+    <%= render :partial => 'layouts/articles_1col_1_on_4', :locals => { :articles => @dossier } %>
   </section>
 </section>
 <section id="campagne">
@@ -31,25 +31,23 @@
 <section id="videos">
   <section id="videos-content" class="content-bloc highlighted-bloc">
     <% unless @videos.nil? %>
-      <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', 
-                 :locals => { :articles => @videos, :category => "video", :title => :zoom } %>
+      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @videos, :title => :zoom } %>
     <% end %>
   </section>
 </section>
 <section id="vdg-photos">
   <section id="ailleurs-content" class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', :locals => { :articles => @ailleurs, :category => "web", :title => :zoom } %>
+    <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @ailleurs, :title => :zoom } %>
   </section>
   <section id="vdg">
     <section id="vdg-content" class="content-bloc">
-      <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', :locals => { :articles => @vdg, :category => "articlevdg", :title => :zoom } %>
+      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @vdg, :title => :zoom } %>
     </section>
   </section>
   <section id="diapos">
     <section id="diapos-content" class="content-bloc highlighted-bloc">
       <% unless @diapos.nil? %>
-        <%= render :partial => 'layouts/index_articles_1col_1_on_3_diaporama', 
-                   :locals => { :articles => @diapos, :category => "diaporama" } %>
+        <%= render :partial => 'layouts/articles_1col_1_on_3_diaporama', :locals => { :articles => @diapos } %>
       <% end %>
     </section>
   </section>
@@ -57,17 +55,17 @@
 <section id="arguments-blogs">
   <section id="arguments">
     <section id="arguments-content" class="content-bloc highlighted-bloc">
-      <%= render :partial => 'layouts/index_articles_simplified', :locals => { :articles => @arguments, :category => "argument" } %>
+      <%= render :partial => 'layouts/articles_simplified', :locals => { :articles => @arguments } %>
     </section>
   </section>
   <section id="blogs">
     <section id="blogs-content" class="content-bloc">
-      <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', :locals => { :articles => @directblogs, :category => "directblog", :title => :zoom } %>
+      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @directblogs, :title => :zoom } %>
     </section>
   </section>
   <section id="librairie">
     <section id="librairie-content" class="content-bloc">
-      <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', :locals => { :articles => @livres, :category => "livre", :title => :hide } %>
+      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @livres, :title => :hide } %>
     </section>
   </section>
 </section>
@@ -75,13 +73,12 @@
   <section id="agenda-content" class="content-bloc">
     <% unless @evenements.nil? %>
       <div class="rss"><%= link_to icon_medium('rss.png'), militer_rss_feed_path, :target => "_blank" %></div>
-      <%= render :partial => 'layouts/index_articles_1col_1_on_3_agenda', 
-                 :locals => { :articles => @evenements, :category => "evenement" } %>
+      <%= render :partial => 'layouts/articles_1col_1_on_3_agenda', :locals => { :articles => @evenements } %>
     <% end %>
   </section>
   <section id="tracts">
     <section id="tracts-content" class="content-bloc">
-      <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', :locals => { :articles => @tracts, :category => "tract", :title => :hide } %>
+      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @tracts, :title => :hide } %>
     </section>
   </section>
 </section>

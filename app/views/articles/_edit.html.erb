@@ -89,7 +89,7 @@
       <td><%= f.label :source_id %></td>
       <td><%= f.select :source_id, @sources, {:include_blank => true}, :style => 'width: 512px;' %></td>
     </tr>
-    <% if @article.category_option?(:parent) %>
+    <% if @article.category_option?(:parent) or @article.category_option?(:source) %>
       <tr>
         <td><%= f.label :external_id %></td>
         <td><%= f.text_field :external_id, :size => "80x1" %></td>

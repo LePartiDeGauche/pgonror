@@ -5,13 +5,6 @@
 </section>
 <section id="vudailleurs-vignettes">
   <section class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_1_on_3', 
-          :locals => { :articles => @articlesvdg, :category => 'articlevdg' } %>
+    <%= render :partial => 'layouts/articles_1col_1_on_3', :locals => { :articles => @articlesvdg } %>
   </section>
-  <% unless @headings.empty? %>
-    <section class="content-bloc">
-      <%= render :partial => 'layouts/table_of_content', 
-            :locals => { :headings => @headings, :category => 'articlevdg' } %>
-    </section>
-  <% end %>
 </section>

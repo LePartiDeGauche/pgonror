@@ -3,12 +3,7 @@
     <% unless @article.nil? or @article.image.nil? %>
       <article class="article">
         <header>
-          <h1>
-            <%= link_to @article.title_display.html_safe,
-                  :controller => @article.category_option(:controller),
-                  :action => @article.category_option(:action),
-                  :uri => @article.uri %>
-          </h1>
+          <h1><%= link_to @article.title_display.html_safe, @article.path %></h1>
         </header>
           <p class="photos">
             <%= link_to image_tag(@article.image.url(:inline)),
@@ -26,8 +21,7 @@
           <% end %>
       </article>
     <% else %>
-      <%= render :partial => 'diaporamas', 
-                 :locals => { :articles => @articles, :category => 'diaporama' } %>
+      <%= render :partial => 'diaporamas', :locals => { :articles => @articles } %>
     <% end %>
   </section>
 </section>

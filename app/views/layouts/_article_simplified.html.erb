@@ -6,10 +6,10 @@
         <%= link_to icon('external.png'), article, :target => "_blank" %>
       <% end %>
       <% if not article.category_option?(:hide_category_name) %>
-        <h3 class="category"><%= article.category_display %>&nbsp;&bull;</h3>
+        <h3 class="category"><%= article.category_display %></h3>&nbsp;&bull;
       <% end %>
       <% unless article.heading.blank? %>
-        <h4><%= article.heading_display.html_safe %></h4>
+        <h4><%= article.heading_display.html_safe %></h4>&nbsp;&bull;
       <% end %>
       <h1><%= article.title_display.html_safe %></h1>
     </header>

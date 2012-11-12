@@ -2,7 +2,7 @@
   <div class="date"><%= l @article.published_at, :format => :long_ordinal %></div>&nbsp;
   <%= @article.signature if @article.category_option?(:signature) %>
 </div>
-<% if @article.category_option?(:parent) and not @article.external_id.blank? and not @article.external_id.blank? %>
+<% if not @article.external_id.blank? %>
   <strong><%= t('activerecord.attributes.article.external_id') %></strong>&nbsp;:
   <%= @article.external_id %><br/>
 <% end %>

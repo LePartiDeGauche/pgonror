@@ -1,8 +1,7 @@
 <section id="militer-liste">
   <section class="content-bloc">
     <div class="rss"><%= link_to icon_medium('rss.png'), militer_rss_feed_path, :target => "_blank" %></div>
-    <%= render :partial => 'layouts/index_articles_1col_2_on_3_agenda', 
-          :locals => { :articles => @articles, :category => 'evenement' } %>
+    <%= render :partial => 'layouts/articles_1col_2_on_3_agenda', :locals => { :articles => @articles } %>
   </section>
 </section>
 <section id="militer-vignettes">
@@ -10,7 +9,7 @@
     <div id="carte" style="width:292px;height:354px;"></div>
   </section>
   <section class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', :locals => { :articles => @tracts, :category => "tract", :title => :hide } %>
+    <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @tracts, :title => :hide } %>
   </section>
 </section>
 <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyARG0BrRKKXVO06jeS5NamKyW5SX8sVBbw&sensor=false" type="text/javascript"></script>

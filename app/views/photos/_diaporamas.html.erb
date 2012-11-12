@@ -1,34 +1,29 @@
-<hgroup>
-  <h3 class="category">
-    <%= Article::category_option(category, :category_title) %>&nbsp;&bull;
-  </h3>
-</hgroup>
-<ol>
-  <% for article in articles %>
-    <li>
-      <article class="article">
-        <header>
-          <h1>
-            <%= link_to article.title_display.html_safe,
-                  :controller => Article::category_option(category, :controller),
-                  :action => Article::category_option(category, :action),
-                  :uri => article.uri %>
-          </h1>
-        </header>
-        <% if article.category_option?(:parent) %>
-          <p class="photos">
-            <% for photo in article.find_published_by_folder(1,3) %>
-              <% unless photo.image.nil? %>
-                <%= link_to image_tag(photo.image.url(:medium)),
-                            :controller => :photos,
-                            :action => :diaporama,
-                            :uri => article.uri %>
+<% unless articles.nil? or articles.empty? %>
+  <hgroup>
+    <h3 class="category"><%= articles[0].category_option(:category_title) %>&nbsp;&bull;</h3>
+  </hgroup>
+  <ol>
+    <% for article in articles %>
+      <li>
+        <article class="article">
+          <header>
+            <h1><%= link_to article.title_display.html_safe, article.path %></h1>
+          </header>
+          <% if article.category_option?(:parent) %>
+            <p class="photos">
+              <% for photo in article.find_published_by_folder(1,3) %>
+                <% unless photo.image.nil? %>
+                  <%= link_to image_tag(photo.image.url(:medium)),
+                              :controller => :photos,
+                              :action => :diaporama,
+                              :uri => article.uri %>
+                <% end %>
               <% end %>
-            <% end %>
-          </p>
-        <% end %>
-      </article>
-    </li>
-  <% end %>
-  <%= render :partial => 'layouts/page_navigator' %>
-</ol>
+            </p>
+          <% end %>
+        </article>
+      </li>
+    <% end %>
+    <%= render :partial => 'layouts/page_navigator' %>
+  </ol>
+<% end %>

@@ -1,0 +1,33 @@
+<% unless articles.nil? or articles.empty? %>
+  <hgroup>
+    <h3 class="category"><%= articles[0].category_option(:category_title) %>&nbsp;&bull;</h3>
+  </hgroup>
+  <table>
+    <% for article in articles %>
+      <tr>
+        <td>
+          <article class="article">
+            <header>
+              <div class="date"><%= article.start_end_datetime_display %></div>
+            </header>
+          </article>
+        </td>
+        <td class="article-inter-column"></td>
+        <td>
+          <article class="article">
+            <header>
+              <h1><%= link_to article.title_display.html_safe, article.path %></h1>
+              <% unless article.address.blank? %><br/><%= article.address %><% end %>
+            </header>
+            <% if article.content.present? and article.content.length > 0 %>
+              <%= link_to (article.category_option?(:video) ? 
+                            t('titre.voir_video') :
+                            t('titre.lire_suite')), article.path %>
+            <% end %>
+          </article>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+  <footer><%= render :partial => 'layouts/page_navigator' %></footer>
+<% end %>

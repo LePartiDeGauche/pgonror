@@ -26,6 +26,7 @@ protected
   def page_number
     @page = params[:page].present? ? params[:page].to_i : 1
     @pages = 1
+    @page_heading = params[:heading]
     session[:search] = nil
     session[:category] = nil
     session[:parent] = nil
@@ -60,13 +61,6 @@ protected
     end
   end
   
-  # Selects information for the footer.
-  def footer
-    @footer_evenements = Article.find_published_order_by_start_datetime 'evenement', 1, 5
-    @footer_videos = Article.find_published 'video', 1, 1
-    @footer_diapos = Article.find_published 'diaporama', 1, 1
-  end
-
   # Controls signed user is an administrator.
   def authenticate_administrator!
     @norobot = true
@@ -131,7 +125,7 @@ protected
       @article = Article.find_published_by_uri params[:uri]
       if @article.nil?
         log_warning "find_article: not found"
-        render :template => '/layouts/error.html.erb', :status => '404'
+        render :template => '/layouts/error', :formats => :html, :status => '404'
       else
         controller = @article.category_option(:controller)
         action = @article.category_option(:action)
@@ -140,9 +134,9 @@ protected
            action.nil? or 
            (access_level.present? and access_level == :reserved and current_user.access_level != "reserved") 
           log_warning "find_article: no access"
-          render :template => '/layouts/error.html.erb', :status => '404'
+          render :template => '/layouts/error', :formats => :html, :status => '404'
         else
-          @page_title = (@article.heading.present? ? @article.heading + " - " : "") + @article.title
+          @page_title = (@article.heading.present? ? @article.heading + " • " : "") + @article.title
           @page_keywords = @article.tags_display
           @page_description = @article.description
           @source = @article.source if @article.present? and not @article.source_id.nil?

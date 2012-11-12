@@ -258,7 +258,7 @@ class ArticleBase < ActiveRecord::Base
   
   # Returns the content of the article prepared for a specific display of images and videos.
   def content_only_with_inline; content_only_with("inline", INLINE_WIDTH, INLINE_HEIGHT) end
-  def content_with_large; content_with("large", LARGE_WIDTH, LARGE_HEIGHT) end
+  def content_with_large; content_with("large", LARGE_WIDTH, LARGE_HEIGHT, 2*LARGE_HEIGHT) end
   def content_with_medium; content_with("medium", MEDIUM_WIDTH, MEDIUM_HEIGHT) end
   def content_replaced_with_medium; content_replaced_with("medium", MEDIUM_WIDTH, MEDIUM_HEIGHT) end
   def content_with_small; content_with("small", SMALL_WIDTH, SMALL_HEIGHT) end
@@ -293,42 +293,6 @@ class ArticleBase < ActiveRecord::Base
     }
   end
   
-  # Returns the list of categories that can be included in searches.
-  def self.searchable_categories
-    searchable = ""
-    for category in categories
-      if category_option?(category[1], :searchable) 
-        searchable << "," unless searchable.blank? 
-        searchable << "'#{category[1]}'"
-      end   
-    end
-    searchable
-  end
-
-  # Returns the list of categories that can be included in searches.
-  def self.feedable_categories
-    searchable = ""
-    for category in categories
-      if not category_option?(category[1], :unfeedable)
-        searchable << "," unless searchable.blank?
-        searchable << "'#{category[1]}'"
-      end
-    end
-    searchable
-  end
-
-  # Returns the list of categories with access_level = 'reserved'.
-  def self.access_level_reserved_categories
-    searchable = ""
-    for category in categories
-      if :reserved == category_option(category[1], :access_level)
-        searchable << "," unless searchable.blank? 
-        searchable << "'#{category[1]}'"
-      end   
-    end
-    searchable
-  end
-
   # Returns available tags, unused by any article.
   def unused_tags
     Tag.select("tag").
@@ -397,6 +361,7 @@ class ArticleBase < ActiveRecord::Base
   # Returns a description of the article.
   def description
     description = content_to_txt
+    description = (description[0..150] + "…") if description.size > 150
     description << " [" + self.tags_display + "]" if not self.tags.empty?
     description
   end
@@ -642,21 +607,21 @@ private
   INLINE_REFERENCE_EL = /src=\"\/system\/([^\"]*)\"/i
 
   # Returns the content of the article with the reference of images or videos transformed with appropriate format.
-  def content_with(target, width, height)
-    source = convert_content_with available_content, target, width, height 
+  def content_with(target, width, height, videoheight=height)
+    source = convert_content_with available_content, target, width, height, videoheight 
     source.gsub(ANY_IMAGE_EL, "<img src=\"\\2\">")
   end
   
   # Returns the content of the article with the reference of images or videos transformed with appropriate format.
-  def content_only_with(target, width, height)
-    convert_content_with content, target, width, height
+  def content_only_with(target, width, height, videoheight=height)
+    convert_content_with content, target, width, height, videoheight
   end
 
   # Returns a reference of an image or a video transformed with appropriate format found from the content of the article. 
   # When a reference if found, only the transformed reference (so an image or a video) is returned.
   # When no reference if found, the content is returned with no transformation.
-  def content_replaced_with(target, width, height)
-    source = convert_content_with available_content, target, width, height 
+  def content_replaced_with(target, width, height, videoheight=height)
+    source = convert_content_with available_content, target, width, height, videoheight 
     extract = source[ANY_IMAGE_EL]
     return extract.gsub(ANY_IMAGE_EL, "<img src=\"\\2\" width=\"#{width}\" height=\"#{height}\">") if extract.present? 
     extract = source[DMOTION_TAG]
@@ -684,11 +649,11 @@ private
 
   # Returns the content of the given source or text with the reference of images or videos transformed with appropriate format.
   # No transformation is made of 'inline' format, which is format used for storage.
-  def convert_content_with(source, target, width, height)
+  def convert_content_with(source, target, width, height, videoheight=height)
     return "" if source.nil?
     converted = source.gsub(DMOTION_TAG, "<iframe src=\"http://www.dailymotion.com/embed/video/\\1?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>").
                        gsub(DAILYMOTION_OLD, "<iframe src=\"\\4?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>").
-                       gsub(IFRAME_EL, "<iframe src=\"\\2?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>")
+                       gsub(IFRAME_EL, "<iframe src=\"\\2?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{videoheight}\"></iframe>")
     converted = converted.gsub(INTERNAL_IMAGE_EL, "<img src=\"\\2/system/images/#{target}/\\4\\5\">") if target != "inline"
     converted = converted.gsub(INTERNAL_AUDIO_LINK_EL,
           "<br/>" +

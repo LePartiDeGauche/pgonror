@@ -1,14 +1,42 @@
-<section id="videos-liste">
-  <section class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_2_on_3', 
-               :locals => { :articles => @articles, :category => 'video' } %>
+<section id="lateledegauche-conferences">
+  <section id="lateledegauche-conference">
+    <section id="lateledegauche-conference-content" class="content-bloc">
+      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @conferences, :title => :zoom } %>
+    </section>
+  </section>
+  <section id="lateledegauche-videoagitprop">
+    <section id="lateledegauche-videoagitprop-content" class="content-bloc">
+      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @videosagitprop, :title => :zoom } %>
+    </section>
+  </section>
+  <section id="lateledegauche-videoevenement">
+    <section id="lateledegauche-videoevenement-content" class="content-bloc highlighted-bloc">
+      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @videosevenement, :title => :zoom } %>
+    </section>
   </section>
 </section>
-<section id="videos-vignettes">
-  <% unless @headings.empty? %>
-    <section class="content-bloc">
-      <%= render :partial => 'layouts/table_of_content', 
-            :locals => { :headings => @headings, :category => 'video' } %>
+<section id="lateledegauche-medias">
+  <section id="lateledegauche-media">
+    <section id="lateledegauche-media-content" class="content-bloc">
+      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @medias, :title => :zoom } %>
     </section>
-  <% end %>
+  </section>
+  <section id="lateledegauche-videofdg">
+    <section id="lateledegauche-videofdg-content" class="content-bloc highlighted-bloc">
+      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @videosfdg, :title => :zoom } %>
+    </section>
+  </section>
+  <section id="lateledegauche-encampagne">
+    <section id="lateledegauche-encampagne-content" class="content-bloc">
+      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @encampagne, :title => :zoom } %>
+    </section>
+  </section>
+</section>
+<section id="lateledegauche-videoseduc">
+  <%= render :partial => 'tele_de_gauche_dm' %>
+  <section id="lateledegauche-videoeduc">
+    <section id="lateledegauche-videoeduc-content" class="content-bloc">
+      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @videoseduc, :title => :zoom } %>
+    </section>
+  </section>
 </section>

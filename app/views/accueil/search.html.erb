@@ -5,7 +5,7 @@
       <h1><%= params[:search] %></h1>
     </header>
     <% unless @searched_articles.nil? or @searched_articles.empty? %>
-      <%= render :partial => 'layouts/index_articles_1col_2_on_3_search',
+      <%= render :partial => 'layouts/articles_1col_2_on_3_search',
                  :locals => { :articles => @searched_articles } %>
     <% else %>
       <ol><%= t('article.empty') %></ol>
@@ -14,19 +14,15 @@
 </section>
 <section id="search-vignettes">
   <section class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', 
-          :locals => { :articles => @editos, :category => 'edito' } %>
+    <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @editos } %>
   </section>
   <section class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', 
-          :locals => { :articles => @actus, :category => 'actu' } %>
+    <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @actus } %>
   </section>
   <section class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', 
-          :locals => { :articles => @communiques, :category => 'com' } %>
+    <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @communiques } %>
   </section>
   <section class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', 
-          :locals => { :articles => @tout_international, :category => 'inter' } %>
+    <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @tout_international } %>
   </section>
 </section>

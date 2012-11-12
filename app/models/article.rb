@@ -115,6 +115,13 @@ class Article < ArticleBase
     (self.zoom ? " - #{I18n.t('activerecord.attributes.article.zoom')}" : "") +
     '</div>'
   end
+  
+  # Returns the canonical path to the article.
+  def path
+    {:controller => self.category_option(:controller),
+     :action => self.category_option(:action),
+     :uri => self.uri}
+  end
 
   # Selects published article based on uri.  
   def self.find_published_by_uri(uri)
@@ -287,6 +294,11 @@ class Article < ArticleBase
     find_by_criteria({:status => ONLINE, :category => category, :exclude_zoom => true}, page, limit)
   end
 
+  # Selects published video articles.  
+  def self.find_published_video_exclude_zoom(page = 1, limit = ARTICLES_PER_PAGE)
+    find_by_criteria({:status => ONLINE, :video => true, :exclude_zoom => true}, page, limit)
+  end
+
   # Searches published articles.  
   def self.search_published(search, page = 1, limit = ARTICLES_PER_PAGE)
     find_by_criteria({:status => ONLINE, :searchable => true, :search => search}, page, limit)
@@ -340,13 +352,50 @@ class Article < ArticleBase
   end
   
 private
- 
+
+  # Returns the list of categories defined with the given option.
+  def self.categories_with(option)
+    searchable = ""
+    for category in categories
+      if category_option?(category[1], option) 
+        searchable << "," unless searchable.blank? 
+        searchable << "'#{category[1]}'"
+      end   
+    end
+    searchable
+  end
+
+  # Returns the list of categories not defined with the given option.
+  def self.categories_without(option)
+    searchable = ""
+    for category in categories
+      if not category_option?(category[1], option)
+        searchable << "," unless searchable.blank?
+        searchable << "'#{category[1]}'"
+      end
+    end
+    searchable
+  end
+
+  # Returns the list of categories with access_level = 'reserved'.
+  def self.access_level_reserved_categories
+    searchable = ""
+    for category in categories
+      if :reserved == category_option(category[1], :access_level)
+        searchable << "," unless searchable.blank? 
+        searchable << "'#{category[1]}'"
+      end   
+    end
+    searchable
+  end
+
   # Defines the SQL where clause for selecting articles based on various criteria.
   # - status: selects articles with a given status.
   # - category: selects articles with a given category.
   # - parent: selects articles with a given parent_id.
   # - source: selects articles with a given source_id.
   # - id: selects articles with a given id.
+  # - video: selects articles with a 'video' category.
   # - searchable: selects articles with a 'searchable' category.
   # - feedable: selects articles without a 'unfeedable' category.
   # - access_level_reserved: selects articles with the 'reserved' access level.
@@ -367,8 +416,9 @@ private
       (options[:id].present? ? " and id = #{options[:id]}" : "") +
       (options[:zoom].present? ? " and zoom = 't'" : "") +
       (options[:exclude_zoom].present? ? " and (zoom is null or zoom != 't')" : "") +
-      (options[:searchable].present? ? " and category in (#{searchable_categories})" : "") +
-      (options[:feedable].present? ? " and category in (#{feedable_categories})" : "") +
+      (options[:video].present? ? " and category in (#{categories_with(:video)})" : "") +
+      (options[:searchable].present? ? " and category in (#{categories_with(:searchable)})" : "") +
+      (options[:feedable].present? ? " and category in (#{categories_without(:unfeedable)})" : "") +
       (options[:access_level_reserved].present? ? " and category in (#{access_level_reserved_categories})" : "") +
       (options[:heading].present? ? " and heading = #{quote(options[:heading])}" : "") +
       (options[:search].present? ? 

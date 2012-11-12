@@ -43,7 +43,7 @@ class MiliterController < ApplicationController
   # RSS output based on recent articles.
   def rss
     @articles = Article.find_published_order_by_start_datetime 'evenement', 1, 50
-    render :template => 'layouts/rss.xml'
+    render :template => 'layouts/rss'
   end
   
   def tracts

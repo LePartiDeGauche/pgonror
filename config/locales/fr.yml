@@ -94,7 +94,7 @@ fr:
     select:         "Sélectionnez"
     download:       "Téléchargez le document"
     download_audio: "Téléchargez le contenu audio"
-    share:          "Partagez cet article sur les réseaux sociaux à l’aide des liens ci-dessous ou copiez le lien court suivant dans vos messages :"
+    share:          "Partagez cet article sur les réseaux sociaux à l’aide des liens ci-dessous :"
     insert:         "Inserer dans l’article"
     article:
       create:             "Créer du contenu"
@@ -369,7 +369,7 @@ fr:
         end_datetime:               "Heure de fin"
         agenda:                     "Effectuer une entrée dans l’agenda"
         email:                      "Contact"
-        external_id:                "Lien photothèque"
+        external_id:                "Lien externe"
         address:                    "Lieu"
         image:                      "Image"
         document:                   "Document"

@@ -1,0 +1,29 @@
+<% unless articles.nil? or articles.empty? %>
+  <hgroup>
+    <h3 class="category"><%= articles[0].category_option(:category_title) %>&nbsp;&bull;</h3>
+    <% if articles[0].category_option?(:link_all_title) %>
+      <h2 class="main-title">
+        <%= link_to articles[0].category_option(:link_all_title), 
+                    :controller => articles[0].category_option(:controller), 
+                    :action => articles[0].category_option(:action_all) %>
+      </h2>
+    <% end %>
+  </hgroup>
+  <ol>
+    <% for article in articles %>
+      <li>
+        <hr/>
+        <article class="article">
+          <h1>
+            <%= link_to article.path do %>
+              <% unless article.heading.blank? %>
+                <%= article.heading_display.html_safe %>&nbsp;&bull;
+              <% end %>
+              <%= article.title_display.html_safe %>
+            <% end %>
+          </h1>
+        </article>
+      </li>
+    <% end %>
+  </ol>
+<% end %>

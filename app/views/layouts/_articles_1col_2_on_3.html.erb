@@ -1,0 +1,39 @@
+<% unless articles.nil? or articles.empty? %>
+  <hgroup>
+    <h3 class="category"><%= articles[0].category_option(:category_title) %>&nbsp;&bull;</h3>
+  </hgroup>
+  <ol>
+    <% for article in articles %>
+      <li>
+        <hr/>
+        <article class="article">
+          <header>
+            <% unless article.heading.blank? %>
+              <h4><%= article.heading_display.html_safe %></h4><br/>
+            <% end %>
+            <h1><%= link_to article.title_display.html_safe, article.path %></h1>
+            <% unless article.source_id.nil? %>
+              <br/>
+              <h2 class="main-title"><%= link_to article.source_display.html_safe, article.source.path %></h2>
+            <% end %>
+            <div class="signature">
+              <div class="date"><%= l article.published_at, :format => :long_ordinal %></div>&nbsp;
+              <%= article.signature if article.category_option?(:signature) %>
+            </div>
+          </header>
+          <br/>
+          <% if article.category_option?(:audio) %>
+            <%= render :partial => 'layouts/audio', :locals => {:article => article} %>
+          <% end %>
+          <%= truncate_html(article.content_with_large.html_safe) %>
+          <footer class="actions">
+            <%= link_to (article.category_option?(:video) ? 
+                            t('titre.voir_video') :
+                            t('titre.lire_suite')), article.path %>
+          </footer>
+        </article>
+      </li>
+    <% end %>
+    <footer><%= render :partial => 'layouts/page_navigator' %></footer>
+  </ol>
+<% end %>

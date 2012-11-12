@@ -14,17 +14,15 @@
 # 
 # See doc/COPYRIGHT.rdoc for more details.
 class EducpopController < ApplicationController
-  before_filter :find_article, :only => [:date, :vendredi, :livre, :lecture, :revue ]
+  before_filter :find_article, :only => [:date, :livre, :lecture, :revue ]
   before_filter :load_side_articles, :only => [:index, 
                                                :date, :dates,
-                                               :vendredi, :vendredis,
                                                :livre, :librairie,
                                                :lecture, :lectures,
                                                :revue, :revues]
 
   caches_action :index, :layout => false, :if => Proc.new { not user_signed_in? }
   caches_action :dates, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
-  caches_action :vendredis, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
   caches_action :librairie, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
   caches_action :lectures, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
   caches_action :revues, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
@@ -38,14 +36,6 @@ class EducpopController < ApplicationController
   end
   
   def date
-  end
-  
-  def vendredis
-    @pages = Article.count_pages_published 'vendredi'
-    @articles = Article.find_published 'vendredi', @page
-  end
-  
-  def vendredi
   end
   
   def librairie
@@ -76,7 +66,6 @@ private
 
   def load_side_articles
     @dates = Article.find_published 'date', 1, 1
-    @vendredis = Article.find_published 'vendredi', 1, 3
     @livres = Article.find_published 'livre', 1, 1
     @lectures = Article.find_published 'lecture', 1, 1
     @revues = Article.find_published 'revue', 1, 1

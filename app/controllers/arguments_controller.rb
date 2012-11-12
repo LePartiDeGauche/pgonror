@@ -22,7 +22,7 @@ class ArgumentsController < ApplicationController
   caches_action :index, :layout => false, :if => Proc.new { not user_signed_in? }
   caches_action :leprogramme, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
   caches_action :arguments, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
-  caches_action :legislatives, :layout => false, :if => Proc.new { @page == 1 and params[:heading].blank? and not user_signed_in? }
+  caches_action :legislatives, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
   
   def index
   end
@@ -44,10 +44,9 @@ class ArgumentsController < ApplicationController
   end
   
   def legislatives
-    @pages = Article.count_pages_published_by_heading 'legislative', params[:heading]
-    @articles = Article.find_published_by_heading 'legislative', params[:heading], @page
+    @pages = Article.count_pages_published_by_heading 'legislative', @page_heading
+    @articles = Article.find_published_by_heading 'legislative', @page_heading, @page
     @headings = Article.find_published_group_by_heading 'legislative'
-    session[:heading] = params[:heading]
   end
   
   def legislative
@@ -56,8 +55,8 @@ class ArgumentsController < ApplicationController
 private
 
   def load_side_articles
-    @arguments = Article.find_published 'argument', 1, 3
+    @arguments = Article.find_published 'argument', 1, 20
     @legislatives = Article.find_published 'legislative', 1, 10
-    @programmes = Article.find_published 'programme', 1, 3
+    @programmes = Article.find_published 'programme', 1, 10
   end
 end

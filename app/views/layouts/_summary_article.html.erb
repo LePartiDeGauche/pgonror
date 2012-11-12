@@ -1,9 +1,7 @@
 <% unless article.nil? %>
   <article class="article">
     <hgroup>
-      <h3 class="category">
-        <%= article.category_display %>&nbsp;&bull;
-      </h3>
+      <h3 class="category"><%= article.category_display %>&nbsp;&bull;</h3>
       <% if article.category_option?(:link_all_title) %>
         <h2 class="main-title">
           <%= link_to article.category_option(:link_all_title),

@@ -89,11 +89,10 @@ private
       end
       
       # Educ Pop
-      if ['date', 'vendredi', 'livre', 'lecture', 'revue'].include?(category) or
-         ['date', 'vendredi', 'livre', 'lecture', 'revue'].include?(category_was)
+      if ['date', 'livre', 'lecture', 'revue'].include?(category) or
+         ['date', 'livre', 'lecture', 'revue'].include?(category_was)
         expire_action(:controller => 'educpop', :action => 'index') 
         expire_action(:controller => 'educpop', :action => 'dates') 
-        expire_action(:controller => 'educpop', :action => 'vendredis') 
         expire_action(:controller => 'educpop', :action => 'librairie') 
         expire_action(:controller => 'educpop', :action => 'lectures') 
         expire_action(:controller => 'educpop', :action => 'revues') 
@@ -129,6 +128,9 @@ private
       # Vidéos
       if category == 'video' or category_was == 'video'
         expire_action(:controller => 'videos', :action => 'index')
+      elsif ['conference', 'videoevenement', 'media', 'videoagitprop', 'videoeduc', 'encampagne', 'videofdg',].include?(category) or
+         ['conference', 'videoevenement', 'media', 'videoagitprop', 'videoeduc', 'encampagne', 'videofdg',].include?(category_was)
+        expire_action(:controller => 'videos', :action => 'lateledegauche')
       end
       
       # Photos

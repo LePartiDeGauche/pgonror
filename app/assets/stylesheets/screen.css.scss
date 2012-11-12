@@ -662,16 +662,19 @@ body {
   height:30px;
 }
 
-.logobox {
-  padding-top:$pg-padding;
-  padding-bottom:$pg-padding - 4px;
-}
-
 #partidegauche {
   @include float-left;
   width:span(18);
   margin-right:$blueprint-grid-margin;
+  padding-top:$pg-padding;
+  padding-bottom:$pg-padding - 4px;
   text-align:left;
+  .adhesion {
+    margin-left:6*$pg-padding;
+  }
+  .don {
+    margin-left:4*$pg-padding;
+  }
 }
 
 #frontdegauche {
@@ -679,6 +682,8 @@ body {
   padding-right:2px;
   width:span(6) - 2px;
   margin-right:0;
+  padding-top:$pg-padding;
+  padding-bottom:$pg-padding - 4px;
   text-align:right;
 }
 
@@ -888,15 +893,27 @@ $zoom-height:225px;
 @include two-columns-half("#arguments-programme", "#arguments-arguments");
 
 #arguments-arguments-content {
-  height:1000px;
+  height:800px;
+  .inner-list {
+    height:790px;
+    overflow:hidden;
+  }
 }
 
 #arguments-programmes-content {
-  height:688px;
+  height:488px;
+  .inner-list {
+    height:478px;
+    overflow:hidden;
+  }
 }
 
 #arguments-legislatives-content {
   height:300px;
+  .inner-list {
+    height:290px;
+    overflow:hidden;
+  }
 }
 
 @include two-columns-2third-1third("#arguments-liste", "#arguments-vignettes");
@@ -922,6 +939,11 @@ $zoom-height:225px;
 }
 
 #militer-agenda-content {
+  height:240px;
+}
+
+@include three-columns("#lateledegauche-conferences", "#lateledegauche-medias", "#lateledegauche-videoseduc");
+#lateledegauche-conference-content, #lateledegauche-videoagitprop-content, #lateledegauche-videoevenement-content, #lateledegauche-media-content, #lateledegauche-videofdg-content, #lateledegauche-videoeduc-content, #lateledegauche-encampagne-content {
   height:240px;
 }
 

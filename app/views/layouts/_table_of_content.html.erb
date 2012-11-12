@@ -1,26 +1,28 @@
-<hgroup>
-  <div class="information"><%=t 'general.toc_explain' %></div>
-</hgroup>
-<ol>
-  <hr/>
-  <% for heading in headings %>
-    <li>
-      <article class="article">
-        <h4>
-          <%= link_to heading.heading.html_safe,
-                :controller => Article::category_option(category, :controller),
-                :action => Article::category_option(category, :action_all),
-                :heading => heading.heading %>
-        </h4>
-      </article>
-    </li>
-  <% end %>
-  <hr/>
-  <% if Article::category_option?(category, :link_all_title) %>
-    <h2 class="main-title">
-      <%= link_to Article::category_option(category, :link_all_title), 
-                  :controller => Article::category_option(category, :controller), 
-                  :action => Article::category_option(category, :action_all) %>
-    </h2>
-  <% end %>
-</ol>
+<% unless headings.nil? or headings.empty? or articles.nil? or articles.empty? %>
+  <hgroup>
+    <div class="information"><%=t 'general.toc_explain' %></div>
+  </hgroup>
+  <ol>
+    <hr/>
+    <% for heading in headings %>
+      <li>
+        <article class="article">
+          <h4>
+            <%= link_to heading.heading.html_safe,
+                  :controller => articles[0].category_option(:controller),
+                  :action => articles[0].category_option(:action_all),
+                  :heading => heading.heading %>
+          </h4>
+        </article>
+      </li>
+    <% end %>
+    <hr/>
+    <% if articles[0].category_option?(:link_all_title) %>
+      <h2 class="main-title">
+        <%= link_to articles[0].category_option(:link_all_title), 
+                    :controller => articles[0].category_option(:controller), 
+                    :action => articles[0].category_option(:action_all) %>
+      </h2>
+    <% end %>
+  </ol>
+<% end %>

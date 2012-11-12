@@ -5,12 +5,12 @@
 </section>
 <section id="militer-vignettes">
   <section class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', :locals => { :articles => @affiches, :category => "affiche", :title => :hide } %>
+    <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @affiches, :title => :hide } %>
   </section>
   <section class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', :locals => { :articles => @kits, :category => "kit", :title => :hide } %>
+    <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @kits, :title => :hide } %>
   </section>
   <section class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_1_on_3_agenda', :locals => { :articles => @evenements, :category => "evenement" } %>
+    <%= render :partial => 'layouts/articles_1col_1_on_3_agenda', :locals => { :articles => @evenements } %>
   </section>
 </section>

@@ -36,7 +36,7 @@ class AccueilController < ApplicationController
     @directblogs = Article.find_published_exclude_zoom 'directblog', 1, 1
     @evenements = Article.find_published_order_by_start_datetime 'evenement', 1, 15
     @tracts = Article.find_published_exclude_zoom 'tract', 1, 1
-    @videos = Article.find_published_exclude_zoom 'video', 1, 1
+    @videos = Article.find_published_video_exclude_zoom 1, 1
     @diapos = Article.find_published_exclude_zoom 'diaporama', 1, 1
   end
 
@@ -121,13 +121,11 @@ class AccueilController < ApplicationController
     if id.present? and id.to_i > 0
       article = Article.find_published_by_id id
       if article.present?
-        redirect_to :controller => article.category_option(:controller),
-                    :action => article.category_option(:action),
-                    :uri => article.uri
+        redirect_to article.path
         return
       end
     end
-    log_warning "error: routing error"
-    render :template => '/layouts/error.html.erb', :status => '404'
+    log_warning "routing error"
+    render :template => '/layouts/error', :formats => :html, :status => '404'
   end
 end

@@ -5,15 +5,12 @@
 </section>
 <section id="educpop-vignettes">
   <section class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', 
-          :locals => { :articles => @revues, :category => 'revue' } %>
+    <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @revues } %>
   </section>
   <section class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', 
-          :locals => { :articles => @livres, :category => 'livre' } %>
+    <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @livres } %>
   </section>
   <section class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', 
-          :locals => { :articles => @lectures, :category => 'lecture' } %>
+    <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @lectures } %>
   </section>
 </section>

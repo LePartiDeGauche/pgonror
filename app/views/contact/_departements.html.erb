@@ -1,42 +1,36 @@
-<header>
-  <h3 class="category">
-    <%= Article::category_option(category, :category_title) %>&nbsp;&bull;
-  </h3>
-</header>
-<ol>
-  <% prior_initiale = "" %>
-  <% count = 0 %>
-  <table>
-    <tr>
-      <td>
-        <% for article in articles %>
-          <% count = count + 1 %>
-          <li>
-            <article class="article">
-              <header>
-                <% initiale = article.title[0,1] %>
-                <% if initiale != prior_initiale %>
-                  <% if multi_columns and count > 50 %>
-                    </td>
-                    <td>
-                    <% count = 1 %>
+<% unless articles.nil? or articles.empty? %>
+  <header>
+    <h3 class="category"><%= articles[0].category_option(:category_title) %>&nbsp;&bull;</h3>
+  </header>
+  <ol>
+    <% prior_initiale = "" %><% count = 0 %>
+    <table>
+      <tr>
+        <td>
+          <% for article in articles %>
+            <% count = count + 1 %>
+            <li>
+              <article class="article">
+                <header>
+                  <% initiale = article.title[0,1] %>
+                  <% if initiale != prior_initiale %>
+                    <% if multi_columns and count > 50 %>
+                      </td>
+                      <td>
+                      <% count = 1 %>
+                    <% end %>
+                    <h2 class="main-title">
+                      <%= initiale %>&nbsp;&bull;<br/>
+                      <% prior_initiale = initiale %>
+                    </h2>
                   <% end %>
-                  <h2 class="main-title">
-                    <%= initiale %>&nbsp;&bull;<br/>
-                    <% prior_initiale = initiale %>
-                  </h2>
-                <% end %>
-                <h1>
-                  <%= link_to article.title_display.html_safe,
-                        :controller => Article::category_option(category, :controller),
-                        :action => Article::category_option(category, :action),
-                        :uri => article.uri %>
-                </h1>
-              </header>
-            </article>
-          </li>
-        <% end %>
-      </td>
-    </tr>
-  </table>
-</ol>
+                  <h1><%= link_to article.title_display.html_safe, article.path %></h1>
+                </header>
+              </article>
+            </li>
+          <% end %>
+        </td>
+      </tr>
+    </table>
+  </ol>
+<% end %>

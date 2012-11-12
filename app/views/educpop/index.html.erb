@@ -1,20 +1,16 @@
 <section id="educpop-dates">
   <section id="educpop-date-content" class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_1_on_2', 
-          :locals => { :articles => @dates, :category => 'date' } %>
+    <%= render :partial => 'layouts/articles_1col_1_on_2', :locals => { :articles => @dates } %>
   </section>
   <section id="educpop-livres-content" class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_1_on_2', 
-          :locals => { :articles => @livres, :category => 'livre' } %>
+    <%= render :partial => 'layouts/articles_1col_1_on_2', :locals => { :articles => @livres } %>
   </section>
 </section>
 <section id="educpop-revues">
   <section id="educpop-revue-content" class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_1_on_2', 
-          :locals => { :articles => @revues, :category => 'revue' } %>
+    <%= render :partial => 'layouts/articles_1col_1_on_2', :locals => { :articles => @revues } %>
   </section>
   <section id="educpop-lecture-content" class="content-bloc">
-    <%= render :partial => 'layouts/index_articles_1col_1_on_2', 
-          :locals => { :articles => @lectures, :category => 'lecture' } %>
+    <%= render :partial => 'layouts/articles_1col_1_on_2', :locals => { :articles => @lectures } %>
   </section>
 </section>

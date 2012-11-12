@@ -7,18 +7,18 @@
 <section id="militer-campagne">
   <section id="militer-campagne-content" class="content-bloc">
     <% unless @campagne.nil? %>
-      <%= render :partial => 'layouts/article_simplified',  :locals => { :article => @campagne } %>
-    <% end %>                        
+      <%= render :partial => 'layouts/article_simplified', :locals => { :article => @campagne } %>
+    <% end %>
   </section>
   <section id="militer-tracts-affiches">
     <section id="militer-tracts">
       <section id="militer-tracts-content" class="content-bloc">
-        <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', :locals => { :articles => @tracts, :category => "tract", :title => :hide } %>
+        <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @tracts, :title => :hide } %>
       </section>
     </section>
     <section id="militer-affiches">
       <section id="militer-affiches-content" class="content-bloc">
-        <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', :locals => { :articles => @affiches, :category => "affiche", :title => :hide } %>
+        <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @affiches, :title => :hide } %>
       </section>
     </section>
   </section>
@@ -26,12 +26,12 @@
 <section id="militer-agenda">
   <section id="militer-agenda-content" class="content-bloc">
     <div class="rss"><%= link_to icon_medium('rss.png'), militer_rss_feed_path, :target => "_blank" %></div>
-    <%= render :partial => 'layouts/index_articles_1col_1_on_3_agenda', 
-          :locals => { :articles => @evenements, :category => 'evenement' } %>
+    <%= render :partial => 'layouts/articles_1col_1_on_3_agenda', 
+          :locals => { :articles => @evenements } %>
   </section>
   <section id="militer-kits">
     <section id="militer-kits-content" class="content-bloc">
-      <%= render :partial => 'layouts/index_articles_1col_1_on_3_picture', :locals => { :articles => @kits, :category => "kit", :title => :zoom } %>
+      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @kits, :title => :zoom } %>
     </section>
   </section>
 </section>
