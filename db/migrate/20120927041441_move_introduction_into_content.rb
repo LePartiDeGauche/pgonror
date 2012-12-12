@@ -7,7 +7,6 @@ class MoveIntroductionIntoContent < ActiveRecord::Migration
         article.content = article.introduction + (article.content.nil? ? "" : article.content)
         article.introduction = nil
         article.save!
-        article.create_audit! article.status, article.updated_by
       end
     end
   end

@@ -20,4 +20,4 @@
 # If you change this key, all old signed cookies will become invalid!
 # Make sure the secret is at least 30 characters and all random,
 # no regular words or you'll be exposed to dictionary attacks.
-PartiDeGauche::Application.config.secret_token = 'c38ac477282636ad9940105aa8445d626f281ea543def898337c77bbcb2979ffdd62085ad456dd5cf36c35c37ce02ffa21cfdf5bb6f444db86bb43090fe0aa31'
+PartiDeGauche::Application.config.secret_token = ''

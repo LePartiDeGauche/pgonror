@@ -26,20 +26,27 @@ class ArticlesController < ApplicationController
   def prepare_index
     @uploaded_image = Article.new
     @uploaded_document = Article.new
-    @articles = Article.find_by_criteria({:status => params[:status], 
-                                          :category => params[:category],
-                                          :zoom => params[:zoom], 
-                                          :parent => params[:parent], 
-                                          :source => params[:source], 
-                                          :search => params[:search],
-                                          :any_date => true}, @page)
-    @pages = Article.count_pages_by_criteria({:status => params[:status], 
-                                              :category => params[:category], 
-                                              :zoom => params[:zoom], 
-                                              :parent => params[:parent], 
-                                              :source => params[:source], 
-                                              :search => params[:search],
-                                              :any_date => true})
+    if params[:log]
+      @articles = Article.find_by_criteria_log({}, @page)
+      @pages = Article.count_pages_by_criteria({})
+    else
+      @articles = Article.find_by_criteria({:status => params[:status], 
+                                            :category => params[:category],
+                                            :zoom => params[:zoom], 
+                                            :zoom_video => params[:zoom_video], 
+                                            :parent => params[:parent], 
+                                            :source => params[:source], 
+                                            :search => params[:search],
+                                            :any_date => true}, @page)
+      @pages = Article.count_pages_by_criteria({:status => params[:status], 
+                                                :category => params[:category], 
+                                                :zoom => params[:zoom], 
+                                                :zoom_video => params[:zoom_video], 
+                                                :parent => params[:parent], 
+                                                :source => params[:source], 
+                                                :search => params[:search],
+                                                :any_date => true})
+    end
     @categories_new = Article.find_by_status_group_by_category Article::NEW
     @categories_rework = Article.find_by_status_group_by_category Article::REWORK
     @categories_reviewed = Article.find_by_status_group_by_category Article::REVIEWED
@@ -48,11 +55,18 @@ class ArticlesController < ApplicationController
     @zoom_rework = Article.count_by_status_zoom Article::REWORK
     @zoom_reviewed = Article.count_by_status_zoom Article::REVIEWED
     @zoom_online = Article.count_by_status_zoom Article::ONLINE
+    @zoom_video_new = Article.count_by_status_zoom_video Article::NEW
+    @zoom_video_rework = Article.count_by_status_zoom_video Article::REWORK
+    @zoom_video_reviewed = Article.count_by_status_zoom_video Article::REVIEWED
+    @zoom_video_online = Article.count_by_status_zoom_video Article::ONLINE
     session[:category] = params[:category]
     session[:status] = params[:status]
     session[:parent] = params[:parent]
     session[:source] = params[:source]
     session[:search] = params[:search]
+    session[:zoom] = params[:zoom]
+    session[:zoom_video] = params[:zoom_video]
+    session[:log] = params[:log]
     session[:page] = @page
   end
 
@@ -134,6 +148,7 @@ class ArticlesController < ApplicationController
       begin
         @article.transaction do
           @article.created_by = @article.updated_by = current_user.email
+          set_dates @article
           if @article.control_authorization
             @article.save!
             @article.create_audit! @article.status, @article.updated_by
@@ -171,6 +186,7 @@ class ArticlesController < ApplicationController
       @article.transaction do
         @article.updated_by = current_user.email
         @article.update_attributes!(params[:article])
+        set_dates @article
         if @article.control_authorization
           @article.create_audit! @article.status, @article.updated_by, @comments
           @article.save!
@@ -191,9 +207,9 @@ class ArticlesController < ApplicationController
       flash[:notice] = t('action.article.updated')
       redirect_to @article
     else
-      if params[:article].present? and params[:article][:status].present? 
+      if params[:modifier].present? and params[:modifier] == "change_status" 
         render :action => "change_status"
-      elsif params[:article].present? and params[:article][:category].present? 
+      elsif params[:modifier].present? and params[:modifier] == "change_category" 
         render :action => "change_category"
       else
         render :action => "edit"
@@ -227,6 +243,16 @@ class ArticlesController < ApplicationController
     end
   end
 
+  # Returns the list of headings based on a search string.
+  def headings
+    render :json => Article.all_headings(params[:search])
+  end
+
+  # Returns the list of signatures based on a search string.
+  def signatures
+    render :json => Article.all_signatures(params[:search])
+  end
+
 private
 
   def load_side_data
@@ -243,6 +269,28 @@ private
       prepare_index
       render :action => "index"
     end
+  end
+
+  # Sets dates based on parameters.
+  def set_dates(article)
+    error = 0
+    if params[:published_at].present?
+      begin
+        article.published_at = Date.strptime(params[:published_at], t('date.formats.default'))
+      rescue
+        error += 1
+        article.errors.add(:published_at, I18n.t('activerecord.errors.messages.bad_format'))
+      end
+    end
+    if params[:expired_at].present?
+      begin
+        article.expired_at = Date.strptime(params[:expired_at], t('date.formats.default'))
+      rescue
+        error += 1
+        article.errors.add(:expired_at, I18n.t('activerecord.errors.messages.bad_format'))
+      end
+    end
+    raise(ActiveRecord::Rollback, "Bad format") if error > 0
   end
 
   # Selects article based on its id.

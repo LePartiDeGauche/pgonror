@@ -4,8 +4,8 @@
   </section>
 </section>
 <section id="recent">
-  <section id="zoom" class="content-bloc">
-    <%= render :partial => 'zoom_article', :locals => { :articles => @actus } %>
+  <section id="zoom" class="content-bloc zoom">
+    <%= render :partial => 'layouts/zoom_article', :locals => { :articles => @actus, :category => :zoom } %>
   </section>
   <section id="communique">
     <section id="communique-content" class="content-bloc">
@@ -31,7 +31,12 @@
 <section id="videos">
   <section id="videos-content" class="content-bloc highlighted-bloc">
     <% unless @videos.nil? %>
-      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @videos, :title => :zoom } %>
+      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => {:articles => @videos, 
+                                                                                 :title => :zoom,
+                                                                                 :category_title => t('identity.teledegauche'),
+                                                                                 :link_all_title => t('identity.teledegauche_tout'),
+                                                                                 :controller => :videos,
+                                                                                 :action_all => :lateledegauche} %>
     <% end %>
   </section>
 </section>
@@ -82,6 +87,7 @@
     </section>
   </section>
 </section>
+<%= render :partial => 'layouts/footer' %>
 <script>
   function nextActualite() {
     $('#zoom li:last').after($('#zoom li:first'));
@@ -147,10 +153,10 @@
     $('#librairie li').hide();
     $('#librairie li:first').show(300);
   };
-  var runLivre = setInterval('nextLivre()', 5000);
+  var runLivre = setInterval('nextLivre()', 3000);
   $('#librairie').hover(
     function() { clearInterval(runLivre); },
-    function() { runLivre = setInterval('nextLivre()', 5000); }
+    function() { runLivre = setInterval('nextLivre()', 3000); }
   );
   $('#librairie li').hide();
   $('#librairie li:first').show();

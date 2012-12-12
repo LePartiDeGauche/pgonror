@@ -128,8 +128,8 @@ private
       # Vidéos
       if category == 'video' or category_was == 'video'
         expire_action(:controller => 'videos', :action => 'index')
-      elsif ['conference', 'videoevenement', 'media', 'videoagitprop', 'videoeduc', 'encampagne', 'videofdg',].include?(category) or
-         ['conference', 'videoevenement', 'media', 'videoagitprop', 'videoeduc', 'encampagne', 'videofdg',].include?(category_was)
+      elsif ['conference', 'videoevenement', 'media', 'videoagitprop', 'videoeduc', 'encampagne', 'videoweb',].include?(category) or
+         ['conference', 'videoevenement', 'media', 'videoagitprop', 'videoeduc', 'encampagne', 'videoweb',].include?(category_was)
         expire_action(:controller => 'videos', :action => 'lateledegauche')
       end
       

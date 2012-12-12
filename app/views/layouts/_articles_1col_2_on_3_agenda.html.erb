@@ -1,6 +1,6 @@
-<% unless articles.nil? or articles.empty? %>
+<% unless articles.nil? or articles[0].nil? %>
   <hgroup>
-    <h3 class="category"><%= articles[0].category_option(:category_title) %>&nbsp;&bull;</h3>
+    <h3 class="category"><%= articles[0].category_option(:category_title) %></h3>&nbsp;&bull;
   </hgroup>
   <table>
     <% for article in articles %>

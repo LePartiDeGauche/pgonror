@@ -1,11 +1,11 @@
-<section>
+<section id="payment">
   <section class="content-bloc">
     <% unless @adhesion.nil? %>
       <%= render :partial => 'layouts/article_simplified', :locals => { :article => @adhesion } %>
     <% end %>                        
     <article class="article">
       <header>
-        <h1><%= t('action.membership.title') %></h1>
+        <h1 class="large-title"><%= t('action.membership.title') %></h1>
       </header>
       <%= form_for @membership, :url => { :action => "valider_adhesion" } do |f| %>
         <%= render :partial => 'layouts/error_messages', :locals => { :item => @membership } %>
@@ -116,7 +116,7 @@
           </table>
         </div>
         <center>
-          <aside class="actions">
+          <aside class="large-actions">
             <%= submit_tag t('action.send'), :disable_with => t('action.wait') %>
           </aside>
         </center>

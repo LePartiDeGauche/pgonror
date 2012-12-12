@@ -15,18 +15,12 @@
 # See doc/COPYRIGHT.rdoc for more details.
 class ActualitesController < ApplicationController
   before_filter :find_article, :only => [:edito, :actualite, :communique, :international, :dossier]
-  before_filter :load_side_articles, :only => [:edito, :editos, 
-                                               :actualite, :actualites, 
-                                               :communique, :communiques, 
-                                               :international, :tout_international,
-                                               :dossier, :dossiers]
-
   caches_action :index, :layout => false, :if => Proc.new { not user_signed_in? }
-  caches_action :editos, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? } 
-  caches_action :actualites, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
-  caches_action :communiques, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
-  caches_action :tout_international, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
-  caches_action :dossiers, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
+  caches_action :editos, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? } 
+  caches_action :actualites, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
+  caches_action :communiques, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
+  caches_action :tout_international, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
+  caches_action :dossiers, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
 
   def index
     @editos = Article.find_published 'edito', 1, 15
@@ -37,52 +31,113 @@ class ActualitesController < ApplicationController
   end
 
   def editos
-    @pages = Article.count_pages_published 'edito'
-    @articles = Article.find_published 'edito', @page
+    find_list_articles_by_category 'edito'
+    return if params[:partial].present?
+    @side_articles = [
+      Article.find_published('dossier', 1, 1),
+      Article.find_published('com', 1, 1),
+      Article.find_published('actu', 1, 1),
+      Article.find_published('inter', 1, 1)
+    ]
+    render :template => 'layouts/index'
+    
   end
 
   def edito
+    @side_articles = [
+      Article.find_published('dossier', 1, 1),
+      Article.find_published('com', 1, 1),
+      Article.find_published('actu', 1, 1),
+      Article.find_published('inter', 1, 1)
+    ]
+    render :template => 'layouts/article'
   end
 
   def actualites
-    @pages = Article.count_pages_published 'actu'
-    @articles = Article.find_published 'actu', @page
+    find_list_articles_by_category 'actu'
+    return if params[:partial].present?
+    @side_articles = [
+      Article.find_published('edito', 1, 1),
+      Article.find_published('dossier', 1, 1),
+      Article.find_published('com', 1, 1),
+      Article.find_published('inter', 1, 1)
+    ]
+    render :template => 'layouts/index'
   end
 
   def actualite
+    @side_articles = [
+      Article.find_published('edito', 1, 1),
+      Article.find_published('dossier', 1, 1),
+      Article.find_published('com', 1, 1),
+      Article.find_published('inter', 1, 1)
+    ]
+    render :template => 'layouts/article'
   end
 
   def communiques
-    @pages = Article.count_pages_published 'com'
-    @articles = Article.find_published 'com', @page
+    find_list_articles_by_category 'com'
+    return if params[:partial].present?
+    @side_articles = [
+      Article.find_published('edito', 1, 1),
+      Article.find_published('dossier', 1, 1),
+      Article.find_published('actu', 1, 1),
+      Article.find_published('inter', 1, 1)
+    ]
+    render :template => 'layouts/index'
   end
 
   def communique
+    @side_articles = [
+      Article.find_published('edito', 1, 1),
+      Article.find_published('dossier', 1, 1),
+      Article.find_published('actu', 1, 1),
+      Article.find_published('inter', 1, 1)
+    ]
+    render :template => 'layouts/article'
   end
 
   def tout_international
-    @pages = Article.count_pages_published 'inter'
-    @articles= Article.find_published 'inter', @page
+    find_list_articles_by_category 'inter'
+    return if params[:partial].present?
+    @side_articles = [
+      Article.find_published('edito', 1, 1),
+      Article.find_published('dossier', 1, 1),
+      Article.find_published('com', 1, 1),
+      Article.find_published('actu', 1, 1)
+    ]
+    render :template => 'layouts/index'
   end
 
   def international
+    @side_articles = [
+      Article.find_published('edito', 1, 1),
+      Article.find_published('dossier', 1, 1),
+      Article.find_published('com', 1, 1),
+      Article.find_published('actu', 1, 1)
+    ]
+    render :template => 'layouts/article'
   end
 
   def dossiers
-    @pages = Article.count_pages_published 'dossier'
-    @articles = Article.find_published 'dossier', @page
+    find_list_articles_by_category 'dossier'
+    return if params[:partial].present?
+    @side_articles = [
+      Article.find_published('edito', 1, 1),
+      Article.find_published('com', 1, 1),
+      Article.find_published('actu', 1, 1),
+      Article.find_published('inter', 1, 1)
+    ]
+    render :template => 'layouts/index'
   end
 
   def dossier
-  end
-  
-private
-
-  def load_side_articles
-    @actus = Article.find_published 'actu', 1, 1
-    @editos = Article.find_published 'edito', 1, 1
-    @communiques = Article.find_published 'com', 1, 1
-    @tout_international = Article.find_published 'inter', 1, 1
-    @dossiers = Article.find_published 'dossier', 1, 1
+    @side_articles = [
+      Article.find_published('edito', 1, 1),
+      Article.find_published('com', 1, 1),
+      Article.find_published('actu', 1, 1),
+      Article.find_published('inter', 1, 1)
+    ]
+    render :template => 'layouts/article'
   end
 end

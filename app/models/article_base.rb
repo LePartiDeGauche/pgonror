@@ -87,7 +87,11 @@ class ArticleBase < ActiveRecord::Base
                   :address,
                   :email,
                   :external_id,
+                  :original_url,
                   :zoom,
+                  :zoom_video,
+                  :home_video,
+                  :zoom_sequence,
                   :agenda,
                   :legacy,
                   :image_remote_url_input,
@@ -257,7 +261,8 @@ class ArticleBase < ActiveRecord::Base
   end
   
   # Returns the content of the article prepared for a specific display of images and videos.
-  def content_only_with_inline; content_only_with("inline", INLINE_WIDTH, INLINE_HEIGHT) end
+  def content_with_inline; content_only_with("inline", INLINE_WIDTH, INLINE_HEIGHT) end
+  def content_with_inline_small; content_only_with("inline", INLINE_WIDTH, INLINE_HEIGHT, MEDIUM_HEIGHT) end
   def content_with_large; content_with("large", LARGE_WIDTH, LARGE_HEIGHT, 2*LARGE_HEIGHT) end
   def content_with_medium; content_with("medium", MEDIUM_WIDTH, MEDIUM_HEIGHT) end
   def content_replaced_with_medium; content_replaced_with("medium", MEDIUM_WIDTH, MEDIUM_HEIGHT) end
@@ -363,7 +368,7 @@ class ArticleBase < ActiveRecord::Base
     description = content_to_txt
     description = (description[0..150] + "…") if description.size > 150
     description << " [" + self.tags_display + "]" if not self.tags.empty?
-    description
+    description.gsub(/\"/,"").strip
   end
 
   # Triggers an email notification of the creation or the update of the article.
@@ -374,7 +379,6 @@ class ArticleBase < ActiveRecord::Base
                          update = false,
                          comments = nil)
     recipients = Permission.notification_recipients(self.status, self.category, self.source_id)
-    recipients << current_user_email if not recipients.include?(current_user_email)
     if not recipients.empty?
       Notification.notification_update(current_user_email, 
                                        recipients.join(', '),
@@ -416,7 +420,22 @@ class ArticleBase < ActiveRecord::Base
       self.image_remote_url = url
       if not url.blank?
         begin
-          self.image = open(URI.parse(url))
+          open(URI.parse(url)) {|f|
+            file_path = self.class.clean_uri(self.image_remote_url.gsub(/http(s?):(\/+)((www.)?)/,"")).gsub(/(\S+)-(jpg|jpeg|gif|png)/,"\\1.\\2")
+            file_path = "tmp/#{file_path}"
+            if "image/jpeg" == f.content_type and not file_path.match(/(\S+)(.jpg|.jpeg)/)
+              file_path << ".jpeg"
+            elsif "image/gif" == f.content_type and not file_path.match(/(\S+)(.gif)/)
+              file_path << ".gif"
+            elsif "image/png" == f.content_type and not file_path.match(/(\S+)(.png)/)
+              file_path << ".png"
+            end 
+            file = File.new(file_path, "wb")
+            file.write(f.read)
+            file.close
+            file = File.open(file_path)
+            self.image = file
+          }
         rescue
           errors[:base] << I18n.t('activerecord.errors.messages.bad_image')
         end
@@ -439,7 +458,7 @@ protected
   # Returns a clean URI given as parameter.
   def self.clean_uri(uri)
     uri.downcase.
-        gsub(/[ .'’]/,"-").
+        gsub(/[ .'’\/]/,"-").
         gsub(/[àâäÀÂÄ]/,"a").
         gsub(/[éèêëÉÈÊË]/,"e").
         gsub(/[ìîïÌÎÏ]/,"i").
@@ -449,9 +468,7 @@ protected
         gsub(/[œŒ]/,"oe").
         gsub(/(-de-|-du-|-et-|-a-|-aux-|-l-)/, "-").
         gsub(/[^a-z0-9-]/,"").
-        gsub(/--/,"-").
-        gsub(/--/,"-").
-        gsub(/--/,"-").
+        gsub(/-{2,}/,"-").
         gsub(/-\z/,"\\1")
   end
 
@@ -472,12 +489,13 @@ private
   # Sets the article title as file name if the article is an image or a document.
   def update_title
     if self.image_remote_url.present? and not self.image_remote_url.blank? and self.title.blank?
-      self.title = self.image_remote_url.split('/').last
+      self.title = self.class.clean_uri(self.image_remote_url.gsub(/http(s?):(\/+)((www.)?)/,""))
     elsif self.image_file_name.present? and self.title.blank?
       self.title = self.image_file_name
     elsif self.document_file_name.present? and self.title.blank?
       self.title = self.document_file_name
     end
+    self.heading = self.folder_display if self.heading.blank? and self.parent_id.present?
   end
 
   # Updates article URI: makes the concatenation of parent or source title, if any, and the article title.
@@ -651,8 +669,8 @@ private
   # No transformation is made of 'inline' format, which is format used for storage.
   def convert_content_with(source, target, width, height, videoheight=height)
     return "" if source.nil?
-    converted = source.gsub(DMOTION_TAG, "<iframe src=\"http://www.dailymotion.com/embed/video/\\1?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>").
-                       gsub(DAILYMOTION_OLD, "<iframe src=\"\\4?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>").
+    converted = source.gsub(DMOTION_TAG, "<iframe src=\"http://www.dailymotion.com/embed/video/\\1?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{videoheight}\"></iframe>").
+                       gsub(DAILYMOTION_OLD, "<iframe src=\"\\4?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{videoheight}\"></iframe>").
                        gsub(IFRAME_EL, "<iframe src=\"\\2?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{videoheight}\"></iframe>")
     converted = converted.gsub(INTERNAL_IMAGE_EL, "<img src=\"\\2/system/images/#{target}/\\4\\5\">") if target != "inline"
     converted = converted.gsub(INTERNAL_AUDIO_LINK_EL,

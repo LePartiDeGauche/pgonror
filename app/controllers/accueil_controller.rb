@@ -19,7 +19,6 @@ class AccueilController < ApplicationController
   caches_action :index, :layout => false, :if => Proc.new { not user_signed_in? }
   caches_action :rss
   caches_action :sitemap
-  caches_action :channel
   
   # Content of the home page
   def index
@@ -31,20 +30,24 @@ class AccueilController < ApplicationController
     @vdg = Article.find_published_exclude_zoom 'articlevdg', 1, 1
     @ailleurs = Article.find_published_exclude_zoom 'web', 1, 1
     @livres = Article.find_published_exclude_zoom 'livre', 1, 3
-    @arguments = Article.find_published_exclude_zoom 'argument', 1, 5
+    @arguments = Article.find_published_exclude_zoom 'argument', 1, 8
     @campagne = Article.find_published_exclude_zoom('campagne', 1, 1)[0]
     @directblogs = Article.find_published_exclude_zoom 'directblog', 1, 1
     @evenements = Article.find_published_order_by_start_datetime 'evenement', 1, 15
     @tracts = Article.find_published_exclude_zoom 'tract', 1, 1
-    @videos = Article.find_published_video_exclude_zoom 1, 1
+    @videos = Article.find_published_home_video 1, 1
     @diapos = Article.find_published_exclude_zoom 'diaporama', 1, 1
   end
 
   # Global search functionality.
   def search
     session[:search] = params[:search]
-    @searched_articles = Article.search_published session[:search], @page
     @pages = Article.count_pages_search_published session[:search]
+    @articles = Article.search_published session[:search], @page
+    if params[:partial].present?
+      render :partial => 'layouts/articles_1col_2_on_3_search', :locals => { :articles => @articles, :partial => true }
+      return
+    end
     @editos = Article.find_published 'edito', 1, 1
     @communiques = Article.find_published 'com', 1, 1
     @actus = Article.find_published 'actu', 1, 1
@@ -69,11 +72,13 @@ class AccueilController < ApplicationController
 
   # Home page for RSS flows.
   def accueil_rss
+    @tags = ["Front de Gauche"]
   end
 
   # RSS output based on recent articles.
   def rss
-    @articles = Article.find_by_criteria({:status => Article::ONLINE, :feedable => true}, 1, 50)
+    session[:search] = params[:search]
+    @articles = Article.find_by_criteria({:status => Article::ONLINE, :feedable => true, :search => params[:search]}, 1, 50)
     render :template => 'layouts/rss'
   end
 
@@ -94,7 +99,7 @@ class AccueilController < ApplicationController
         break_line = false  
         unless article.content.blank?
           article.content_to_txt.each_line {|line|
-            line.gsub!(/(\n|\r)/, "")            
+            line.gsub!(/(\n|\r)/, "")
             file.puts line + "\r" unless line.blank?
           }
         end
@@ -108,13 +113,6 @@ class AccueilController < ApplicationController
   def sitemap
   end
 
-  # The channel file addresses some issues 
-  # with cross domain communication in certain browsers.
-  # See http://developers.facebook.com/docs/reference/javascript/  
-  def channel
-    render :layout => false
-  end
-
   # Default action that shows a message due to an invalid route.  
   def default
     id = params[:id]
@@ -126,6 +124,10 @@ class AccueilController < ApplicationController
       end
     end
     log_warning "routing error"
+    if params[:format].present? and ['jpg','jpeg','png','pdf','gif','doc','docx','txt','mp3','odt','zip'].include?(params[:format].downcase)
+      render :nothing => true, :status => '404'
+      return
+    end
     render :template => '/layouts/error', :formats => :html, :status => '404'
   end
 end

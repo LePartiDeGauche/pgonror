@@ -1,11 +1,11 @@
-<section>
+<section id="payment">
   <section class="content-bloc">
     <% unless @don.nil? %>
       <%= render :partial => 'layouts/article_simplified', :locals => { :article => @don } %>
     <% end %>                        
     <article class="article">
       <header>
-        <h1><%= t('action.donation.title') %></h1>
+        <h1 class="large-title"><%= t('action.donation.title') %></h1>
       </header>
       <%= render :partial => 'layouts/error_messages', :locals => { :item => @donation } %>
       <%= form_for @donation, :url => { :action => "valider_don" } do |f| %>
@@ -58,7 +58,7 @@
           </table>
         </div>
         <center>
-          <aside class="actions">
+          <aside class="large-actions">
             <%= submit_tag t('action.send'), :disable_with => t('action.wait') %>
           </aside>
         </center>

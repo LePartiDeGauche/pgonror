@@ -15,59 +15,96 @@
 # See doc/COPYRIGHT.rdoc for more details.
 class EducpopController < ApplicationController
   before_filter :find_article, :only => [:date, :livre, :lecture, :revue ]
-  before_filter :load_side_articles, :only => [:index, 
-                                               :date, :dates,
-                                               :livre, :librairie,
-                                               :lecture, :lectures,
-                                               :revue, :revues]
-
   caches_action :index, :layout => false, :if => Proc.new { not user_signed_in? }
-  caches_action :dates, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
-  caches_action :librairie, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
-  caches_action :lectures, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
-  caches_action :revues, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
+  caches_action :dates, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
+  caches_action :librairie, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
+  caches_action :lectures, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
+  caches_action :revues, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
 
   def index
-  end
-  
-  def dates
-    @pages = Article.count_pages_published 'date'
-    @articles = Article.find_published 'date', @page
-  end
-  
-  def date
-  end
-  
-  def librairie
-    @pages = Article.count_pages_published 'livre'
-    @articles = Article.find_published 'livre', @page
-  end
-  
-  def livre
-  end
-  
-  def lectures
-    @pages = Article.count_pages_published 'lecture'
-    @articles = Article.find_published 'lecture', @page
-  end
-  
-  def lecture
-  end
-  
-  def revues
-    @pages = Article.count_pages_published 'revue'
-    @articles = Article.find_published 'revue', @page
-  end
-  
-  def revue
-  end
-  
-private
-
-  def load_side_articles
     @dates = Article.find_published 'date', 1, 1
     @livres = Article.find_published 'livre', 1, 1
     @lectures = Article.find_published 'lecture', 1, 1
     @revues = Article.find_published 'revue', 1, 1
+  end
+  
+  def dates
+    find_list_articles_by_category 'date'
+    return if params[:partial].present?
+    @side_articles = [
+      Article.find_published('livre', 1, 1),
+      Article.find_published('lecture', 1, 1),
+      Article.find_published('revue', 1, 1)
+    ]
+    render :template => 'layouts/index'
+  end
+  
+  def date
+    @side_articles = [
+      Article.find_published('livre', 1, 1),
+      Article.find_published('lecture', 1, 1),
+      Article.find_published('revue', 1, 1)
+    ]
+    render :template => 'layouts/article'
+  end
+  
+  def librairie
+    find_list_articles_by_category 'livre'
+    return if params[:partial].present?
+    @side_articles = [
+      Article.find_published('date', 1, 1),
+      Article.find_published('lecture', 1, 1),
+      Article.find_published('revue', 1, 1)
+    ]
+    render :template => 'layouts/index'
+  end
+  
+  def livre
+    @side_articles = [
+      Article.find_published('date', 1, 1),
+      Article.find_published('lecture', 1, 1),
+      Article.find_published('revue', 1, 1)
+    ]
+    render :template => 'layouts/article'
+  end
+  
+  def lectures
+    find_list_articles_by_category 'lecture'
+    return if params[:partial].present?
+    @side_articles = [
+      Article.find_published('date', 1, 1),
+      Article.find_published('livre', 1, 1),
+      Article.find_published('revue', 1, 1)
+    ]
+    render :template => 'layouts/index'
+  end
+  
+  def lecture
+    @side_articles = [
+      Article.find_published('date', 1, 1),
+      Article.find_published('livre', 1, 1),
+      Article.find_published('revue', 1, 1)
+    ]
+    render :template => 'layouts/article'
+  end
+  
+  def revues
+    find_list_articles_by_category 'revue'
+    return if params[:partial].present?
+    @side_articles = [
+      Article.find_published('date', 1, 1),
+      Article.find_published('livre', 1, 1),
+      Article.find_published('lecture', 1, 1)
+    ]
+    render :template => 'layouts/index'
+  end
+  
+  def revue
+    @side_articles = [
+      Article.find_published('date', 1, 1),
+      Article.find_published('livre', 1, 1),
+      Article.find_published('lecture', 1, 1)
+    ]
+    render :template => 'layouts/article'
   end
 end

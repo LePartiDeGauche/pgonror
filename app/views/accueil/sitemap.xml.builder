@@ -1,9 +1,9 @@
 xml.instruct!
 xml.urlset("xmlns" => "http://www.sitemaps.org/schemas/sitemap/0.9") do
   for menu in MENU
-    menu = menu[1]
     xml.url do
-      xml.loc url_for(:controller => menu, 
+      xml.loc url_for(:controller => menu[1][:controller],
+                      :action => menu[1][:action],
                       :only_path => false)
       xml.changefreq "daily"
       xml.priority 0.9

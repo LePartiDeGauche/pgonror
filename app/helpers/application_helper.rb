@@ -20,15 +20,20 @@ module ApplicationHelper
   def current_page_title
     t('general.title') + (@page_title.present? ? " » " + @page_title.to_s : "")
   end
-  
+
   # Returns a description for the web site based on the article being displayed.  
   def current_page_description
     @page_description.present? ? @page_description : "" 
   end
-  
+
   # Returns keywords for the web site based on the article being displayed.  
   def current_page_keywords
     @page_keywords 
+  end
+
+  # Returns the current url.
+  def current_url
+    @url
   end
   
   # Displays an icon from the assets with a fixed size 12x12.
@@ -40,7 +45,7 @@ module ApplicationHelper
                 :width => "12", 
                 :title => title})
   end
-  
+
   # Displays an icon from the assets with a fixed size 16x16.
   def icon_medium(name, title=nil)
     return "" if name.nil?
@@ -50,7 +55,7 @@ module ApplicationHelper
                 :width => "16", 
                 :title => title})
   end
-  
+
   # Displays an icon from the assets with a fixed size 32x32.
   def icon_large(name, title=nil)
     return "" if name.nil?
@@ -60,7 +65,7 @@ module ApplicationHelper
                 :width => "32", 
                 :title => title})
   end
-  
+
   # Displays a time and name.
   def display_time_by(who, time)
     t('general.time_by',

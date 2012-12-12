@@ -29,31 +29,43 @@ class Payment < ActiveRecord::Base
   def amount_cents
     (100*self.amount.to_i).to_s
   end
-  
+
   # Returns true if the payment is OK.  
   def payment_ok?
     self.payment_error.nil? ? false : self.payment_error == "00000"
   end
-  
+
   # Returns the paybox information in a display mode.  
   def payment_error_display
     return "NO" if self.payment_error.blank?
     return "OK" if self.payment_error == "00000"
     "ER:" + self.payment_error
   end
-  
+
+  # Prepares a string for .csv export.
+  def escape_csv(text)
+    text.nil? ? "" : text.strip.gsub(/(;|\n|\r|\")/, " ")
+  end
+
 protected
-  
+
   # Returns a clean identifier given as parameter. 
   def clean_identifier(identifier)
-    identifier.upcase.
-        gsub(/[àâäÀÂÄ]/,"A").
-        gsub(/[éèêëÉÈÊË]/,"E").
-        gsub(/[ìîïÌÎÏ]/,"I").
-        gsub(/[òôöÒÔÖ]/,"O").
-        gsub(/[ùûüÙÛÜ]/,"U").
-        gsub(/[çÇ]/,"C").
-        gsub(/[œŒ]/,"OE").
-        gsub(/[^A-Z0-9\-\ ]/,"")
+    identifier.
+        gsub(/[àâä]/,"a").
+        gsub(/[ÀÂÄ]/,"A").
+        gsub(/[éèêë]/,"e").
+        gsub(/[ÉÈÊË]/,"E").
+        gsub(/[ìîï]/,"i").
+        gsub(/[ÌÎÏ]/,"I").
+        gsub(/[òôö]/,"o").
+        gsub(/[ÒÔÖ]/,"O").
+        gsub(/[ùûü]/,"u").
+        gsub(/[ÙÛÜ]/,"U").
+        gsub(/[ç]/,"c").
+        gsub(/[Ç]/,"C").
+        gsub(/[œ]/,"oe").
+        gsub(/[Œ]/,"OE").
+        gsub(/[^a-zA-Z0-9\-\ ]/,"")
   end
 end

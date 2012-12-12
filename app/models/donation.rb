@@ -31,7 +31,7 @@ class Donation < Payment
   validate :amount_range_mini
   validate :amount_range
   validates :comment, :length => {:maximum => 1000}
-  
+
   # Setup accessible (or protected) attributes for the model.
   attr_accessible :last_name,
                   :first_name,
@@ -47,33 +47,84 @@ class Donation < Payment
 
   # Defines the maximum amount for a donation.  
   MAX_AMOUNT = 7500.0
-  
+
   # Valides the amount is entered and is greater or equal to the minimum.  
   def amount_range_mini
     if self.amount.present? and self.amount < MIN_AMOUNT
       errors.add(:amount, I18n.t('activerecord.attributes.membership.amount_error', :min => number_to_currency(MIN_AMOUNT)))
     end
   end
-  
+
   # Valides the amount is entered and is less than the maximum.  
   def amount_range
     if self.amount.present? and self.amount > MAX_AMOUNT
       errors.add(:amount, I18n.t('activerecord.attributes.donation.amount_error', :max => number_to_currency(MAX_AMOUNT)))
     end
   end
-  
+
   # Returns a unique identifier used for payment identification.
   def payment_identifier
-    clean_identifier("D" + self.id.to_s + " " + self.last_name.strip + " " + self.first_name.strip)
+    clean_identifier("D" + self.id.to_s + " " + self.last_name.strip + " " + self.first_name.strip).upcase
   end
-  
+
+  # Returns the confirmed payments
+  def self.find_paid
+    where('payment_error = ?', "00000")
+  end
+
+  # Returns the tentative of memberships that failed or were cancelled.
+  def self.find_unpaid
+    where('payment_error is null or payment_error != ?', "00000").
+    where('not exists (
+              select 1 from donations paid 
+              where paid.email = donations.email 
+              and paid.payment_error = ?
+              and paid.created_at > donations.created_at
+            )', "00000")
+  end
+
   # For logs in Administration panel
   paginates_per 100
   scope :logs, order('created_at DESC')
+  scope :paid_logs, Donation::find_paid.order('created_at DESC')
+  scope :unpaid_logs, Donation::find_unpaid.order('created_at DESC')
   scope :filtered_by, lambda { |search| where('lower(first_name) LIKE ? OR lower(last_name) LIKE ? OR lower(email) LIKE ?', "%#{search.downcase.strip}%", "%#{search.downcase.strip}%", "%#{search.downcase.strip}%") }
-  
+
   # Returns the content as a string used for display.  
   def to_s
     "#{I18n.l(created_at)} : #{payment_identifier} (#{email}) #{number_to_currency(amount)} - #{payment_error_display} #{payment_authorization}"
+  end
+
+  # Formats phone number.
+  def phone_format(phone)
+    phone.nil? ? "" : phone.gsub(/\D/, "").gsub(/(\d{2,})(\d{2})(\d{2})(\d{2})(\d{2})/, "\\1 \\2 \\3 \\4 \\5")
+  end
+
+  # Returns the header of a file used for export (csv format).  
+  def self.header_to_csv
+    "Nom;" +
+    "Prenom;" +
+    "Adresse;" +
+    "CodePostal;" +
+    "Ville;" +
+    "Telephone;" +
+    "Email;" +
+    "Montant;" +
+    "Identifiant;" +
+    "Commentaire"
+  end
+
+  # Returns the content as a string used for export (csv format).  
+  def to_csv
+    "#{clean_identifier last_name};" +
+    "#{clean_identifier first_name};" +
+    "#{escape_csv address};" +
+    "#{escape_csv zip_code};" +
+    "#{escape_csv city};" +
+    "#{phone_format phone};" +
+    "#{escape_csv email};" +
+    "#{number_with_precision(amount, :precision => 2, :separator => '.')};" +
+    "#{escape_csv payment_identifier};" +
+    "#{escape_csv comment}"
   end
 end

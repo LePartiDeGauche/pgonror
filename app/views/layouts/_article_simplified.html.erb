@@ -3,7 +3,6 @@
     <header>
       <% if user_signed_in? and current_user.publisher %>
         <%= link_to icon('edit.gif'), article %>
-        <%= link_to icon('external.png'), article, :target => "_blank" %>
       <% end %>
       <% if not article.category_option?(:hide_category_name) %>
         <h3 class="category"><%= article.category_display %></h3>&nbsp;&bull;
@@ -13,6 +12,6 @@
       <% end %>
       <h1><%= article.title_display.html_safe %></h1>
     </header>
-    <%= article.content_only_with_inline.html_safe unless article.content.blank? %>
+    <%= article.content_with_inline_small.html_safe unless article.content.blank? %>
   </article>
 <% end %>

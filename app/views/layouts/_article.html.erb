@@ -3,17 +3,21 @@
     <hgroup>
       <% if user_signed_in? and current_user.publisher %>
         <%= link_to icon('edit.gif'), @article %>
-        <%= link_to icon('external.png'), @article, :target => "_blank" %>
       <% end %>
       <% if not @article.category_option?(:hide_category_name) %>
-        <h3 class="category"><%= @article.category_display %>&nbsp;&bull;</h3>
+        <h3 class="category"><%= @article.category_display %></h3>
       <% end %>
       <% if @article.category_option?(:link_all_title) %>
+        &bull;
         <h2 class="main-title">
           <%= link_to @article.category_option(:link_all_title),
                 :controller => @article.category_option(:controller),
                 :action => @article.category_option(:action_all) %>
         </h2>
+      <% end %>
+      <% if @header_link.present? %>
+        &bull;
+        <h2 class="main-title"><%= link_to @header_name, @header_link %></h2>
       <% end %>
       <br/>
     </hgroup>
@@ -42,8 +46,8 @@
         <% if (@article.category_option?(:address) or not @article.agenda.blank?) and not @article.address.blank? %>
           <strong><%= @article.address %></strong>
           <div id="carte" style="width:612px;height:260px;"></div>
-          <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyARG0BrRKKXVO06jeS5NamKyW5SX8sVBbw&sensor=false" type="text/javascript"></script>
-          <script type="text/javascript">
+          <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyARG0BrRKKXVO06jeS5NamKyW5SX8sVBbw&sensor=false"></script>
+          <script>
             $(document).ready(function() {
               var geocoder;
               var map;
@@ -78,14 +82,18 @@
         </div>
       <% end %>
     </header>
+    <br/>
     <% if @article.category_option?(:audio) and @article.document_file_name.present? %>
       <%= render :partial => 'layouts/audio', :locals => {:article => @article} %>
     <% end %>
-    <%= @article.content_only_with_inline.html_safe unless @article.content.blank? %>
+    <%= @article.content_with_inline.html_safe unless @article.content.blank? %>
     <footer>
+      <% if @original_url.present? %>
+        <strong><a href="<%= @original_url %>" title="<%= @page_title %>" rel="canonical" target="_blank"><%= t("activerecord.attributes.article.original_url_long") %></a></strong>
+      <% end %>
       <hr/>
       <%= render :partial => 'layouts/share_article' %>
-      <% unless @last_published.nil? or @last_published.empty? %>
+      <% unless @last_published.nil? or @last_published[0].nil? %>
         <hr/>
         <h3 class="category"><%=t 'titre.autres' %>&nbsp;&bull;</h3><br/>
         <% for previous_article in @last_published %>
@@ -95,7 +103,7 @@
             <div class="date"><%= l previous_article.published_at, :format => :long_ordinal %></div>&nbsp;
           <% end %>
           <% unless previous_article.heading.blank? %>
-            <h4><%= previous_article.heading_display.html_safe %></h4>&nbsp;-
+            <h4><%= previous_article.heading_display.html_safe %></h4>&nbsp;&bull;
           <% end %>
           <h1><%= link_to previous_article.title_display.html_safe, 
                 :controller => previous_article.category_option(:controller),
@@ -104,7 +112,7 @@
           <br/>
         <% end %>
       <% end %>
-      <% unless @same_heading.nil? or @same_heading.empty? %>
+      <% unless @same_heading.nil? or @same_heading[0].nil? %>
         <hr/>
         <h3 class="category"><%=t 'titre.same_heading' %>&nbsp;&bull;</h3><br/>
         <% for previous_article in @same_heading %>

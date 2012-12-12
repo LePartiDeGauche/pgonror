@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121027111934) do
+ActiveRecord::Schema.define(:version => 20121211181312) do
 
   create_table "articles", :force => true do |t|
     t.string   "title"
@@ -52,6 +52,10 @@ ActiveRecord::Schema.define(:version => 20121027111934) do
     t.boolean  "zoom"
     t.string   "image_remote_url"
     t.boolean  "show_heading"
+    t.boolean  "zoom_video"
+    t.integer  "zoom_sequence"
+    t.string   "original_url"
+    t.boolean  "home_video"
   end
 
   add_index "articles", ["agenda"], :name => "index_articles_on_agenda"
@@ -59,12 +63,16 @@ ActiveRecord::Schema.define(:version => 20121027111934) do
   add_index "articles", ["expired_at"], :name => "index_articles_on_expired_at"
   add_index "articles", ["external_id"], :name => "index_articles_on_external_id"
   add_index "articles", ["heading"], :name => "index_articles_on_heading"
+  add_index "articles", ["home_video"], :name => "index_articles_on_home_video"
   add_index "articles", ["published_at", "updated_at"], :name => "index_articles_on_published_at_and_updated_at"
   add_index "articles", ["show_heading"], :name => "index_articles_on_show_heading"
   add_index "articles", ["status"], :name => "index_articles_on_status"
   add_index "articles", ["title"], :name => "index_articles_on_title"
+  add_index "articles", ["updated_at"], :name => "index_articles_on_updated_at"
   add_index "articles", ["uri"], :name => "index_articles_on_uri"
   add_index "articles", ["zoom"], :name => "index_articles_on_zoom"
+  add_index "articles", ["zoom_sequence"], :name => "index_articles_on_zoom_sequence"
+  add_index "articles", ["zoom_video"], :name => "index_articles_on_zoom_video"
 
   create_table "audits", :force => true do |t|
     t.integer  "article_id"

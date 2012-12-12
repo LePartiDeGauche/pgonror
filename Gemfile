@@ -15,15 +15,13 @@
 # See doc/COPYRIGHT.rdoc for more details.
 source 'http://rubygems.org'
 
-gem 'rails', '3.2.6'
-gem 'sqlite3', '1.3.5', :require => 'sqlite3'
+gem 'rails', '3.2.9'
+gem 'sqlite3', '~> 1.3.6', :require => 'sqlite3'
 gem 'jquery-rails', '>=2.0.0'
 gem 'execjs'
 gem "paperclip", "~> 2.4"
 gem 'truncate_html'
 gem 'devise'
-gem "omniauth-facebook"
-gem 'omniauth-openid'
 gem 'active_cmis','0.2.6', :require => 'active_cmis'
 gem 'kaminari'
 gem 'htmlentities'

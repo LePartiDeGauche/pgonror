@@ -2,8 +2,8 @@ coder = HTMLEntities.new
 xml.instruct!
 xml.rss("xmlns:itunes" => "http://www.itunes.com/dtds/podcast-1.0.dtd", "version" => "2.0") do
   xml.channel do
-    xml.title coder.decode(current_page_title)
-    xml.link url_for accueil_rss_path(:only_path => false)
+    xml.title coder.decode(current_page_title) + (session[:search].present? ? (" (" + session[:search] + ")") : "")
+    xml.link url_for root_path(:only_path => false)
     xml.description coder.decode(current_page_description)
     xml.lastBuildDate Time.now.to_s(:rfc822)
     xml.language "fr-FR"
@@ -25,10 +25,9 @@ xml.rss("xmlns:itunes" => "http://www.itunes.com/dtds/podcast-1.0.dtd", "version
       xml.tag! "itunes:email", coder.decode(Devise.mailer_sender)
     end
     for article in @articles
-      if article.category_option?(:controller) and
-         article.category_option?(:action)
+      if article.category_option?(:controller)
         xml.item do
-          xml.pubDate article.published_at.to_s(:rfc822)
+          xml.pubDate article.published_datetime.to_s(:rfc822)
           xml.title coder.decode((article.heading.present? ? article.heading + " • " : "") + article.title)
           xml.guid url_for(:controller => :accueil, 
                            :action => :default,
@@ -39,10 +38,13 @@ xml.rss("xmlns:itunes" => "http://www.itunes.com/dtds/podcast-1.0.dtd", "version
               xml.name coder.decode(article.signature)
             end
           end
-          xml.link url_for(:controller => article.category_option(:controller),
-                           :action => article.category_option(:action), 
-                           :uri => article.uri, 
-                           :only_path => false)
+          xml.link article.category_option?(:action) ?
+                    url_for(:controller => article.category_option(:controller),
+                            :action => article.category_option(:action), 
+                            :uri => article.uri, 
+                            :only_path => false) :
+                    url_for(:controller => article.category_option(:controller),
+                            :only_path => false)
           xml.description do
             if article.category_option?(:start_end_dates) or not article.agenda.blank?
               xml.cdata! article.start_end_datetime_display(true)
@@ -50,7 +52,7 @@ xml.rss("xmlns:itunes" => "http://www.itunes.com/dtds/podcast-1.0.dtd", "version
                 xml.cdata! coder.decode(article.address)
               end
             end
-            xml.cdata! article.content_only_with_inline unless article.content.blank?
+            xml.cdata! article.content_with_inline unless article.content.blank?
           end
           if article.category_option?(:audio)
             duration = article.mp3_duration

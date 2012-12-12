@@ -1,27 +1,35 @@
 <div class="edit">
   <%= f.hidden_field :category %>
+  <%= f.hidden_field :parent_id %>
   <table>
+    <% if defined?(comments) %>
+      <tr>
+        <td></td>
+        <td>
+          <%= text_field_tag 'comments', '', :placeholder => t('activerecord.attributes.audits.comments_explain'), :size => "80" %>
+        </td>
+      </tr>
+    <% end %>
     <% if @article.category_option?(:image) %>
       <tr>
-        <td colspan="2">
-          <div class="information"><%= t('action.image.create') %></div>
+        <td></td>
+        <td>
           <%= f.file_field :image, :accept => 'image/jpeg, image/png, image/gif' %><br/>
           <span class="information"><%= t('action.image.external') %></span>
-          <%= f.text_field :image_remote_url_input, :size => "60" %>
-          <br/>
-          <br/>
+          <%= f.text_field :image_remote_url_input, :size => "80" %>
           <% if @article.image_file_name.present? %>
+            <br/>
             <%= image_tag @article.image.url(:medium) if @article.image_file_name.present? %>
           <% end %>
         </td>
       </tr>
     <% elsif @article.category_option?(:audio) %>
       <tr>
-        <td colspan="2">
-          <div class="information"><%= t('action.document.create') %></div>
+        <td></td>
+        <td>
           <%= f.file_field :document, :accept => 'audio/mpeg' %>
-          <br/>
           <% if @article.document_file_name.present? %>
+            <br/>
             <%= @article.title_display %> 
             (<%= @article.document_content_type %>)&nbsp;&bull;
             <%= t("activerecord.attributes.article.file_size") %>&nbsp;:
@@ -31,11 +39,11 @@
       </tr>
     <% elsif @article.category_option?(:document) %>
       <tr>
-        <td colspan="2">
-          <div class="information"><%= t('action.document.create') %></div>
+        <td></td>
+        <td>
           <%= f.file_field :document, :accept => 'application/pdf' %>
-          <br/>
           <% if @article.document_file_name.present? %>
+            <br/>
             <%= @article.title_display %> 
             (<%= @article.document_content_type %>)&nbsp;&bull;
             <%= t("activerecord.attributes.article.file_size") %>&nbsp;:
@@ -46,12 +54,7 @@
     <% end %>
     <tr>
       <td><%= f.label :heading %></td>
-      <td><%= f.text_field :heading, :size => "80x1" %></td>
-    </tr>
-    <tr>
-      <td></td>
-      <td><%= f.check_box :show_heading %> <%= f.label :show_heading %>
-      </td>
+      <td><%= f.text_field :heading, :size => "80x1", :id => "heading" %></td>
     </tr>
     <tr>
       <td><%= f.label :title %></td>
@@ -79,12 +82,22 @@
     <% end %>
     <tr>
       <td><%= f.label :signature %></td>
-      <td><%= f.text_field :signature, :size => "80x1" %></td>
+      <td><%= f.text_field :signature, :size => "80x1", :id => "signature" %></td>
     </tr>
-    <tr>
-      <td><%= f.label :parent_id %></td>
-      <td><%= f.select :parent_id, @folders, {:include_blank => true}, :style => 'width: 512px;' %></td>
-    </tr>
+    <% if not(@article.category_option?(:image)) and not(@article.category_option?(:audio)) and not(@article.category_option?(:document)) %>
+      <tr>
+        <td><%= f.label :options %></td>
+        <td>
+          <%= f.check_box :show_heading %> <%= f.label :show_heading %><br/>
+          <%= f.check_box :zoom %> <%= f.label :zoom %><br/>
+          <% if @article.category_option?(:video) %>
+            <%= f.check_box :zoom_video %> <%= f.label :zoom_video %><br/>
+            <%= f.check_box :home_video %> <%= f.label :home_video %><br/>
+          <% end %>
+          <%= f.label :zoom_sequence %> <%= f.select :zoom_sequence, ["1", "2", "3", "4", "5"] %>
+        </td>
+      </tr>
+    <% end %>
     <tr>
       <td><%= f.label :source_id %></td>
       <td><%= f.select :source_id, @sources, {:include_blank => true}, :style => 'width: 512px;' %></td>
@@ -94,29 +107,72 @@
         <td><%= f.label :external_id %></td>
         <td><%= f.text_field :external_id, :size => "80x1" %></td>
       </tr>
+    <% elsif not(@article.category_option?(:image)) and not(@article.category_option?(:audio)) and not(@article.category_option?(:document)) %>
+      <tr>
+        <td><%= f.label :original_url %></td>
+        <td><%= f.text_field :original_url, :size => "80x1" %></td>
+      </tr>
     <% end %>
     <tr>
       <td><%= f.label :published_at %></td>
       <td>
-        <%= f.date_select :published_at,
-                          :start_year => Time.now.year - 10,
-                          :end_year => Time.now.year + 10 %>
-        &nbsp;
-        <%= f.check_box :zoom %>
-        <%= f.label :zoom %>
-      </td>
-    </tr>
-    <tr>
-      <td><%= f.label :expired_at %></td>
-      <td>
-        <%= f.date_select :expired_at,
-                          :start_year => Time.now.year, 
-                          :end_year => Time.now.year + 99 %>
-        &nbsp;
-        <%= f.check_box :draft %>
-        <%= f.label :draft %>
+        <%= text_field_tag :published_at, @article.published_at.nil? ? "" : I18n.l(@article.published_at), :size => "8x1", :class => "datepicker" %>
+        <%= f.label :expired_at %>
+        <%= text_field_tag :expired_at, @article.expired_at.nil? ? "" : I18n.l(@article.expired_at), :size => "8x1", :class => "datepicker" %>
       </td>
     </tr>
   </table>
   <%= f.text_area :content, :size => "80x40" %>
 </div>
+<script>
+  $(".datepicker").datepicker({
+    numberOfMonths: 1,
+    changeMonth: true,
+    changeYear: true,
+    showButtonPanel: true,
+    currentText: "<%= t 'date.datepicker-currentText' %>",
+    closeText: "<%= t 'date.datepicker-closeText' %>",
+    dateFormat: "<%= t 'date.formats.datepicker' %>",
+    dayNamesMin: <%= t('date.datepicker-dayNamesMin').html_safe %>,
+    monthNames: <%= t('date.datepicker-monthNames').html_safe %>,
+    monthNamesShort: <%= t('date.datepicker-monthNamesShort').html_safe %>
+  });
+  $("#heading").autocomplete({
+    source : function(request, callback) {
+      var headings = [];
+      var data = {search:request.term};
+      $.ajax({
+        url: "/articles/headings",
+        data: data,
+        complete : function(xhr, result) {
+          if(result != "success") return;
+          try {response = $.parseJSON(xhr.responseText);}
+          catch(err) {response = {message: err};}
+          for(i in response) {
+            headings[i] = response[i].heading;
+          }
+          callback(headings);
+        }
+      });
+    }
+  });
+  $("#signature").autocomplete({
+    source : function(request, callback) {
+      var signatures = [];
+      var data = {search:request.term};
+      $.ajax({
+        url: "/articles/signatures",
+        data: data,
+        complete : function(xhr, result) {
+          if(result != "success") return;
+          try {response = $.parseJSON(xhr.responseText);}
+          catch(err) {response = {message: err};}
+          for(i in response) {
+            signatures[i] = response[i].signature;
+          }
+          callback(signatures);
+        }
+      });
+    }
+  });
+</script>

@@ -108,8 +108,8 @@ PartiDeGauche::Application.routes.draw do
   match '/lateledegauche/educpop/*uri(.format)' => 'videos#educpop'
   match '/lateledegauche/videosencampagne' => 'videos#videosencampagne'
   match '/lateledegauche/encampagne/*uri(.format)' => 'videos#encampagne'
-  match '/lateledegauche/videosfdg' => 'videos#videosfdg'
-  match '/lateledegauche/fdg/*uri(.format)' => 'videos#fdg'
+  match '/lateledegauche/toutweb' => 'videos#toutweb'
+  match '/lateledegauche/web/*uri(.format)' => 'videos#web'
   match '/videos' => 'videos#index'
   match '/videos/video/*uri(.format)' => 'videos#video'
   match '/viedegauche' => 'viedegauche#index'
@@ -134,13 +134,14 @@ PartiDeGauche::Application.routes.draw do
   match '/accueil_rss' => 'accueil#accueil_rss', :as => 'accueil_rss'
   match '/export_txt' => 'accueil#export_txt'
   match '/sitemap' => 'accueil#sitemap', :format => :xml
-  match '/channel' => 'accueil#channel'
 
   resources :articles do
     get 'search', :on => :collection
     get 'panel_search', :on => :collection
     get 'panel_search_page', :on => :collection
     get 'new_child', :on => :collection
+    get 'headings', :on => :collection
+    get 'signatures', :on => :collection
     resources :tags
   end
   resources :tags

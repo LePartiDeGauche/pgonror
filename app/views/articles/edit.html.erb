@@ -12,23 +12,13 @@
     <%= form_for(@article) do |f| %>
       <article class="article">
         <header>
-          <h3 class="category">
-            <%= @article.category_display %>&nbsp;&bull;
-          </h3>
+          <h3 class="category"><%= @article.category_display %></h3>&nbsp;&bull;
           <aside class="actions">
             <a href="<%= session[:last_url] %>"><%= t('action.cancel') %></a>&nbsp;&bull;
             <%= f.submit t('action.ok'), :disable_with => t('action.wait') %>
           </aside>
           <%= render :partial => 'layouts/error_messages', :locals => { :item => @article } %>
-          <table class="edit">
-            <tr>
-              <td colspan="2">
-                <div class="information"><%= t 'activerecord.attributes.audits.comments_explain' %></div>
-                <%= text_field_tag 'comments', '', :size => "90x3" %>
-              </td>
-            </tr>
-          </table>
-          <%= render :partial => 'edit', :locals => {:f => f } %>
+          <%= render :partial => 'edit', :locals => {:f => f, :comments => true} %>
           <aside class="actions">
             <a href="<%= session[:last_url] %>"><%= t('action.cancel') %></a>&nbsp;&bull;
             <%= f.submit t('action.ok'), :disable_with => t('action.wait') %>

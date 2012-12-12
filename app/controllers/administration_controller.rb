@@ -23,6 +23,12 @@ class AdministrationController < ApplicationController
     when 'donations'
       @label = t('action.donation.log')
       Donation.logs
+    when 'dons_payes'
+      @label = t('action.donation.paid_log')
+      Donation.paid_logs
+    when 'dons_nonaboutis'
+      @label = t('action.donation.unpaid_log')
+      Donation.unpaid_logs
     when 'ml_subscribers'
       @label = t('action.subscription.log')
       Subscription.logs

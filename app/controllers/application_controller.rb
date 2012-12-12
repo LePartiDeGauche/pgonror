@@ -33,21 +33,19 @@ protected
     session[:heading] = nil
     session[:source] = nil
   end
-  
+
   # Sets a page title based on menus definition and article categories.
   def page_title
-    menu = MENU.find {|meaning, options|
-                                  options.present? and
-                                  options[:controller].present? and
-                                  options[:action].present? and 
-                                  options[:controller].to_s == params[:controller] and
-                                  options[:action].to_s == params[:action] 
+    menu = MENU.find {|meaning, options| options.present? and
+                                         options[:controller].present? and
+                                         options[:action].present? and 
+                                         options[:controller].to_s == params[:controller] and
+                                         options[:action].to_s == params[:action] 
     }
     if menu.present?
-      @page_title = menu[0] 
-      @page_description = menu[1][:description].blank? ? 
-                                      menu[0] : 
-                                      menu[1][:description] 
+      @page_title = menu[1][:home].blank? ? menu[0] : ""
+      @page_description = menu[1][:description].blank? ? menu[0] : menu[1][:description]
+      @url = url_for(:controller => menu[1][:controller], :action => menu[1][:action])
     else 
       category = CATEGORIES.find {|meaning, code, options|
                                     options.present? and
@@ -57,10 +55,20 @@ protected
                                     options[:controller].to_s == params[:controller] and
                                     options[:action_all].to_s == params[:action] 
       }
-      @page_description = @page_title = category[2][:category_title] if category.present?
+      @page_title = category[2][:category_title] if category.present?
+      @page_description = category[2][:description] if category.present?
+      @url = url_for(:controller => category[2][:controller], :action => category[2][:action_all]) if category.present?
+      header_menu = MENU.find {|meaning, options| options.present? and
+                                                  options[:controller].present? and
+                                                  options[:controller].to_s == params[:controller]
+      }
+      if header_menu.present?
+        @header_name = header_menu[0]
+        @header_link = url_for(:controller => header_menu[1][:controller], :action => header_menu[1][:action])
+      end
     end
   end
-  
+
   # Controls signed user is an administrator.
   def authenticate_administrator!
     @norobot = true
@@ -114,6 +122,19 @@ protected
     session[:breadcrumb_table] = breadcrumbs
   end
 
+  # Selects a list of articles based on a category.
+  # The selection takes care of selected heading and page number.
+  def find_list_articles_by_category(category)
+    @category = category
+    @pages = Article.count_pages_published_by_heading category, @page_heading
+    @articles = Article.find_published_by_heading category, @page_heading, @page
+    @headings = Article.find_published_group_by_heading category
+    if params[:partial].present?
+      render :partial => 'layouts/articles_1col_2_on_3', :locals => { :articles => @articles, :partial => true }
+      return
+    end
+  end
+  
   URL_HTTP = /(.+)%e2%80%99http(s?):\/(.*)%e2%80%99/
   # Selects one article based on its uri.
   def find_article
@@ -136,29 +157,39 @@ protected
           log_warning "find_article: no access"
           render :template => '/layouts/error', :formats => :html, :status => '404'
         else
-          @page_title = (@article.heading.present? ? @article.heading + " • " : "") + @article.title
+          @page_title = ((@article.heading.present? ? @article.heading + " • " : "") + @article.title).gsub(/\"/, "").strip
           @page_keywords = @article.tags_display
           @page_description = @article.description
           @source = @article.source if @article.present? and not @article.source_id.nil?
           @last_published = @article.find_last_published if not @article.category_option?(:hide_category_name)
           @same_heading = @article.find_published_by_heading if not @article.heading.blank?
           @tags = @article.tags
+          @url = url_for(:controller => controller, :action => action)
+          @original_url = @article.original_url
+          header_menu = MENU.find {|meaning, options| options.present? and
+                                                      options[:controller].present? and
+                                                      options[:controller].to_s == params[:controller]
+          }
+          if header_menu.present?
+            @header_name = header_menu[0]
+            @header_link = url_for(:controller => header_menu[1][:controller], :action => header_menu[1][:action])
+          end
         end
       end
     end
   end
-  
+
   # Logs a warning message.
   def log_warning(message, invalid = nil)
     logger.warn "[#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}] WARNING #{message} #{invalid.present? ? invalid.message : ''} [#{request.url}] #{params.inspect}"
   end
-  
+
   # Logs an error message.
   def log_error(message, invalid = nil)
     logger.error "[#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}] ERROR #{message} #{invalid.present? ? invalid.message : ''} [#{request.url}] #{params.inspect}"
     alert_admins(message, invalid)
   end
-  
+
   # Sens a notification to administrators.
   def alert_admins(message, invalid = nil)
     Notification.alert_admins(Devise.mailer_sender,

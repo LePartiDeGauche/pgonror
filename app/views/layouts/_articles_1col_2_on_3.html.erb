@@ -1,16 +1,19 @@
-<% unless articles.nil? or articles.empty? %>
-  <hgroup>
-    <h3 class="category"><%= articles[0].category_option(:category_title) %>&nbsp;&bull;</h3>
-  </hgroup>
-  <ol>
+<% unless articles.nil? or articles[0].nil? %>
+  <% if not defined?(partial) %>
+    <hgroup>
+      <h3 class="category"><%= articles[0].category_option(:category_title) %></h3>&nbsp;&bull;
+      <% if @header_link.present? %>
+        <h2 class="main-title"><%= link_to @header_name, @header_link %></h2>
+      <% end %>
+    </hgroup>
+    <br/>
+    <ol id="liste-articles">
+  <% end %>
     <% for article in articles %>
       <li>
-        <hr/>
-        <article class="article">
+        <article class="article article-separator">
           <header>
-            <% unless article.heading.blank? %>
-              <h4><%= article.heading_display.html_safe %></h4><br/>
-            <% end %>
+            <% unless article.heading.blank? %><h4><%= article.heading_display.html_safe %></h4>&nbsp;&bull;<% end %>
             <h1><%= link_to article.title_display.html_safe, article.path %></h1>
             <% unless article.source_id.nil? %>
               <br/>
@@ -21,7 +24,6 @@
               <%= article.signature if article.category_option?(:signature) %>
             </div>
           </header>
-          <br/>
           <% if article.category_option?(:audio) %>
             <%= render :partial => 'layouts/audio', :locals => {:article => article} %>
           <% end %>
@@ -34,6 +36,24 @@
         </article>
       </li>
     <% end %>
-    <footer><%= render :partial => 'layouts/page_navigator' %></footer>
-  </ol>
+    <% if @pages > 1 and @page < @pages %>
+      <ol id="liste-articles-page<%= @page+1 %>">
+        <footer><%= render :partial => 'layouts/page_navigator' %></footer>
+      </ol>
+      <script>
+        $(window).scroll(function() {
+           if($(window).scrollTop() + $(window).height() > getDocHeight()-10) {
+             if ($('#liste-articles-page<%= @page+1 %>').children('li').length == 0) {
+               $("#liste-articles-page<%= @page+1 %>").
+                html('<%= escape_javascript(render :partial => "layouts/loading") %>').
+                load(
+                 "<%= url_for :page => @page+1, :heading => @page_heading, :search => session[:search], :partial => true %>");
+             }
+           }
+        });
+      </script>
+    <% end %>
+  <% if not defined?(partial) %>
+    </ol>
+  <% end %>
 <% end %>

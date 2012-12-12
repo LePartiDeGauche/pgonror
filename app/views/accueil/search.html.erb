@@ -1,12 +1,13 @@
 <section id="search-list">
   <section class="content-bloc">
-    <header>
+    <hgroup>
       <h3 class="category"><%= t('action.search_list') %>&nbsp;&bull;</h3>
-      <h1><%= params[:search] %></h1>
-    </header>
-    <% unless @searched_articles.nil? or @searched_articles.empty? %>
+      <%= params[:search] %>
+    </hgroup>
+    <br/>
+    <% unless @articles.nil? or @articles.empty? %>
       <%= render :partial => 'layouts/articles_1col_2_on_3_search',
-                 :locals => { :articles => @searched_articles } %>
+                 :locals => { :articles => @articles } %>
     <% else %>
       <ol><%= t('article.empty') %></ol>
     <% end %>

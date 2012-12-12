@@ -1,17 +1,19 @@
-<section id="categories-list" class="content-bloc">
+<section class="content-bloc">
   <ol>
-    <li><%= link_to_unless_current t('action.article.all'), 
-                      :action => :index,
-                      :status => :all %></li>
     <li><%= link_to_unless_current Article::status_display(Article::NEW), 
                           :action => :index, 
                           :status => Article::NEW %></li>
     <li><%= render :partial => 'categories', 
                    :locals => { :categories => @categories_new,
                                 :zoom => @zoom_new, 
+                                :zoom_video => @zoom_video_new, 
                                 :status => Article::NEW,
                                 :important => true,
                                 :icon => 'yellowlight.gif' } %></li>
+  </ol>
+</section>
+<section class="content-bloc">
+  <ol>
     <li><%= link_to_unless_current Article::status_display(Article::REWORK), 
                           :action => :index, 
                           :status => Article::REWORK,
@@ -19,23 +21,27 @@
     <li><%= render :partial => 'categories', 
                    :locals => { :categories => @categories_rework, 
                                 :zoom => @zoom_rework, 
+                                :zoom_video => @zoom_video_rework, 
                                 :status => Article::REWORK,
                                 :important => true,
                                 :icon => 'warning.gif' } %></li>
+  </ol>
+</section>
+<section class="content-bloc">
+  <ol>
     <li><%= link_to_unless_current Article::status_display(Article::REVIEWED), 
                           :action => :index, 
                           :status => Article::REVIEWED %></li>
     <li><%= render :partial => 'categories', 
                    :locals => { :categories => @categories_reviewed, 
                                 :zoom => @zoom_reviewed, 
+                                :zoom_video => @zoom_video_reviewed, 
                                 :status => Article::REVIEWED,
                                 :important => true,
                                 :icon => 'notice.gif' } %></li>
-    <li><%= link_to_unless_current t('action.tag.all'),
-                      :controller => :tags, 
-                      :action => :index %></li>
+  </ol>
 </section>
-<section id="categories-list" class="content-bloc">
+<section class="content-bloc">
   <ol>
     <li><%= link_to_unless_current Article::status_display(Article::ONLINE), 
                       :action => :index, 
@@ -43,14 +49,28 @@
     <li><%= render :partial => 'categories', 
                    :locals => { :categories => @categories_online, 
                                 :zoom => @zoom_online, 
+                                :zoom_video => @zoom_video_online, 
                                 :status => Article::ONLINE,
                                 :important => false } %></li>
   </ol>
 </section>
-<section id="categories-list" class="content-bloc">
+<section class="content-bloc">
   <ol>
     <li><%= link_to_unless_current Article::status_display(Article::OFFLINE), 
                       :action => :index, 
                       :status => Article::OFFLINE %></li>
+  </ol>
+</section>
+<section class="content-bloc">
+  <ol>
+    <li><%= link_to_unless_current t('action.article.all'), 
+                      :action => :index,
+                      :status => :all %></li>
+    <li><%= link_to_unless_current t('action.audit.log'),
+                      :action => :index,
+                      :log => true %></li>
+    <li><%= link_to_unless_current t('action.tag.all'),
+                      :controller => :tags, 
+                      :action => :index %></li>
   </ol>
 </section>

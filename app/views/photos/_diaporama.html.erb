@@ -1,9 +1,7 @@
 <% unless article.nil? %>
   <article class="article">
     <header>
-      <h3 class="category">
-        <%= article.category_display %>&nbsp;&bull;
-      </h3>
+      <h3 class="category"><%= article.category_display %></h3>&nbsp;&bull;
       <% if article.category_option?(:link_all_title) %>
         <h2 class="main-title">
           <%= link_to article.category_option(:link_all_title),
@@ -12,14 +10,10 @@
         </h2>
       <% end %>
       <br/>
-      <h1 class="large-title">
-        <%= article.title_display.html_safe %>
-      </h1>
+      <h1 class="large-title"><%= article.title_display.html_safe %></h1>
       <div class="tag">
         <% for tag in article.tags %>
-          <%= link_to tag.tag.html_safe,
-                :controller => :search,
-                :search => tag.tag %>
+          <%= link_to tag.tag.html_safe, :controller => :search, :search => tag.tag %>
         <% end %>
       </div>
     </header>
@@ -27,13 +21,11 @@
     <section id="photos" class="photos">
       <% if article.category_option?(:parent) %>
         <% first = true %>
-        <% for photo in article.find_published_by_folder(1,999) %>
-          <% unless photo.image.nil? %>
+        <% for photo in article.find_published_by_folder_and_category('image',1,999) %>
+          <% unless photo.image.blank? %>
             <div style="<%= first ? "" : "display: none" %>">
               <a class="previous" style="display: none"><%= icon_large 'previous.png' %></a>
-              <% unless photo.image.nil? %>
-                <%= link_to image_tag(photo.image.url(:inline)), photo.image.url(:original), :target => "_blank" %>
-              <% end %>
+              <%= link_to image_tag(photo.image.url(:inline)), photo.image.url(:original), :target => "_blank" %>
               <a class="next" style="display: none"><%= icon_large 'next.png' %></a>
               <br/>
               <% if photo.category_option?(:signature) and not photo.signature.blank? %>

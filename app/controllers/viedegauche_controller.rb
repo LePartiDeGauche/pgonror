@@ -15,33 +15,50 @@
 # See doc/COPYRIGHT.rdoc for more details.
 class ViedegaucheController < ApplicationController
   before_filter :find_article, :only => [:article, :journalvdg]
-  before_filter :load_side_articles, :only => [:index, :article, 
-                                               :journalvdg, :journauxvdg]
-
-  caches_action :index, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
+  caches_action :index, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
   caches_action :journauxvdg, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
 
   def index
-    @pages = Article.count_pages_published_by_heading 'articlevdg', @page_heading
-    @articles = Article.find_published_by_heading 'articlevdg', @page_heading, @page
+    find_list_articles_by_category 'articlevdg'
+    return if params[:partial].present?
+    @side_articles = [
+      Article.find_published('vdg', 1, 1),
+      Article.find_published('actu', 1, 1),
+      Article.find_published('dossier', 1, 1),
+      Article.find_published('com', 1, 1)
+    ]
+    render :template => 'layouts/index'
   end
 
   def article
+    @side_articles = [
+      Article.find_published('vdg', 1, 1),
+      Article.find_published('actu', 1, 1),
+      Article.find_published('dossier', 1, 1),
+      Article.find_published('com', 1, 1)
+    ]
+    render :template => 'layouts/article'
   end
   
   def journalvdg
+    @side_articles = [
+      Article.find_published('articlevdg', 1, 1),
+      Article.find_published('actu', 1, 1),
+      Article.find_published('dossier', 1, 1),
+      Article.find_published('com', 1, 1)
+    ]
+    render :template => 'layouts/article'
   end
   
   def journauxvdg
-    @pages = Article.count_pages_published 'vdg'
-    @articles = Article.find_published 'vdg', @page
-  end
-  
-private
-
-  def load_side_articles
-    @headings = Article.find_published_group_by_heading 'articlevdg'
-    @journauxvdg = Article.find_published 'vdg', 1, 1
-    @articlesvdg = Article.find_published 'articlevdg', 1, 1
+    find_list_articles_by_category 'vdg'
+    return if params[:partial].present?
+    @side_articles = [
+      Article.find_published('articlevdg', 1, 1),
+      Article.find_published('actu', 1, 1),
+      Article.find_published('dossier', 1, 1),
+      Article.find_published('com', 1, 1)
+    ]
+    render :template => 'layouts/index'
   end
 end

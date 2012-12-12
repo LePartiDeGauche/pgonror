@@ -21,7 +21,10 @@
 class Membership < Payment
   include ActionView::Helpers::NumberHelper
 
+  # Sex.
   GENDERS = ["Femme","Homme"]
+
+  # List of French departments.
   DEPARTEMENTS = ["Ain (01)",
                   "Aisne (02)",
                   "Allier (03)",
@@ -124,6 +127,7 @@ class Membership < Payment
                   "La Réunion (974)",
                   "Mayotte (976)",
                   "Étranger"]
+
   validates :department, :presence => true, :inclusion => { :in => DEPARTEMENTS }
   validates :committee, :presence => true, :if => :renew?
   validates :committee, :length => {:maximum => 30}
@@ -176,7 +180,7 @@ class Membership < Payment
       errors.add(:amount, I18n.t('activerecord.attributes.membership.amount_error', :min => number_to_currency(MIN_AMOUNT)))
     end
   end
-  
+
   # Returns the free-form amount as a string in order to select the appropriate item in the list of predefined amounts. 
   def predefined_amount
     self.amount.to_s
@@ -195,7 +199,7 @@ class Membership < Payment
     end
     articles
   end
-  
+
   # List (array) of predefined amounts.
   def self.amounts
    [[I18n.t('activerecord.attributes.membership.select_amount'), "0"],
@@ -217,12 +221,12 @@ class Membership < Payment
 
   # Returns a unique identifier used for payment identification.
   def payment_identifier
-    clean_identifier((self.renew ? "R" : "A") + self.id.to_s + " " + self.last_name.strip + " " + self.first_name.strip)
+    clean_identifier((self.renew ? "R" : "A") + self.id.to_s + " " + self.last_name.strip + " " + self.first_name.strip).upcase
   end
 
   # Returns the confirmed payments
   def self.find_paid
-    where('payment_error = ?', "00000")    
+    where('payment_error = ?', "00000")
   end
 
   # Returns the tentative of memberships that failed or were cancelled.
@@ -233,7 +237,7 @@ class Membership < Payment
               where paid.email = memberships.email 
               and paid.payment_error = ?
               and paid.created_at > memberships.created_at
-            )', "00000")    
+            )', "00000")
   end
 
   # Returns the content as a string used for display.  
@@ -245,60 +249,57 @@ class Membership < Payment
   def phone_format(phone)
     phone.nil? ? "" : phone.gsub(/\D/, "").gsub(/(\d{2,})(\d{2})(\d{2})(\d{2})(\d{2})/, "\\1 \\2 \\3 \\4 \\5")
   end
-  
-  # Prepares a string for .csv export.
-  def escape_csv(text)
-    text.nil? ? "" : text.strip.gsub(/,/, " ") 
-  end
-  
+
   # Returns the header of a file used for export (csv format).  
   def self.header_to_csv
-    "Nom," + 
-    "Prenom," + 
-    "Naissance," + 
-    "Sexe," + 
-    "adresse1," + 
-    "CP," + 
-    "Ville," + 
-    "ComitéPG," + 
-    "Departement," + 
-    "Tel_dom," + 
-    "Mobile_perso," + 
-    "Email_perso," + 
-    "profession," + 
-    "Engagement_asso," + 
-    "Responsabilite_asso," + 
-    "Engagement_syndical," + 
-    "Responsabilite_syndicale," + 
-    "Mandat_electif," + 
-    "Lieu_mandat_electif," + 
-    "Montant," +
-    "Identifiant"
+    "Nom;" +
+    "Prenom;" +
+    "Naissance;" +
+    "Sexe;" +
+    "Adresse;" +
+    "CodePostal;" +
+    "Ville;" +
+    "ComiteLocal;" +
+    "Departement;" +
+    "TelephoneFixe;" +
+    "TelephoneMobile;" +
+    "Email;" +
+    "Profession;" +
+    "EngagementAsso;" +
+    "ResponsabiliteAsso;" +
+    "EngagementSyndical;" +
+    "ResponsabiliteSyndicale;" +
+    "MandatElectif;" +
+    "LieuMandatElectif;" +
+    "Montant;" +
+    "Identifiant;" +
+    "Commentaire"
   end
 
   # Returns the content as a string used for export (csv format).  
   def to_csv
-    "#{escape_csv last_name}," + 
-    "#{escape_csv first_name}," + 
-    "#{I18n.l(birthdate,:format => '%d/%m/%Y')}," + 
-    "#{escape_csv gender}," + 
-    "#{escape_csv address}," + 
-    "#{escape_csv zip_code}," + 
-    "#{escape_csv city}," + 
-    "#{escape_csv committee}," + 
-    "#{escape_csv department}," + 
-    "#{phone_format phone}," + 
-    "#{phone_format mobile}," + 
-    "#{escape_csv email}," + 
-    "#{escape_csv job}," + 
-    "#{escape_csv assoc}," + 
-    "#{escape_csv assoc_resp}," + 
-    "#{escape_csv union}," + 
-    "#{escape_csv union_resp}," + 
-    "#{escape_csv mandate}," + 
-    "#{escape_csv mandate_place}," + 
-    "#{number_with_precision(amount, :precision => 2, :separator => '.')}," +
-    "#{escape_csv payment_identifier}"
+    "#{clean_identifier last_name};" + 
+    "#{clean_identifier first_name};" + 
+    "#{I18n.l(birthdate,:format => '%d/%m/%Y')};" + 
+    "#{escape_csv gender};" +
+    "#{escape_csv address};" +
+    "#{escape_csv zip_code};" +
+    "#{escape_csv city};" +
+    "#{escape_csv committee};" +
+    "#{escape_csv department};" +
+    "#{phone_format phone};" +
+    "#{phone_format mobile};" +
+    "#{escape_csv email};" +
+    "#{escape_csv job};" +
+    "#{escape_csv assoc};" +
+    "#{escape_csv assoc_resp};" +
+    "#{escape_csv union};" +
+    "#{escape_csv union_resp};" +
+    "#{escape_csv mandate};" +
+    "#{escape_csv mandate_place};" +
+    "#{number_with_precision(amount, :precision => 2, :separator => '.')};" +
+    "#{escape_csv payment_identifier};" +
+    "#{escape_csv comment}"
   end
 
   # For logs in Administration panel

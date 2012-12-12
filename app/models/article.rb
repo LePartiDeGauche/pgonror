@@ -17,18 +17,16 @@
 # Defines web site content using a generic class.
 class Article < ArticleBase
   # Default display of articles.
-  def to_s
-    title_display
-  end
+  def to_s ; title_display ; end
   
   # Heading of the article in a display mode.
   def heading_display
-    self.heading.present? ? self.class.correct_french_typos(self.heading) : ""
+    self.heading.present? ? self.class.correct_french_typos(self.heading).strip : ""
   end
 
   # Title of the article in a display mode.
   def title_display
-    self.title.present? ? self.class.correct_french_typos(self.title) : ""
+    self.title.present? ? self.class.correct_french_typos(self.title).strip : ""
   end
 
   # Returns the title (displayed label) of a given article category.  
@@ -94,7 +92,7 @@ class Article < ArticleBase
   
   # Indicates the article will expire in less than a month
   def will_expire_soon?
-    self.expired_at.to_date < Date.current + 1.month
+    self.expired_at.nil? ? false : self.expired_at.to_date < Date.current + 1.month
   end
 
   # Returns the status (displayed label) of the given status.  
@@ -113,6 +111,7 @@ class Article < ArticleBase
     ((self.status.present? and self.status == ONLINE) ? 'online' : 'status') + '">' + 
     self.class.status_display(self.status) +
     (self.zoom ? " - #{I18n.t('activerecord.attributes.article.zoom')}" : "") +
+    (self.zoom_video ? " - #{I18n.t('activerecord.attributes.article.zoom_video')}" : "") +
     '</div>'
   end
   
@@ -121,6 +120,12 @@ class Article < ArticleBase
     {:controller => self.category_option(:controller),
      :action => self.category_option(:action),
      :uri => self.uri}
+  end
+
+  # Returns the published date if it's in the future or the creation date.
+  def published_datetime
+    return self.published_at.to_datetime if self.published_at.to_datetime > self.created_at
+    self.created_at
   end
 
   # Selects published article based on uri.  
@@ -144,15 +149,24 @@ class Article < ArticleBase
     where(criteria(options)).
     offset((ARTICLES_PER_PAGE*(page-1)).to_i).
     limit(limit).
-    order('published_at desc, updated_at desc')
+    order('published_at DESC, zoom_sequence ASC, updated_at DESC')
+  end
+  
+  # Selects articles based on various criteria, order by updated date.
+  # See comments on method <tt>criteria</tt> for the details of the search options.  
+  def self.find_by_criteria_log(options, page = 1, limit = ARTICLES_PER_PAGE)
+    where(criteria(options)).
+    offset((ARTICLES_PER_PAGE*(page-1)).to_i).
+    limit(limit).
+    order('updated_at DESC')
   end
   
   def find_articles_by_parent(page = 1, limit = ARTICLES_PER_PAGE)
-    self.class.find_by_criteria({:parent => self.id}, page, limit)    
+    self.class.find_by_criteria({:parent => self.id}, page, limit)
   end
 
   def find_articles_by_source(page = 1, limit = ARTICLES_PER_PAGE)
-    self.class.find_by_criteria({:source => self.id}, page, limit)    
+    self.class.find_by_criteria({:source => self.id}, page, limit)
   end
 
   # Counts articles based on various criteria.  
@@ -180,12 +194,17 @@ class Article < ArticleBase
     self.class.find_by_criteria({:status => ONLINE, :parent => self.id}, page, limit)
   end
 
+  # Selects published articles associated to the parent article and given category.  
+  def find_published_by_folder_and_category(category, page = 1, limit = ARTICLES_PER_PAGE)
+    self.class.find_by_criteria({:status => ONLINE, :parent => self.id, :category => category}, page, limit)
+  end
+
   # Selects randomly one published article associated to the parent article.  
-  def find_published_by_folder_random
-    count = self.class.count_by_criteria({:status => ONLINE, :parent => self.id})
+  def find_published_by_folder_random(category)
+    count = self.class.count_by_criteria({:status => ONLINE, :parent => self.id, :category => category})
     count > 0 ? 
-      self.class.find_by_criteria({:status => ONLINE, :parent => self.id}).offset(rand(count).to_i).limit(1)[0] :
-      nil
+      self.class.find_by_criteria({:status => ONLINE, :parent => self.id, :category => category}).
+        offset(rand(count).to_i).limit(1)[0] : nil
   end
 
   # Returns the previous articles from the list of published articles.  
@@ -249,6 +268,19 @@ class Article < ArticleBase
    end
   end
 
+  # Counts articles with 'zoom video' activated for a given status.  
+  def self.count_by_status_zoom_video(status)
+   if NEW == status
+     where('status is null or status = ?', status).
+     where('zoom_video = ?', true).
+     count
+   else
+     where('status = ?', status).
+     where('zoom_video = ?', true).
+     count
+   end
+  end
+
   # Selects published articles for a given category.  
   def self.find_published(category, page = 1, limit = ARTICLES_PER_PAGE)
     find_by_criteria({:status => ONLINE, :category => category}, page, limit)
@@ -289,9 +321,24 @@ class Article < ArticleBase
     find_by_criteria({:status => ONLINE, :zoom => true}, page, limit)
   end
 
-  # Selects published articles for a given category.  
+  # Selects published articles for the for videos to be displayed in the home page.  
+  def self.find_published_home_video(page = 1, limit = ARTICLES_PER_PAGE)
+    find_by_criteria({:status => ONLINE, :home_video => true}, page, limit)
+  end
+
+  # Selects published articles for the zoom for videos.  
+  def self.find_published_zoom_video(page = 1, limit = ARTICLES_PER_PAGE)
+    find_by_criteria({:status => ONLINE, :zoom_video => true}, page, limit)
+  end
+
+  # Selects published articles for a given category and excludes zoom.  
   def self.find_published_exclude_zoom(category, page = 1, limit = ARTICLES_PER_PAGE)
     find_by_criteria({:status => ONLINE, :category => category, :exclude_zoom => true}, page, limit)
+  end
+
+  # Selects published articles for a given category and excludes zoom for videos.  
+  def self.find_published_exclude_zoom_video(category, page = 1, limit = ARTICLES_PER_PAGE)
+    find_by_criteria({:status => ONLINE, :category => category, :exclude_zoom_video => true}, page, limit)
   end
 
   # Selects published video articles.  
@@ -350,7 +397,27 @@ class Article < ArticleBase
     group('heading').
     order('heading')
   end
-  
+
+  # Selects all the available headings defined in articles.
+  def self.all_headings(search)
+    select('heading').
+    where('heading is not null').
+    where('heading like ?', search.nil? ? "%" : "%" + search + "%").
+    group('heading').
+    order('heading').
+    limit(25)
+  end
+
+  # Selects all the available signatures defined in articles.
+  def self.all_signatures(search)
+    select('signature').
+    where('signature is not null').
+    where('signature like ?', search.nil? ? "%" : "%" + search + "%").
+    group('signature').
+    order('signature').
+    limit(25)
+  end
+
 private
 
   # Returns the list of categories defined with the given option.
@@ -402,7 +469,10 @@ private
   # - search: selects articles which contain a search string.
   # - any_date: selects articles whatever published_at and expired_at.
   # - zoom: selects articles with the zoom option set to true.
+  # - zoom_video: selects articles with the zoom for videos option set to true.
+  # - home_video: selects articles for videos on the home page option set to true.
   # - exclude_zoom: selects articles with the zoom option set to false.
+  # - exclude_zoom_videos: selects articles with the zoom for videos option set to false.
   # - heading: selects articles with a given heading.
   def self.criteria(options)
     "1=1" +
@@ -415,7 +485,10 @@ private
       (options[:source].present? ? " and source_id = #{options[:source]}" : "") +
       (options[:id].present? ? " and id = #{options[:id]}" : "") +
       (options[:zoom].present? ? " and zoom = 't'" : "") +
+      (options[:zoom_video].present? ? " and zoom_video = 't'" : "") +
+      (options[:home_video].present? ? " and home_video = 't'" : "") +
       (options[:exclude_zoom].present? ? " and (zoom is null or zoom != 't')" : "") +
+      (options[:exclude_zoom_video].present? ? " and (zoom_video is null or zoom_video != 't')" : "") +
       (options[:video].present? ? " and category in (#{categories_with(:video)})" : "") +
       (options[:searchable].present? ? " and category in (#{categories_with(:searchable)})" : "") +
       (options[:feedable].present? ? " and category in (#{categories_without(:unfeedable)})" : "") +

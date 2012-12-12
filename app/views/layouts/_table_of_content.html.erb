@@ -3,7 +3,6 @@
     <div class="information"><%=t 'general.toc_explain' %></div>
   </hgroup>
   <ol>
-    <hr/>
     <% for heading in headings %>
       <li>
         <article class="article">
@@ -16,13 +15,14 @@
         </article>
       </li>
     <% end %>
-    <hr/>
-    <% if articles[0].category_option?(:link_all_title) %>
-      <h2 class="main-title">
-        <%= link_to articles[0].category_option(:link_all_title), 
-                    :controller => articles[0].category_option(:controller), 
-                    :action => articles[0].category_option(:action_all) %>
-      </h2>
-    <% end %>
+    <div class="article-separator">
+      <% if articles[0].category_option?(:link_all_title) %>
+        <h2 class="main-title">
+          <%= link_to articles[0].category_option(:link_all_title), 
+                      :controller => articles[0].category_option(:controller), 
+                      :action => articles[0].category_option(:action_all) %>
+        </h2>
+      <% end %>
+    </article>
   </ol>
 <% end %>

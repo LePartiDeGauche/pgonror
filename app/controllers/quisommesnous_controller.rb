@@ -17,27 +17,38 @@ class QuisommesnousController < ApplicationController
   before_filter :find_article, :only => [:identite, 
                                           :instance, 
                                           :commission]
-  before_filter :load_side_articles
-  
   caches_action :index, :layout => false, :if => Proc.new { not user_signed_in? }
 
   def index
-  end
-  
-  def identite
-  end
-
-  def instance
-  end
-
-  def commission
-  end
-  
-private
-
-  def load_side_articles
     @identites = Article.find_published 'identite', 1
     @instances = Article.find_published 'instance', 1
     @commissions = Article.find_published 'commission', 1
+  end
+  
+  def identite
+    @side_articles = [
+      Article.find_published('instance', 1, 2),
+      Article.find_published('commission', 1, 2),
+      Article.find_published('identite', 1, 2)
+    ]
+    render :template => 'layouts/article'
+  end
+
+  def instance
+    @side_articles = [
+      Article.find_published('identite', 1, 2),
+      Article.find_published('commission', 1, 2),
+      Article.find_published('instance', 1, 2)
+    ]
+    render :template => 'layouts/article'
+  end
+
+  def commission
+    @side_articles = [
+      Article.find_published('instance', 1, 2),
+      Article.find_published('identite', 1, 2),
+      Article.find_published('commission', 1, 2)
+    ]
+    render :template => 'layouts/article'
   end
 end

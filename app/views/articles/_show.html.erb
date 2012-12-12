@@ -2,6 +2,23 @@
   <div class="date"><%= l @article.published_at, :format => :long_ordinal %></div>&nbsp;
   <%= @article.signature if @article.category_option?(:signature) %>
 </div>
+<% if @article.zoom %>
+  <strong><%= t('activerecord.attributes.article.zoom') %></strong>
+  <br/>
+<% end %>
+<% if @article.zoom_video %>
+  <strong><%= t('activerecord.attributes.article.zoom_video') %></strong>
+  <br/>
+<% end %>
+<% if @article.home_video %>
+  <strong><%= t('activerecord.attributes.article.home_video') %></strong>
+  <br/>
+<% end %>
+<% if @article.zoom_sequence.present? and @article.zoom_sequence > 1 %>
+  <strong><%= t('activerecord.attributes.article.zoom_sequence') %></strong> : 
+  <%= @article.zoom_sequence %>
+  <br/>
+<% end %>
 <% if not @article.external_id.blank? %>
   <strong><%= t('activerecord.attributes.article.external_id') %></strong>&nbsp;:
   <%= @article.external_id %><br/>
@@ -52,4 +69,7 @@
   <div class="information"><%= t("activerecord.attributes.article.image_mini") %></div><br/>
   <%= image_tag @article.image.url(:mini) %><br/>
 <% end %>
-<%= @article.content_only_with_inline.html_safe unless @article.content.blank? %>
+<%= @article.content_with_inline.html_safe unless @article.content.blank? %>
+<% if @article.original_url.present? %>
+  <strong><a href="<%= @article.original_url %>" title="<%= @article.title_display.html_safe %>" rel="canonical" target="_blank"><%= t("activerecord.attributes.article.original_url_long") %></a></strong>
+<% end %>

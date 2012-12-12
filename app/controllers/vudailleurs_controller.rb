@@ -16,13 +16,12 @@
 class VudailleursController < ApplicationController
   before_filter :find_article, :only => [:articleweb, :articleblog, :blog]
   before_filter :load_side_articles, :only => [:articleweb, :articlesweb,
-                                               :articleblog, :articlesblog,
-                                               :blogs, :blog,
+                                               :blog,
                                                :envoyer_message]
 
   caches_action :index, :layout => false, :if => Proc.new { not user_signed_in? }
-  caches_action :articlesweb, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
-  caches_action :articlesblog, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
+  caches_action :articlesweb, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
+  caches_action :articlesblog, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
 
   def index
     @articlesweb = Article.find_published 'web', 1, 3
@@ -35,27 +34,42 @@ class VudailleursController < ApplicationController
 
   def articlesweb
     create_request
-    @pages = Article.count_pages_published 'web'
-    @articles = Article.find_published 'web', @page
+    find_list_articles_by_category 'web'
+    return if params[:partial].present?
   end
   
   def articleblog
+    @side_articles = [
+      Article.find_published('web', 1, 5)
+    ]
+    render :template => 'layouts/article'
   end
   
   def articlesblog
-    @pages = Article.count_pages_published 'directblog'
-    @articles = Article.find_published 'directblog', @page
-    @blogs = Article.find_published_order_by_title 'blog', 1, 10 
+    find_list_articles_by_category 'directblog'
+    return if params[:partial].present?
+    @side_articles = [
+      Article.find_published('web', 1, 5)
+    ]
+    render :template => 'layouts/index'
   end
   
   def blogs
-    @pages = Article.count_pages_published 'blog'
-    @blogs = Article.find_published_order_by_title 'blog', @page 
+    find_list_articles_by_category 'blog'
+    return if params[:partial].present?
+    @side_articles = [
+      Article.find_published('web', 1, 5)
+    ]
+    render :template => 'layouts/index'
   end
   
   def blog
     @attached_articles = @article.present? ? @article.find_published_by_source(@page) : nil
     @pages = @article.present? ? @article.count_pages_published_by_source : 0
+    if params[:partial].present?
+      render :partial => 'layouts/articles_1col_2_on_3', :locals => { :articles => @attached_articles, :partial => true }
+      return
+    end
   end
 
   def envoyer_message

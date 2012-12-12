@@ -1,6 +1,6 @@
-<% unless articles.nil? or articles.empty? %>
+<% unless articles.nil? or articles[0].nil? %>
   <hgroup>
-    <h3 class="category"><%= articles[0].category_option(:category_title) %>&nbsp;&bull;<br/></h3>
+    <h3 class="category"><%= articles[0].category_option(:category_title) %></h3>&nbsp;&bull;<br/>
     <% if articles[0].category_option?(:link_all_title) %>
       <h2 class="main-title">
         <%= link_to articles[0].category_option(:link_all_title), 
@@ -15,7 +15,7 @@
         <article class="article">
           <% if article.category_option?(:parent) %>
             <p class="photos" title="<%= article.title_display.html_safe %>">
-              <% photo = article.find_published_by_folder_random %>
+              <% photo = article.find_published_by_folder_random 'image' %>
               <% if photo.present? and photo.image.present? %>
                 <%= link_to image_tag(photo.image.url(:medium)),
                             :controller => :photos,

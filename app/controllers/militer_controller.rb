@@ -16,16 +16,12 @@
 class MiliterController < ApplicationController
   before_filter :find_article, :only => [:evenement, :tract, :affiche, :kit]
   before_filter :load_side_articles, :only => [:index, :inscription, 
-                                               :evenement, :agenda, 
-                                               :kits, :kit, 
-                                               :tracts, :tract, 
-                                               :affiches, :affiche]
-
+                                               :evenement, :agenda]
   caches_action :index, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
   caches_action :agenda, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
-  caches_action :tracts, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
-  caches_action :kits, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
-  caches_action :affiches, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
+  caches_action :tracts, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
+  caches_action :kits, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
+  caches_action :affiches, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
   caches_action :rss
 
   def index
@@ -36,8 +32,7 @@ class MiliterController < ApplicationController
   end
 
   def agenda
-    @articles = Article.find_published_order_by_start_datetime 'evenement', @page
-    @pages = Article.count_pages_published_by_start_datetime 'evenement'
+    @articles = Article.find_published_order_by_start_datetime 'evenement', 1, 999
   end
 
   # RSS output based on recent articles.
@@ -47,27 +42,57 @@ class MiliterController < ApplicationController
   end
   
   def tracts
-    @articles = Article.find_published 'tract', @page
-    @pages = Article.count_pages_published 'tract'
+    find_list_articles_by_category 'tract'
+    return if params[:partial].present?
+    @side_articles = [
+      Article.find_published('affiche', 1, 3),
+      Article.find_published('kit', 1, 1)
+    ]
+    render :template => 'layouts/index'
   end
 
   def tract
+    @side_articles = [
+      Article.find_published('affiche', 1, 3),
+      Article.find_published('kit', 1, 1)
+    ]
+    render :template => 'layouts/article'
   end
 
   def kits
-    @articles = Article.find_published 'kit', @page
-    @pages = Article.count_pages_published 'kit'
+    find_list_articles_by_category 'kit'
+    return if params[:partial].present?
+    @side_articles = [
+      Article.find_published('tract', 1, 2),
+      Article.find_published('affiche', 1, 2)
+    ]
+    render :template => 'layouts/index'
   end
 
   def kit
+    @side_articles = [
+      Article.find_published('tract', 1, 2),
+      Article.find_published('affiche', 1, 2)
+    ]
+    render :template => 'layouts/article'
   end
 
   def affiches
-    @articles = Article.find_published 'affiche', @page
-    @pages = Article.count_pages_published 'affiche'
+    find_list_articles_by_category 'affiche'
+    return if params[:partial].present?
+    @side_articles = [
+      Article.find_published('tract', 1, 3),
+      Article.find_published('kit', 1, 1)
+    ]
+    render :template => 'layouts/index'
   end
 
   def affiche
+    @side_articles = [
+      Article.find_published('tract', 1, 3),
+      Article.find_published('kit', 1, 1)
+    ]
+    render :template => 'layouts/article'
   end
 
   def inscription

@@ -11,7 +11,7 @@
                 :action => @source.category_option(:action),
                 :uri => @source.uri %></h1>
       </header>
-      <%= @source.content_with_medium.html_safe %>
+      <%= truncate_html(@source.content_with_medium.html_safe) %>
     </article>
   </section>
 <% end %>
