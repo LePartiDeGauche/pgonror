@@ -163,12 +163,4 @@
     function() { clearInterval(runActualite); },
     function() { runActualite = setInterval('nextActualite()', 6000); }
   ); 
-  function nextMedia() {
-    $('#lateledegauche-media-content li:first').before($('#lateledegauche-media-content li:last'));
-  };
-  var runMedia = setInterval('nextMedia()', 8000);
-  $('#lateledegauche-media-content').hover(
-    function() { clearInterval(runMedia); },
-    function() { runMedia = setInterval('nextMedia()', 8000); }
-  );
 </script>

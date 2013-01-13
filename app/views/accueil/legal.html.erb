@@ -1,0 +1,7 @@
+<section id="mentions-legales">
+  <section id="mentions-legales-content" class="content-bloc">
+    <% unless @legal.nil? %>
+      <%= render :partial => 'layouts/article_simplified', :locals => { :article => @legal } %>
+    <% end %>
+  </section>
+</section>

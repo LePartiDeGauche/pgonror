@@ -1,7 +1,7 @@
 # encoding: utf-8
 # PGonror is the corporate web site framework of Le Parti de Gauche based on Ruby on Rails.
 # 
-# Copyright (C) 2012 Le Parti de Gauche
+# Copyright (C) 2013 Le Parti de Gauche
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,16 +26,6 @@ module ApplicationHelper
     @page_description.present? ? @page_description : "" 
   end
 
-  # Returns keywords for the web site based on the article being displayed.  
-  def current_page_keywords
-    @page_keywords 
-  end
-
-  # Returns the current url.
-  def current_url
-    @url
-  end
-  
   # Displays an icon from the assets with a fixed size 12x12.
   def icon(name, title=nil)
     return "" if name.nil?
@@ -71,12 +61,5 @@ module ApplicationHelper
     t('general.time_by',
             :time => time_ago_in_words(time, :include_seconds => true),
             :by => (who.present?) ? who : t('general.unknown'))
-  end
-
-  # Uses Coderay in order to apply specific stylesheet for code.
-  def coderay(text)
-    text.gsub(/\<code( lang="(.+?)")?\>(.+?)\<\/code\>/m) do
-      CodeRay.scan($3, $2).div(:css => :class)
-    end
   end
 end

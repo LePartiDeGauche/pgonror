@@ -1,7 +1,7 @@
 # encoding: utf-8
 # PGonror is the corporate web site framework of Le Parti de Gauche based on Ruby on Rails.
 # 
-# Copyright (C) 2012 Le Parti de Gauche
+# Copyright (C) 2013 Le Parti de Gauche
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -37,15 +37,17 @@ fr:
     sign_up:          "Inscrivez-vous"
     mandatory:        "Information obligatoire"
     exclusive:        "Une des informations est obligatoire"
-    more_videos:      "Plus de vidéos sur le site de la Télé de Gauche "
+    more_videos:      "Plus de vidéos sur le site de la télé de Gauche "
     title:            "Le Parti de Gauche"
     copyright:        "Le Parti de Gauche, 63 avenue de la République, 75011 Paris"
     mentions:         "Mentions légales, crédits et sources du site"
 
   identity:
+    pg_fdg:               "Le Parti de Gauche, membre du Front de Gauche"
     apply:                "Adhésion"
     support:              "Nous soutenir"
     fdg:                  "Place au peuple !"
+    fdg_web:              "http://www.placeaupeuple2012.fr"
     reserved:             "ESPACE ADHÉRENT"
     reserved_link:        "Site interne Agit’Prop"
     reserved_web:         "http://agitprop.lepartidegauche.fr"
@@ -74,6 +76,7 @@ fr:
     rss_1_explain:        "À la une"
     rss_2_explain:        "Agenda"
     rss_3_explain:        "Podcast"
+    rss_4_explain:        "La télé de Gauche"
     txt_explain:          "Téléchargez les derniers articles sous forme d’un fichier portable (.txt)."
     follow_fb:            "Parti de Gauche sur facebook"
     follow_fb_link:       "http://www.facebook.com/lepartidegauche"
@@ -82,8 +85,8 @@ fr:
     follow_gp:            "Le Parti de Gauche sur Google+"
     profile_googleplus:   "https://plus.google.com/+lepartidegauche"
     follow_dm_link:       "http://www.dailymotion.com/lepartidegauche"
-    follow_dm:            "La Télé de Gauche sur Dailymotion"
-    follow_tele_fb:       "La Télé de Gauche sur facebook"
+    follow_dm:            "La télé de Gauche sur Dailymotion"
+    follow_tele_fb:       "La télé de Gauche sur facebook"
     follow_tele_fb_link:  "http://www.facebook.com/pages/La-T%C3%A9l%C3%A9-de-Gauche/160251490652395"
     follow_tele_tw:       "Lateledegauche"
     follow_tele_tw_link:  "https://twitter.com/Lateledegauche"
@@ -101,8 +104,9 @@ fr:
     wait:           "Patience…"
     back_list:      "Retour à la liste"
     update:         "Modifier"
-    change_status:  "Changer statut"
-    change_category:  "Changer catégorie"
+    change_status:          "Changer statut"
+    change_category:        "Changer catégorie"
+    change_image_options:   "Options d’image"
     delete:         "Supprimer"
     search:         "Rechercher"
     search_list:    "RÉSULTATS DE LA RECHERCHE"
@@ -224,6 +228,16 @@ fr:
       reviewed:   "Relu (en attente d’approbation)"
       online:     "En ligne (publié)"
       offline:    "Hors ligne (non publié)"
+    gravity:
+      center:     "Centré (par défaut)"
+      west:       "À gauche"
+      east:       "À droite"
+      south:      "En bas"
+      southwest:  "En bas à gauche"
+      southeast:  "En bas à droite"
+      north:      "En haut"
+      northwest:  "En haut à gauche"
+      northeast:  "En haut à droite"
     empty:        "Il n’y a pas d’article répondant aux critères."
   titre:
     lire:                "+ lire"
@@ -427,6 +441,7 @@ fr:
         link_to:                    "Accès chaîne éditoriale"
         tags:                       "Mots-clés"
         show_heading:               "Afficher le sur-titre dans les tables de matières"
+        gravity:                    "Cadrage de l’image"
       user:
         email:                      "Adresse électronique"
         password:                   "Mot de passe"

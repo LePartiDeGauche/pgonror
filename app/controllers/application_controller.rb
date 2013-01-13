@@ -1,7 +1,7 @@
 # encoding: utf-8
 # PGonror is the corporate web site framework of Le Parti de Gauche based on Ruby on Rails.
 # 
-# Copyright (C) 2012 Le Parti de Gauche
+# Copyright (C) 2013 Le Parti de Gauche
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -36,6 +36,9 @@ protected
 
   # Sets a page title based on menus definition and article categories.
   def page_title
+    @og_type = "website"
+    @hide_main_menu = false
+    @identity_layout = "layouts/identity"
     menu = MENU.find {|meaning, options| options.present? and
                                          options[:controller].present? and
                                          options[:action].present? and 
@@ -46,6 +49,8 @@ protected
       @page_title = menu[1][:home].blank? ? menu[0] : ""
       @page_description = menu[1][:description].blank? ? menu[0] : menu[1][:description]
       @url = url_for(:controller => menu[1][:controller], :action => menu[1][:action])
+      @hide_main_menu = menu[1][:hide_main_menu] == true if menu[1][:hide_main_menu].present?
+      @identity_layout = menu[1][:identity_layout] if menu[1][:identity_layout].present?
     else 
       category = CATEGORIES.find {|meaning, code, options|
                                     options.present? and
@@ -65,6 +70,8 @@ protected
       if header_menu.present?
         @header_name = header_menu[0]
         @header_link = url_for(:controller => header_menu[1][:controller], :action => header_menu[1][:action])
+        @hide_main_menu = header_menu[1][:hide_main_menu] == true if header_menu[1][:hide_main_menu].present?
+        @identity_layout = header_menu[1][:identity_layout] if header_menu[1][:identity_layout].present?
       end
     end
   end
@@ -73,7 +80,7 @@ protected
   def authenticate_administrator!
     @norobot = true
     if not user_signed_in? or not current_user.administrator
-      flash[:notice] = t('passwd.no_auth')
+      flash[:alert] = t('passwd.no_auth')
       redirect_to :root
     end
   end
@@ -82,7 +89,7 @@ protected
   def authenticate_publisher!
     @norobot = true
     if not user_signed_in? or not current_user.publisher
-      flash[:notice] = t('passwd.no_auth')
+      flash[:alert] = t('passwd.no_auth')
       redirect_to :root
     end
   end
@@ -91,7 +98,7 @@ protected
   def authenticate_access_reserved!
     @norobot = true
     if not user_signed_in? or current_user.access_level != 'reserved'
-      flash[:notice] = t('passwd.no_auth')
+      flash[:alert] = t('passwd.no_auth')
       redirect_to :root
     end
   end
@@ -100,6 +107,16 @@ protected
   def reset_backtrace
     session[:breadcrumb_table] = nil
     session[:prior_url] = nil
+  end
+
+  # Returns true when the cache mechanism can be activated.
+  def can_cache?
+    @page == 1 and
+    @page_heading.blank? and
+    params[:search].blank? and
+    not(user_signed_in?) and
+    flash[:notice].nil? and
+    flash[:alert].nil?
   end
 
   # Pushes current url to the backtrace used for navigation.
@@ -134,7 +151,7 @@ protected
       return
     end
   end
-  
+
   URL_HTTP = /(.+)%e2%80%99http(s?):\/(.*)%e2%80%99/
   # Selects one article based on its uri.
   def find_article
@@ -158,14 +175,16 @@ protected
           render :template => '/layouts/error', :formats => :html, :status => '404'
         else
           @page_title = ((@article.heading.present? ? @article.heading + " • " : "") + @article.title).gsub(/\"/, "").strip
-          @page_keywords = @article.tags_display
           @page_description = @article.description
           @source = @article.source if @article.present? and not @article.source_id.nil?
           @last_published = @article.find_last_published if not @article.category_option?(:hide_category_name)
           @same_heading = @article.find_published_by_heading if not @article.heading.blank?
           @tags = @article.tags
-          @url = url_for(:controller => controller, :action => action)
+          @url = url_for(:controller => controller, :action => action, :uri => @article.uri)
           @original_url = @article.original_url
+          @og_type = "article"
+          @og_type = "video.movie" if @article.category_option?(:video)
+          @og_type = "music.song" if @article.category_option?(:audio)
           header_menu = MENU.find {|meaning, options| options.present? and
                                                       options[:controller].present? and
                                                       options[:controller].to_s == params[:controller]
@@ -173,6 +192,8 @@ protected
           if header_menu.present?
             @header_name = header_menu[0]
             @header_link = url_for(:controller => header_menu[1][:controller], :action => header_menu[1][:action])
+            @hide_main_menu = header_menu[1][:hide_main_menu] == true if header_menu[1][:hide_main_menu].present?
+            @identity_layout = header_menu[1][:identity_layout] if header_menu[1][:identity_layout].present?
           end
         end
       end

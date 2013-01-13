@@ -1,7 +1,7 @@
 # encoding: utf-8
 # PGonror is the corporate web site framework of Le Parti de Gauche based on Ruby on Rails.
 # 
-# Copyright (C) 2012 Le Parti de Gauche
+# Copyright (C) 2013 Le Parti de Gauche
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,9 +16,10 @@
 
 # Controller for the web site home page.
 class AccueilController < ApplicationController
-  caches_action :index, :layout => false, :if => Proc.new { not user_signed_in? }
-  caches_action :rss
-  caches_action :sitemap
+  caches_action :index, :layout => false, :expires_in => 1.hour, :if => Proc.new { can_cache? }
+  caches_action :legal, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :rss, :expires_in => 1.hour, :if => Proc.new { can_cache? }
+  caches_action :sitemap, :expires_in => 1.hour
   
   # Content of the home page
   def index
@@ -57,7 +58,6 @@ class AccueilController < ApplicationController
   # Legal information page.
   def legal
     @legal = Article.find_published('legal', 1, 1)[0]
-    @campagne = Article.find_published('campagne', 1, 1)[0]
   end
   
   # Newspaper subscription.

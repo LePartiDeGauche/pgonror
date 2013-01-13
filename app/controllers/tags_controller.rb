@@ -1,7 +1,7 @@
 # encoding: utf-8
 # PGonror is the corporate web site framework of Le Parti de Gauche based on Ruby on Rails.
 # 
-# Copyright (C) 2012 Le Parti de Gauche
+# Copyright (C) 2013 Le Parti de Gauche
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -49,19 +49,30 @@ class TagsController < ApplicationController
   end
 
   def create
-    @article = Article.find(params[:article_id])
-    unless @article.nil?
-      @tag = @article.tags.new(params[:tag])
-      @tag.created_by = current_user.email
-      @tag.updated_by = current_user.email
-      Article.create_default_tag @tag.tag, current_user.email
-      if @tag.save
-        flash[:notice] = t('action.tag.created')
-        redirect_to(@article, :only_path => true)
-      else
-        @unused_tags = @article.unused_tags
-        render :action => "new"
+    saved = false
+    begin
+      @article = Article.find(params[:article_id])
+      unless @article.nil?
+        @tag = @article.tags.new(params[:tag])
+        @tag.created_by = current_user.email
+        @tag.updated_by = current_user.email
+        Article.create_default_tag @tag.tag, current_user.email
+        if @tag.save
+          saved = true
+        end
       end
+    rescue ActiveRecord::RecordInvalid => invalid
+      log_warning "create", invalid
+    rescue Exception => invalid
+      log_error "create", invalid
+      flash[:alert] = invalid.to_s
+    end
+    if saved
+      flash[:notice] = t('action.tag.created')
+      redirect_to(@article, :only_path => true)
+    else
+      @unused_tags = @article.unused_tags
+      render :action => "new"
     end
   end
 

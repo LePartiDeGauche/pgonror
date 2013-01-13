@@ -43,37 +43,34 @@
       <% end %>
       <% if @article.category_option?(:start_end_dates) or not @article.agenda.blank? %>
         <div class="date"><%= @article.start_end_datetime_display(true) %></div>
-        <% if (@article.category_option?(:address) or not @article.agenda.blank?) and not @article.address.blank? %>
+        <% if (@article.category_option?(:address) or not @article.agenda.blank?) and @article.address.present? %>
           <strong><%= @article.address %></strong>
-          <div id="carte" style="width:612px;height:260px;"></div>
-          <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyARG0BrRKKXVO06jeS5NamKyW5SX8sVBbw&sensor=false"></script>
-          <script>
-            $(document).ready(function() {
-              var geocoder;
-              var map;
-              geocoder = new google.maps.Geocoder();
-              var latlng = new google.maps.LatLng(48.864926,2.378644);
-              var mapOptions = {
-                zoom: 12,
-                center: latlng,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-              }
-              map = new google.maps.Map(document.getElementById('carte'), mapOptions);
+          <% if defined?(GOOGLE_MAPS_SCRIPT) %>
+            <div id="carte" style="width:612px;height:260px;margin-top:10px;"></div>
+            <script src="<%= GOOGLE_MAPS_SCRIPT %>"></script>
+            <script>
+              var geocoder = new google.maps.Geocoder();
+              var latlng = new google.maps.LatLng(47,1.5);
+              var mapOptions = { zoom: 12, center: latlng, mapTypeId: google.maps.MapTypeId.ROADMAP }
+              var map = new google.maps.Map(document.getElementById('carte'), mapOptions);
+              var marker;
               geocoder.geocode(
-                  { address: "<%= @article.address %>", region: "FR" },
-                  function(results, status) {
-                if (status == google.maps.GeocoderStatus.OK) {
-                  map.setCenter(results[0].geometry.location);
-                  var marker = new google.maps.Marker({
+                { address: "<%= @article.address_to_txt.gsub(/\"/, '\"') %>", region: "FR" },
+                function(results, status) {
+                  if (status == google.maps.GeocoderStatus.OK) {
+                    map.setCenter(results[0].geometry.location);
+                    marker = new google.maps.Marker({
                       map: map,
-                      position: results[0].geometry.location
-                  });
-                } else {
-                  $("#carte").hide();
+                      position: results[0].geometry.location,
+                      title:"<%= @article.address_to_txt.gsub(/\"/, '\"').html_safe %>"
+                    });
+                  } else { 
+                    $("#carte").hide(); 
+                  }
                 }
-              });
-            });
-          </script>
+              );
+            </script>
+          <% end %>
         <% end %>
       <% else %>
         <div class="signature">

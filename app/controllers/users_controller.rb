@@ -1,7 +1,7 @@
 # encoding: utf-8
 # PGonror is the corporate web site framework of Le Parti de Gauche based on Ruby on Rails.
 # 
-# Copyright (C) 2012 Le Parti de Gauche
+# Copyright (C) 2013 Le Parti de Gauche
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -34,9 +34,21 @@ class UsersController < ApplicationController
   end
 
   def update
+    saved = false
     @user = User.find(params[:id])
-    @user.updated_by = current_user.email
-    if @user.update_attributes(params[:user])
+    unless @user.nil?
+      begin
+        @user.transaction do
+          @user.updated_by = current_user.email
+          @user.update_attributes(params[:user])
+          saved = true
+        end
+      rescue Exception => invalid
+        log_error "destroy", invalid
+        flash[:alert] = invalid.to_s
+      end
+    end
+    if saved
       flash[:notice] = t('action.user.updated')
       redirect_to(@user)
     else
@@ -45,9 +57,20 @@ class UsersController < ApplicationController
   end
 
   def destroy
+    saved = false
     @user = User.find(params[:id])
-    @user.destroy
-    flash[:notice] = t('action.user.deleted')
-    redirect_to(users_url)
+    unless @user.nil?
+      begin
+        @user.transaction do
+          @user.destroy
+          saved = true
+        end
+      rescue Exception => invalid
+        log_error "destroy", invalid
+        flash[:alert] = invalid.to_s
+      end
+    end
+    flash[:notice] = t('action.user.deleted') if saved
+    render :action => :index
   end
 end

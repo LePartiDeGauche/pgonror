@@ -1,7 +1,7 @@
 # encoding: utf-8
 # PGonror is the corporate web site framework of Le Parti de Gauche based on Ruby on Rails.
 # 
-# Copyright (C) 2012 Le Parti de Gauche
+# Copyright (C) 2013 Le Parti de Gauche
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,9 +17,13 @@ class EducpopController < ApplicationController
   before_filter :find_article, :only => [:date, :livre, :lecture, :revue ]
   caches_action :index, :layout => false, :if => Proc.new { not user_signed_in? }
   caches_action :dates, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
+  caches_action :date, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
   caches_action :librairie, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
+  caches_action :livre, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
   caches_action :lectures, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
+  caches_action :lecture, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
   caches_action :revues, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
+  caches_action :revue, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
 
   def index
     @dates = Article.find_published 'date', 1, 1

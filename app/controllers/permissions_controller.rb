@@ -1,7 +1,7 @@
 # encoding: utf-8
 # PGonror is the corporate web site framework of Le Parti de Gauche based on Ruby on Rails.
 # 
-# Copyright (C) 2012 Le Parti de Gauche
+# Copyright (C) 2013 Le Parti de Gauche
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,18 +19,12 @@ class PermissionsController < ApplicationController
 
   def index
     @user = User.find(params[:user_id])
-    if @user.present?
-      redirect_to(@user, :only_path => true)
-    else
-      render :action => "new"
-    end
+    redirect_to(@user, :only_path => true) if @user.present?
   end
 
   def new
     @user = User.find(params[:user_id])
-    if @user.present?
-      @permission = @user.permissions.new
-    end
+    @permission = @user.permissions.new if @user.present?
   end
 
   def create

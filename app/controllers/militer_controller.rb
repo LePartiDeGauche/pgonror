@@ -1,7 +1,7 @@
 # encoding: utf-8
 # PGonror is the corporate web site framework of Le Parti de Gauche based on Ruby on Rails.
 # 
-# Copyright (C) 2012 Le Parti de Gauche
+# Copyright (C) 2013 Le Parti de Gauche
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,14 +15,17 @@
 # See doc/COPYRIGHT.rdoc for more details.
 class MiliterController < ApplicationController
   before_filter :find_article, :only => [:evenement, :tract, :affiche, :kit]
-  before_filter :load_side_articles, :only => [:index, :inscription, 
-                                               :evenement, :agenda]
-  caches_action :index, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
-  caches_action :agenda, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
-  caches_action :tracts, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
-  caches_action :kits, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
-  caches_action :affiches, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
-  caches_action :rss
+  before_filter :load_side_articles, :only => [:index, :inscription, :evenement, :agenda]
+  caches_action :index, :layout => false, :expires_in => 1.hour, :if => Proc.new { can_cache? }
+  caches_action :agenda, :layout => false, :expires_in => 1.hour, :if => Proc.new { can_cache? }
+  caches_action :evenement, :layout => false, :expires_in => 1.hour, :if => Proc.new { can_cache? }
+  caches_action :tracts, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :tract, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :kits, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :kit, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :affiches, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :affiche, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :rss, :expires_in => 1.hour, :if => Proc.new { can_cache? }
 
   def index
     create_subscription
@@ -99,24 +102,7 @@ class MiliterController < ApplicationController
     @subscription = Subscription.new(params[:subscription])
     if @subscription.save
       flash.now[:notice] = t('action.subscription.created')
-      recipients = User.notification_recipients "notification_subscription"
-      if not recipients.empty?
-        Notification.notification_subscription(@subscription.email, 
-                                               recipients.join(', '),
-                                               t('mailer.notification_subscription_subject'),
-                                               @subscription.first_name,
-                                               @subscription.last_name, 
-                                               @subscription.email, 
-                                               @subscription.address, 
-                                               @subscription.zip_code,
-                                               @subscription.city, 
-                                               @subscription.phone).deliver
-      end
-      Receipt.receipt_subscription(Devise.mailer_sender, 
-                                   @subscription.email,
-                                   t('mailer.receipt_subscription_subject'),
-                                   @subscription.first_name,
-                                   @subscription.last_name).deliver
+      @subscription.email_notification
       create_subscription
     end
     render :action => "index"

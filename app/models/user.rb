@@ -1,7 +1,7 @@
 # encoding: utf-8
 # PGonror is the corporate web site framework of Le Parti de Gauche based on Ruby on Rails.
 # 
-# Copyright (C) 2012 Le Parti de Gauche
+# Copyright (C) 2013 Le Parti de Gauche
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,6 +17,13 @@
 # Defines users who can access protected information, enter enter web content or administer the system.
 # User authentification is managed with Devise https://github.com/plataformatec/devise.
 class User < ActiveRecord::Base
+
+  # Defines access level for visitors.
+  ACCESS_LEVELS = [
+    ["Public", 'public'],
+    ["Adhérent", 'reserved']
+  ]
+
   validates :email, :uniqueness => true, :length => {:minimum => 3, :maximum => 50}, :email => true
 
   has_many :permissions, 
@@ -71,7 +78,7 @@ class User < ActiveRecord::Base
   end
   
   # Returns the authorization of given user, category and source of information.
-  def self.get_authorization_article(user_email, category, source_id)
+  def self.get_authorization_article(user_email, category, source_id = nil)
     user = User.where("email = ? and publisher = ?", user_email, true).first
     return nil if user.nil?
     permission = user.permissions.where("(category is null or category = '' or category = ?) and (source_id is null or source_id = ?)", category, source_id).first
@@ -87,7 +94,7 @@ class User < ActiveRecord::Base
     recipients
   end
 
-  # Triggers a notification a new user has been created.  
+  # Triggers a notification when a new user has been created.  
   def notification_new_user
     Notification.notification_new_user(Devise.mailer_sender,
                                        User.notification_recipients("administrator"), 

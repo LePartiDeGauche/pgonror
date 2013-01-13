@@ -14,12 +14,8 @@
           <%= f.submit t('action.ok'), :disable_with => t('action.wait') %>
         </aside>
         <header>
-          <h3 class="category">
-            <%= @article.category_display %>&nbsp;&bull;
-          </h3>
-          <h1>
-            <%= @article.title_display.html_safe %>
-          </h1>
+          <h3 class="category"><%= @article.category_display %></h3>&nbsp;&bull;
+          <h1><%= @article.title_display.html_safe %></h1>
         </header>
         <%= render :partial => 'layouts/error_messages', :locals => { :item => @article } %>
         <%= render :partial => 'show' %>

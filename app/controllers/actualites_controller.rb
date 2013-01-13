@@ -1,7 +1,7 @@
 # encoding: utf-8
 # PGonror is the corporate web site framework of Le Parti de Gauche based on Ruby on Rails.
 # 
-# Copyright (C) 2012 Le Parti de Gauche
+# Copyright (C) 2013 Le Parti de Gauche
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,12 +15,17 @@
 # See doc/COPYRIGHT.rdoc for more details.
 class ActualitesController < ApplicationController
   before_filter :find_article, :only => [:edito, :actualite, :communique, :international, :dossier]
-  caches_action :index, :layout => false, :if => Proc.new { not user_signed_in? }
-  caches_action :editos, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? } 
-  caches_action :actualites, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
-  caches_action :communiques, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
-  caches_action :tout_international, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
-  caches_action :dossiers, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
+  caches_action :index, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :editos, :layout => false, :if => Proc.new { can_cache? } 
+  caches_action :edito, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :actualites, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :actualite, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :communiques, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :communique, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :tout_international, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :international, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :dossiers, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :dossier, :layout => false, :if => Proc.new { can_cache? }
 
   def index
     @editos = Article.find_published 'edito', 1, 15

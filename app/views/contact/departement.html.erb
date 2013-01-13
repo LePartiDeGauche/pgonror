@@ -1,7 +1,10 @@
 <section id="contact-liste">
   <section class="content-bloc">
     <%= render :partial => 'layouts/article_simplified', :locals => { :article => @article } %>
-    <%= render :partial => 'layouts/share_article' %>
+    <footer>
+      <hr/>
+      <%= render :partial => 'layouts/share_article' %>
+    </footer>
   </section>
   <% unless @attached_articles.nil? or @attached_articles.empty? %>
     <section class="content-bloc">

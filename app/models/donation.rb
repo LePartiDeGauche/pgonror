@@ -1,7 +1,7 @@
 # encoding: utf-8
 # PGonror is the corporate web site framework of Le Parti de Gauche based on Ruby on Rails.
 # 
-# Copyright (C) 2012 Le Parti de Gauche
+# Copyright (C) 2013 Le Parti de Gauche
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -83,12 +83,30 @@ class Donation < Payment
             )', "00000")
   end
 
-  # For logs in Administration panel
-  paginates_per 100
-  scope :logs, order('created_at DESC')
-  scope :paid_logs, Donation::find_paid.order('created_at DESC')
-  scope :unpaid_logs, Donation::find_unpaid.order('created_at DESC')
-  scope :filtered_by, lambda { |search| where('lower(first_name) LIKE ? OR lower(last_name) LIKE ? OR lower(email) LIKE ?', "%#{search.downcase.strip}%", "%#{search.downcase.strip}%", "%#{search.downcase.strip}%") }
+  # Triggers an email notification for a new donation.
+  def email_notification
+    recipients = User.notification_recipients "notification_donation"
+    if not recipients.empty?
+      Notification.notification_donation(self.email, 
+                                         recipients.join(', '),
+                                         I18n.t('mailer.notification_donation_subject'),
+                                         self.first_name,
+                                         self.last_name, 
+                                         self.email, 
+                                         self.address, 
+                                         self.zip_code,
+                                         self.city, 
+                                         self.phone,
+                                         self.comment,
+                                         self.amount,
+                                         self.payment_identifier).deliver
+    end
+    Receipt.receipt_donation(Devise.mailer_sender, 
+                             self.email,
+                             I18n.t('mailer.receipt_donation_subject'),
+                             self.first_name,
+                             self.last_name).deliver
+  end
 
   # Returns the content as a string used for display.  
   def to_s
@@ -127,4 +145,11 @@ class Donation < Payment
     "#{escape_csv payment_identifier};" +
     "#{escape_csv comment}"
   end
+
+  # For logs in Administration panel.
+  paginates_per 100
+  scope :logs, order('created_at DESC')
+  scope :paid_logs, Donation::find_paid.order('created_at DESC')
+  scope :unpaid_logs, Donation::find_unpaid.order('created_at DESC')
+  scope :filtered_by, lambda { |search| where('lower(first_name) LIKE ? OR lower(last_name) LIKE ? OR lower(email) LIKE ?', "%#{search.downcase.strip}%", "%#{search.downcase.strip}%", "%#{search.downcase.strip}%") }
 end

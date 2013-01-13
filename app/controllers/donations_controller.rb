@@ -1,7 +1,7 @@
 # encoding: utf-8
 # PGonror is the corporate web site framework of Le Parti de Gauche based on Ruby on Rails.
 # 
-# Copyright (C) 2012 Le Parti de Gauche
+# Copyright (C) 2013 Le Parti de Gauche
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,12 +16,14 @@
 
 # Controller for donations.
 class DonationsController < PaymentController
+  caches_action :don
+
   # Donation form.
   def don
     @donation = Donation.new
     @don = Article.find_published('don', 1, 1)[0]
   end
-  
+
   # Control of the donation form and redirects to payment page if it's OK.  
   def valider_don
     saved = false
@@ -47,37 +49,13 @@ class DonationsController < PaymentController
       render :action => :don
     end
   end
-  
-  # Payment form for donation.
-  def paiement_don
-  end
-  
+
   # Donation payment callback.
   def retour_paiement_don
     begin
       @donation = update_payment_record!
       if @donation.present? and @donation.payment_ok?
-        recipients = User.notification_recipients "notification_donation"
-        if not recipients.empty?
-          Notification.notification_donation(@donation.email, 
-                                             recipients.join(', '),
-                                             t('mailer.notification_donation_subject'),
-                                             @donation.first_name,
-                                             @donation.last_name, 
-                                             @donation.email, 
-                                             @donation.address, 
-                                             @donation.zip_code,
-                                             @donation.city, 
-                                             @donation.phone,
-                                             @donation.comment,
-                                             @donation.amount,
-                                             @donation.payment_identifier).deliver
-        end
-        Receipt.receipt_donation(Devise.mailer_sender, 
-                                 @donation.email,
-                                 t('mailer.receipt_donation_subject'),
-                                 @donation.first_name,
-                                 @donation.last_name).deliver
+        @donation.email_notification
       elsif @donation.nil?
         log_error "retour_paiement_don: invalid donation"
       end
@@ -98,7 +76,7 @@ class DonationsController < PaymentController
     flash[:notice] = t('action.donation.created') if record.present? and record.payment_ok?
     redirect_to :root
   end
-  
+
   # Payment of the membership is rejected.  
   def don_rejete
     begin

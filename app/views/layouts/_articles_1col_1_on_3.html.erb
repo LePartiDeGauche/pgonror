@@ -20,11 +20,6 @@
                 <h4><%= article.heading_display.html_safe %></h4>&nbsp;&bull;
               <% end %>
               <h1><%= link_to article.title_display.html_safe, article.path %></h1>
-              <% if not first_row %>
-                <aside class="actions">
-                  <%= link_to t('titre.lire'), article.path %>
-                </aside>
-              <% end %>
             </header>
             <% if first_row %>
               <div class="one-third-column">

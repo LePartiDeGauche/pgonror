@@ -1,7 +1,7 @@
 # encoding: utf-8
 # PGonror is the corporate web site framework of Le Parti de Gauche based on Ruby on Rails.
 # 
-# Copyright (C) 2012 Le Parti de Gauche
+# Copyright (C) 2013 Le Parti de Gauche
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,6 +16,8 @@
 
 # Controller for memberships.
 class MembershipsController < PaymentController
+  caches_action :adhesion
+
   # Membership form.
   def adhesion
     @membership = Membership.new
@@ -29,7 +31,7 @@ class MembershipsController < PaymentController
       @membership = Membership.new(params[:membership])
       @membership.renew = params[:renew]
       predefined_amount = params[:membership][:predefined_amount] if params[:membership].present?
-      @membership.amount = predefined_amount.to_i if predefined_amount != "0"
+      @membership.amount = predefined_amount.to_i if predefined_amount.present? and predefined_amount != "0"
       @membership.save!
       saved = true
     rescue ActiveRecord::RecordInvalid => invalid
@@ -50,52 +52,13 @@ class MembershipsController < PaymentController
       render :action => :adhesion
     end
   end
-  
-  # Payment form for membership.
-  def paiement_adhesion
-  end
-  
+
   # Membership payment callback.
   def retour_paiement_adhesion
     begin
       @membership = update_payment_record!
       if @membership.present? and @membership.payment_ok?
-        recipients = User.notification_recipients "notification_membership"
-        if not recipients.empty?
-          Notification.notification_membership(@membership.email, 
-                                               recipients.join(', '),
-                                               t(@membership.renew ? 
-                                                        'mailer.notification_membership_subject_renew' :
-                                                        'mailer.notification_membership_subject'),
-                                               @membership.first_name,
-                                               @membership.last_name, 
-                                               @membership.gender,
-                                               @membership.email, 
-                                               @membership.address, 
-                                               @membership.zip_code,
-                                               @membership.city, 
-                                               @membership.phone,
-                                               @membership.mobile,
-                                               @membership.renew,
-                                               @membership.department,
-                                               @membership.committee,
-                                               @membership.birthdate,
-                                               @membership.job,
-                                               @membership.mandate,
-                                               @membership.union,
-                                               @membership.union_resp,
-                                               @membership.assoc,
-                                               @membership.assoc_resp,
-                                               @membership.mandate_place,
-                                               @membership.comment,
-                                               @membership.amount,
-                                               @membership.payment_identifier).deliver
-        end
-        Receipt.receipt_membership(Devise.mailer_sender, 
-                                   @membership.email,
-                                   t('mailer.receipt_membership_subject'),
-                                   @membership.first_name,
-                                   @membership.last_name).deliver
+        @membership.email_notification
       elsif @membership.nil?
         log_error "retour_paiement_adhesion: invalid membership"
       end

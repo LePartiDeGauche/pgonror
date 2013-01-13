@@ -1,7 +1,7 @@
 # encoding: utf-8
 # PGonror is the corporate web site framework of Le Parti de Gauche based on Ruby on Rails.
 # 
-# Copyright (C) 2012 Le Parti de Gauche
+# Copyright (C) 2013 Le Parti de Gauche
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ class Tag < ActiveRecord::Base
   def delete_all_references
     Tag.delete_all(['tag = ? and article_id is not null', self.tag])
   end
-  
+
   # Returns pre-defined tags with count.
   def self.predefined_tags
     Tag.find_by_sql "select a.id
@@ -72,6 +72,6 @@ private
 
   # Updates the tag with lowercase.
   def update_tag
-    self.tag.downcase!
+    self.tag.downcase! unless self.tag.nil?
   end
 end

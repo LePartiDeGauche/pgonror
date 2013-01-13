@@ -1,7 +1,7 @@
 # encoding: utf-8
 # PGonror is the corporate web site framework of Le Parti de Gauche based on Ruby on Rails.
 # 
-# Copyright (C) 2012 Le Parti de Gauche
+# Copyright (C) 2013 Le Parti de Gauche
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,9 +19,13 @@ class VudailleursController < ApplicationController
                                                :blog,
                                                :envoyer_message]
 
-  caches_action :index, :layout => false, :if => Proc.new { not user_signed_in? }
-  caches_action :articlesweb, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
-  caches_action :articlesblog, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
+  caches_action :index, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :articlesweb, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :articleweb, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :articlesblog, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :articleblog, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :blogs, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :blog, :layout => false, :if => Proc.new { can_cache? }
 
   def index
     @articlesweb = Article.find_published 'web', 1, 3
@@ -88,32 +92,7 @@ class VudailleursController < ApplicationController
     end
     if saved
       flash.now[:notice] = t('action.request.created')
-      recipients = nil
-      if @request.recipient.present?
-        recipient = Article::find_by_uri(@request.recipient)
-        if recipient.present? and recipient.email.present?
-          recipients = [recipient.email]
-        end
-      end
-      recipients = User.notification_recipients("notification_message") if recipients.nil?
-      if not recipients.empty?
-        Notification.notification_message(@request.email, 
-                                          recipients.join(', '),
-                                          t('mailer.notification_message_subject'),
-                                          @request.first_name,
-                                          @request.last_name, 
-                                          @request.email, 
-                                          @request.address, 
-                                          @request.zip_code,
-                                          @request.city, 
-                                          @request.phone,
-                                          @request.comment).deliver
-      end
-      Receipt.receipt_message(Devise.mailer_sender, 
-                              @request.email,
-                              t('mailer.receipt_message_subject'),
-                              @request.first_name,
-                              @request.last_name).deliver
+      @request.email_notification
       create_request
     end
     @pages = Article.count_pages_published 'web'

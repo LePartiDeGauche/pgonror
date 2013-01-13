@@ -1,7 +1,7 @@
 # encoding: utf-8
 # PGonror is the corporate web site framework of Le Parti de Gauche based on Ruby on Rails.
 # 
-# Copyright (C) 2012 Le Parti de Gauche
+# Copyright (C) 2013 Le Parti de Gauche
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,21 +17,32 @@
 # Controller for the podcast.
 class PodcastController < ApplicationController
   before_filter :find_article, :only => [:son]
-
-  caches_action :index, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
+  caches_action :index, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :son, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :rss, :expires_in => 1.hour, :if => Proc.new { can_cache? }
 
   def index
-    @pages = Article.count_pages_published_by_heading 'son', @page_heading
-    @articles = Article.find_published_by_heading 'son', @page_heading, @page
-    @headings = Article.find_published_group_by_heading 'son'
-    @editos = Article.find_published 'edito', 1, 1
-    @actus = Article.find_published 'actu', 1, 1
+    find_list_articles_by_category 'son'
+    return if params[:partial].present?
+    @side_articles = [
+      Article.find_published('edito', 1, 1),
+      Article.find_published('dossier', 1, 1),
+      Article.find_published('com', 1, 1),
+      Article.find_published('actu', 1, 1),
+      Article.find_published('inter', 1, 1)
+    ]
+    render :template => 'layouts/index'
   end
 
   def son
-    @headings = Article.find_published_group_by_heading 'son'
-    @editos = Article.find_published 'edito', 1, 1
-    @actus = Article.find_published 'actu', 1, 1
+    @side_articles = [
+      Article.find_published('edito', 1, 1),
+      Article.find_published('dossier', 1, 1),
+      Article.find_published('com', 1, 1),
+      Article.find_published('actu', 1, 1),
+      Article.find_published('inter', 1, 1)
+    ]
+    render :template => 'layouts/article'
   end
 
   # RSS podcast output.

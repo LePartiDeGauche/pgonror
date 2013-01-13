@@ -1,7 +1,7 @@
 # encoding: utf-8
 # PGonror is the corporate web site framework of Le Parti de Gauche based on Ruby on Rails.
 # 
-# Copyright (C) 2012 Le Parti de Gauche
+# Copyright (C) 2013 Le Parti de Gauche
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,36 +14,91 @@
 # 
 # See doc/COPYRIGHT.rdoc for more details.
 require "spec_helper"
-
-describe "Routage de l'administration" do
-  describe "Utilisateurs" do
-    it "/users : utilisateurs" do
+describe "Administration" do
+  describe "Users" do
+    it "/users" do
       get("/administration?type=adherents").should route_to("administration#index")
+    end
+
+    it "/users/search" do
+      get("/administration?type=adherents&search=X").should route_to("administration#index")
+    end
+    
+    it "/show" do
+      get("/users/1").should route_to("users#show", :id => "1")
+    end
+
+    it "/edit" do
+      get("/users/1/edit").should route_to("users#edit", :id => "1")
+    end
+
+    it "/update" do
+      put("/users/1").should route_to("users#update", :id => "1")
+    end
+
+    it "/destroy" do
+      delete("/users/1").should route_to("users#destroy", :id => "1")
+    end
+
+    describe "Permissions" do
+      it "/" do
+        get("/users/1/permissions").should route_to("permissions#index", :user_id => "1")
+      end
+
+      it "/new" do
+        get("/users/1/permissions/new").should route_to("permissions#new", :user_id => "1")
+      end
+
+      it "/create" do
+        post("/users/1/permissions").should route_to("permissions#create", :user_id => "1")
+      end
+
+      it "/update" do
+        put("/users/1/permissions/1").should route_to("permissions#update", :user_id => "1", :id => "1")
+      end
+
+      it "/destroy" do
+        delete("/users/1/permissions/1").should route_to("permissions#destroy", :user_id => "1", :id => "1")
+      end
     end
   end
-  describe "Adhésions" do
-    it "/administration?type=adherents : adhésions" do
+
+  describe "Memberships" do
+    it "/administration?type=adherents" do
       get("/administration?type=adherents").should route_to("administration#index")
     end
-    it "/administration?type=adherents : adhésions payées" do
+
+    it "/administration?type=adherents" do
       get("/administration?type=adherents_paye").should route_to("administration#index")
     end
-    it "/administration?type=adherents : adhésions non abouties" do
+
+    it "/administration?type=adherents" do
       get("/administration?type=adherents_nonabouti").should route_to("administration#index")
     end
   end
-  describe "Dons" do
-    it "/administration?type=dons : dons" do
+
+  describe "Donations" do
+    it "/administration?type=dons" do
       get("/administration?type=dons").should route_to("administration#index")
     end
+
+    it "/administration?type=dons_payes" do
+      get("/administration?type=dons_payes").should route_to("administration#index")
+    end
+
+    it "/administration?type=dons_nonaboutis" do
+      get("/administration?type=dons_nonaboutis").should route_to("administration#index")
+    end
   end
+
   describe "Messages" do
-    it "/administration?type=messages : messages" do
+    it "/administration?type=messages" do
       get("/administration?type=messages").should route_to("administration#index")
     end
   end
-  describe "Historique des modifs" do
-    it "/administration?type=audits : audits" do
+
+  describe "History" do
+    it "/administration?type=audits" do
       get("/administration?type=audits").should route_to("administration#index")
     end
   end

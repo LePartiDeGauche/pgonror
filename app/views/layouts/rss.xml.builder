@@ -28,7 +28,9 @@ xml.rss("xmlns:itunes" => "http://www.itunes.com/dtds/podcast-1.0.dtd", "version
       if article.category_option?(:controller)
         xml.item do
           xml.pubDate article.published_datetime.to_s(:rfc822)
-          xml.title coder.decode((article.heading.present? ? article.heading + " • " : "") + article.title)
+          xml.title coder.decode(((article.category_option?(:start_end_dates) and article.start_datetime.present?) ? l(article.start_datetime, :format => :short) + " > " : "") +
+                                 (article.heading.present? ? article.heading + " • " : "") + 
+                                 article.title)
           xml.guid url_for(:controller => :accueil, 
                            :action => :default,
                            :id => article.id,

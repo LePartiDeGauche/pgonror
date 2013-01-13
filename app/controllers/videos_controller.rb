@@ -1,7 +1,7 @@
 # encoding: utf-8
 # PGonror is the corporate web site framework of Le Parti de Gauche based on Ruby on Rails.
 # 
-# Copyright (C) 2012 Le Parti de Gauche
+# Copyright (C) 2013 Le Parti de Gauche
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,16 +22,23 @@ class VideosController < ApplicationController
                                          :educpop,
                                          :encampagne,
                                          :web]
-
-  caches_action :index, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
-  caches_action :lateledegauche, :layout => false, :if => Proc.new { not user_signed_in? }
-  caches_action :conferences, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? } 
-  caches_action :videospresdechezvous, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
-  caches_action :medias, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
-  caches_action :videosagitprop, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
-  caches_action :touteducpop, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
-  caches_action :videosencampagne, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
-  caches_action :toutweb, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
+  caches_action :index, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :lateledegauche, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :conferences, :layout => false, :if => Proc.new { can_cache? } 
+  caches_action :conference, :layout => false, :if => Proc.new { can_cache? } 
+  caches_action :videospresdechezvous, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :presdechezvous, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :medias, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :media, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :videosagitprop, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :agitprop, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :touteducpop, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :educpop, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :videosencampagne, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :encampagne, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :toutweb, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :web, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :rss, :expires_in => 1.hour, :if => Proc.new { can_cache? }
 
   def index
     find_list_articles_by_category 'video'
@@ -47,6 +54,12 @@ class VideosController < ApplicationController
     render :template => 'layouts/index'
   end
 
+  # RSS output based on recent articles.
+  def rss
+    @articles = Article.find_published_video 1, 50
+    render :template => 'layouts/rss'
+  end
+  
   def video
     @side_articles = [
       Article.find_published('conference', 1, 1),

@@ -6,45 +6,39 @@
 </section>
 <section id="militer-vignettes">
   <section class="content-bloc">
-    <div id="carte" style="width:292px;height:354px;"></div>
+    <% if defined?(GOOGLE_MAPS_SCRIPT) %>
+      <div id="carte" style="width:292px;height:354px;"></div>
+      <script src="<%= GOOGLE_MAPS_SCRIPT %>"></script>
+      <script>
+        var geocoder = new google.maps.Geocoder();
+        var latlng = new google.maps.LatLng(47,1.5);
+        var mapOptions = { zoom: 5, center: latlng, mapTypeId: google.maps.MapTypeId.ROADMAP }
+        var map = new google.maps.Map(document.getElementById('carte'), mapOptions);
+        var marker;
+        <% for article in @articles %>
+          <% if article.category_option?(:start_end_dates) and article.start_datetime.present? and article.address.present? %>
+            geocoder.geocode(
+              { address: "<%= article.address_to_txt.gsub(/\"/, '\"') %>", region: "FR" },
+              function(results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                  marker = new google.maps.Marker({
+                    map: map,
+                    position: results[0].geometry.location,
+                    title:"<%= l(article.start_datetime, :format => :short) %> > " +
+                          "<%= article.title_to_txt.gsub(/\"/, '\"').html_safe %> " +
+                          "> <%= article.address_to_txt.gsub(/\"/, '\"').html_safe %>"
+                  });
+                  google.maps.event.addListener(marker, 'click', function() {
+                    window.location.href = "<%= url_for(article.path) %>";
+                  });
+                }
+              });
+          <% end %>
+        <% end %>
+      </script>
+    <% end %>
   </section>
   <section class="content-bloc">
     <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @tracts, :title => :hide } %>
   </section>
 </section>
-<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyARG0BrRKKXVO06jeS5NamKyW5SX8sVBbw&sensor=false"></script>
-<script>
-  $(document).ready(function() {
-    var geocoder;
-    var map;
-    geocoder = new google.maps.Geocoder();
-    var latlng = new google.maps.LatLng(47,1.5);
-    var mapOptions = {
-      zoom: 5,
-      center: latlng,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-    }
-    map = new google.maps.Map(document.getElementById('carte'), mapOptions);
-    <% for article in @articles %>
-      geocoder.geocode(
-          { address: "<%= article.address %>", region: "FR" },
-          function(results, status) {
-        if (status == google.maps.GeocoderStatus.OK) {
-          var marker = new google.maps.Marker({
-              map: map,
-              position: results[0].geometry.location,
-              title:"<%= article.title_display %>"
-          });
-          var infoWindow = new google.maps.InfoWindow({
-            content:"<%= article.start_end_datetime_display(true) %><br/>" +
-                    "<a href='<%= url_for(:controller => :accueil, :action => :default, :id => article.id) %>'><%= article.title_display %></a><br/>" +
-                    "<%= article.address %>"
-          });
-          google.maps.event.addListener(marker, 'click', function() {
-            infoWindow.open(map, marker);
-          });
-        }
-      });
-    <% end %>
-  });
-</script>

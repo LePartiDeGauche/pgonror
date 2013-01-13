@@ -1,7 +1,7 @@
 # encoding: utf-8
 # PGonror is the corporate web site framework of Le Parti de Gauche based on Ruby on Rails.
 # 
-# Copyright (C) 2012 Le Parti de Gauche
+# Copyright (C) 2013 Le Parti de Gauche
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -169,7 +169,8 @@ class Membership < Payment
                   :comment,
                   :mandate_place,
                   :mobile,
-                  :gender
+                  :gender,
+                  :predefined_amount
 
   # Defines the miminum amount for the membership fee.  
   MIN_AMOUNT = 36.0
@@ -300,6 +301,46 @@ class Membership < Payment
     "#{number_with_precision(amount, :precision => 2, :separator => '.')};" +
     "#{escape_csv payment_identifier};" +
     "#{escape_csv comment}"
+  end
+
+  # Triggers an email notification for a new membership.
+  def email_notification
+    recipients = User.notification_recipients "notification_membership"
+    if not recipients.empty?
+      Notification.notification_membership(self.email,
+                                           recipients.join(', '),
+                                           I18n.t(self.renew ?
+                                                    'mailer.notification_membership_subject_renew' :
+                                                    'mailer.notification_membership_subject'),
+                                           self.first_name,
+                                           self.last_name,
+                                           self.gender,
+                                           self.email,
+                                           self.address,
+                                           self.zip_code,
+                                           self.city,
+                                           self.phone,
+                                           self.mobile,
+                                           self.renew,
+                                           self.department,
+                                           self.committee,
+                                           self.birthdate,
+                                           self.job,
+                                           self.mandate,
+                                           self.union,
+                                           self.union_resp,
+                                           self.assoc,
+                                           self.assoc_resp,
+                                           self.mandate_place,
+                                           self.comment,
+                                           self.amount,
+                                           self.payment_identifier).deliver
+    end
+    Receipt.receipt_membership(Devise.mailer_sender,
+                               self.email,
+                               I18n.t('mailer.receipt_membership_subject'),
+                               self.first_name,
+                               self.last_name).deliver
   end
 
   # For logs in Administration panel

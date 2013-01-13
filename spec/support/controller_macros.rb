@@ -1,7 +1,7 @@
 # encoding: utf-8
 # PGonror is the corporate web site framework of Le Parti de Gauche based on Ruby on Rails.
 # 
-# Copyright (C) 2012 Le Parti de Gauche
+# Copyright (C) 2013 Le Parti de Gauche
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,12 +14,15 @@
 # 
 # See doc/COPYRIGHT.rdoc for more details.
 module ControllerMacros
-  def login_user(level = :user)
+  def login_user(level = :user, authorization_category = nil)
     before(:each) do
       @request.env["devise.mapping"] = Devise.mappings[:user]
       user = FactoryGirl.create(level.to_sym)
       user.confirm!
       sign_in user
+      unless authorization_category.nil?
+        FactoryGirl.create(:permission, :user => user, :category => authorization_category)
+      end
     end
   end
 end

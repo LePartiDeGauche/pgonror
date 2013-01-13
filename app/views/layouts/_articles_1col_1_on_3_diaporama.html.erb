@@ -14,19 +14,13 @@
       <li>
         <article class="article">
           <% if article.category_option?(:parent) %>
-            <p class="photos" title="<%= article.title_display.html_safe %>">
+            <p class="photos">
               <% photo = article.find_published_by_folder_random 'image' %>
               <% if photo.present? and photo.image.present? %>
                 <%= link_to image_tag(photo.image.url(:medium)),
                             :controller => :photos,
                             :action => :diaporama,
                             :uri => article.uri %>
-                <div class="zoom-title">
-                  <% unless article.heading.blank? %>
-                    <h4><%= article.heading_display.html_safe %></h4><br/>
-                  <% end %>
-                  <h1><%= link_to article.title_display.html_safe, article.path %></h1>
-                </div>
               <% end %>
             </p>
           <% end %>

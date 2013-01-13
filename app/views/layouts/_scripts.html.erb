@@ -15,9 +15,9 @@
       Math.max(D.body.clientHeight, D.documentElement.clientHeight)
     );
   }
-  <% if Rails.env.production? %>
+  <% if defined?(GOOGLE_ANALYTICS_ID) and Rails.env.production? and not user_signed_in? %>
     var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-27119609-1']);
+    _gaq.push(['_setAccount', '<%= GOOGLE_ANALYTICS_ID %>']);
     _gaq.push(['_trackPageview']);
     (function() {
        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;

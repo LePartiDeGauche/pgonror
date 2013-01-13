@@ -53,7 +53,7 @@
                 :parent => session[:parent],
                 :search => session[:search],
                 :page => session[:page] %>
-          <% if not @article.draft %>&nbsp;&bull;
+          <% if not @article.draft %>&bull;
             <%= link_to t('action.change_status'),
               :action => :edit,
               :modifier => :change_status, 
@@ -73,7 +73,18 @@
             :parent => session[:parent],
             :search => session[:search],
             :page => session[:page] %>
-          <% if current_user.administrator %>&nbsp;&bull;
+          <% if @article.category_option?(:image) %>
+            &bull; <%= link_to t('action.change_image_options'),
+              :action => :edit,
+              :modifier => :change_image_options, 
+              :id => @article.id,
+              :category => session[:category], 
+              :status => session[:status],
+              :parent => session[:parent],
+              :search => session[:search],
+              :page => session[:page] %>
+          <% end %>
+          <% if current_user.administrator %>&bull;
             <%= link_to t('action.delete'), 
                 @article, 
                 :data => {:confirm => t("action.confirm")}, 

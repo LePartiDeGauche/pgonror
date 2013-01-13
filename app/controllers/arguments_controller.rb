@@ -1,7 +1,7 @@
 # encoding: utf-8
 # PGonror is the corporate web site framework of Le Parti de Gauche based on Ruby on Rails.
 # 
-# Copyright (C) 2012 Le Parti de Gauche
+# Copyright (C) 2013 Le Parti de Gauche
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,8 +17,11 @@ class ArgumentsController < ApplicationController
   before_filter :find_article, :only => [:programme, :argument, :legislative]
   caches_action :index, :layout => false, :if => Proc.new { not user_signed_in? }
   caches_action :leprogramme, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
+  caches_action :programme, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
   caches_action :arguments, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
+  caches_action :argument, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
   caches_action :legislatives, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
+  caches_action :legislative, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
   
   def index
     @arguments = Article.find_published 'argument', 1, 40

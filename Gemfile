@@ -15,7 +15,7 @@
 # See doc/COPYRIGHT.rdoc for more details.
 source 'http://rubygems.org'
 
-gem 'rails', '3.2.9'
+gem 'rails', '3.2.10'
 gem 'sqlite3', '~> 1.3.6', :require => 'sqlite3'
 gem 'jquery-rails', '>=2.0.0'
 gem 'execjs'
@@ -25,7 +25,7 @@ gem 'devise'
 gem 'active_cmis','0.2.6', :require => 'active_cmis'
 gem 'kaminari'
 gem 'htmlentities'
-gem 'coderay'
+gem 'dalli'
 gem 'ruby-mp3info'
 
 platforms :ruby do
@@ -49,6 +49,7 @@ group :test do
   gem 'database_cleaner' # used to cleanup database during tests: https://github.com/bmabey/database_cleaner
   gem 'launchy'
   gem 'pry'
+  #gem 'simplecov' # Requires ruby 1.9.
 end
 
 group :development do

@@ -1,7 +1,7 @@
 # encoding: utf-8
 # PGonror is the corporate web site framework of Le Parti de Gauche based on Ruby on Rails.
 # 
-# Copyright (C) 2012 Le Parti de Gauche
+# Copyright (C) 2013 Le Parti de Gauche
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -67,9 +67,7 @@ class Notification < ActionMailer::Base
     @created_by = created_by
     @updated_by = from
     @comments = comments
-    cc = []
-    cc << created_by if not recipients.include?(created_by) and created_by =~ /(.*)@(.*)/
-    mail(:from => from, :to => recipients, :cc => cc, :subject => subject.to_s + " " + category + " - " + status + " : " + title)
+    mail(:from => from, :to => recipients, :subject => subject.to_s + " " + category + " - " + status + " : " + title)
   end  
 
   # Notifies a new message has been entered.
