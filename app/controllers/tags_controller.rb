@@ -26,7 +26,8 @@ class TagsController < ApplicationController
   end
 
   def index
-    if "add" == params[:modifier]
+    @modifier = params[:modifier]
+    if "add" == @modifier
       @article = Article.find(params[:article_id])
       unless @article.nil?
         @tag = @article.tags.new
@@ -63,9 +64,6 @@ class TagsController < ApplicationController
       end
     rescue ActiveRecord::RecordInvalid => invalid
       log_warning "create", invalid
-    rescue Exception => invalid
-      log_error "create", invalid
-      flash[:alert] = invalid.to_s
     end
     if saved
       flash[:notice] = t('action.tag.created')

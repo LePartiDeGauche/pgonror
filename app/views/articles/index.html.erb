@@ -18,10 +18,11 @@
                    :method => :get,
                    :remote => true,
                    :id => 'search-form') do %>
-        <%= hidden_field_tag :category, session[:category] %>
-        <%= hidden_field_tag :status, session[:status] %>
-        <%= search_field_tag :search, 
-                             params[:search], 
+        <%= hidden_field_tag :category, @category %>
+        <%= hidden_field_tag :status, @status %>
+        <%= search_field_tag :search,
+                             @search,
+                             :size => 50,
                              :placeholder => t('action.search') %>
         <%= submit_tag t('action.search'), 
                        :disable_with => t('action.wait') %>

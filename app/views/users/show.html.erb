@@ -18,6 +18,7 @@
       <%= (t('activerecord.attributes.user.notification_subscription') + "<br/>").html_safe if @user.notification_subscription? %>
       <%= (t('activerecord.attributes.user.notification_donation') + "<br/>").html_safe if @user.notification_donation? %>
       <%= (t('activerecord.attributes.user.notification_membership') + "<br/>").html_safe if @user.notification_membership? %>
+      <%= (t('activerecord.attributes.user.notification_alert') + "<br/>").html_safe if @user.notification_alert? %>
       <%= ("<strong>" + t('activerecord.attributes.user.administrator') + "</strong><br/>").html_safe if @user.administrator? %>
       <% unless @user.last_sign_in_at.nil? %>
         <br/>

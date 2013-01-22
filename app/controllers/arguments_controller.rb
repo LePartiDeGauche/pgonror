@@ -15,18 +15,18 @@
 # See doc/COPYRIGHT.rdoc for more details.
 class ArgumentsController < ApplicationController
   before_filter :find_article, :only => [:programme, :argument, :legislative]
-  caches_action :index, :layout => false, :if => Proc.new { not user_signed_in? }
-  caches_action :leprogramme, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
-  caches_action :programme, :layout => false, :if => Proc.new { @page == 1 and not user_signed_in? }
-  caches_action :arguments, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
-  caches_action :argument, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
-  caches_action :legislatives, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
-  caches_action :legislative, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
+  caches_action :index, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :leprogramme, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :programme, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :arguments, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :argument, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :legislatives, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :legislative, :layout => false, :if => Proc.new { can_cache? }
   
   def index
-    @arguments = Article.find_published 'argument', 1, 40
-    @legislatives = Article.find_published 'legislative', 1, 10
     @programmes = Article.find_published 'programme', 1, 10
+    @arguments = Article.find_published 'argument', 1, 30
+    @legislatives = Article.find_published 'legislative', 1, 5
   end
   
   def leprogramme

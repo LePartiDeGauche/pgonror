@@ -16,8 +16,8 @@
 class ContactController < ApplicationController
   before_filter :find_article, :only => [:departement]
   before_filter :load_index
-  caches_action :index, :layout => false, :if => Proc.new { params[:commission].blank? and not user_signed_in? }
-  caches_action :departement, :layout => false, :if => Proc.new { params[:commission].blank? and not user_signed_in? }
+  caches_action :index, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :departement, :layout => false, :if => Proc.new { can_cache? }
 
   def index
     create_request
@@ -38,8 +38,6 @@ class ContactController < ApplicationController
       end
     rescue ActiveRecord::RecordInvalid => invalid
       log_warning "envoyer_message", invalid
-    rescue Exception => invalid
-      log_error "envoyer_message", invalid
     end
     if saved
       flash.now[:notice] = t('action.request.created')

@@ -16,7 +16,7 @@
 
 # Controller for donations.
 class DonationsController < PaymentController
-  caches_action :don
+  caches_action :don, :layout => false, :if => Proc.new { can_cache? }
 
   # Donation form.
   def don
@@ -33,10 +33,6 @@ class DonationsController < PaymentController
       saved = true
     rescue ActiveRecord::RecordInvalid => invalid
       log_warning "valider_don", invalid
-      saved = false
-    rescue Exception => invalid
-      log_error "valider_don", invalid
-      saved = false
     end
     if saved
       flash.now[:notice] = t('action.donation.payment')
@@ -59,8 +55,6 @@ class DonationsController < PaymentController
       elsif @donation.nil?
         log_error "retour_paiement_don: invalid donation"
       end
-    rescue Exception => invalid
-      log_error "retour_paiement_don", invalid
     end
     render :nothing => true
   end
@@ -70,8 +64,6 @@ class DonationsController < PaymentController
     record = nil
     begin
       record = update_payment_record!
-    rescue Exception => invalid
-      log_error "don_enregistre", invalid
     end
     flash[:notice] = t('action.donation.created') if record.present? and record.payment_ok?
     redirect_to :root
@@ -81,8 +73,6 @@ class DonationsController < PaymentController
   def don_rejete
     begin
       update_payment_record!
-    rescue Exception => invalid
-      log_error "don_rejete", invalid
     end
     flash[:notice] = t('action.donation.error')
     redirect_to :root

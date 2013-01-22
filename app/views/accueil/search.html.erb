@@ -1,8 +1,8 @@
 <section id="search-list">
   <section class="content-bloc">
     <hgroup>
-      <h3 class="category"><%= t('action.search_list') %>&nbsp;&bull;</h3>
-      <%= params[:search] %>
+      <h3 class="category"><%= t('action.search_list') %></h3>&nbsp;&bull;
+      <%= @search %>
     </hgroup>
     <br/>
     <% unless @articles.nil? or @articles.empty? %>

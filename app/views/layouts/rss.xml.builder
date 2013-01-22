@@ -10,7 +10,7 @@ xml.rss("xmlns:itunes" => "http://www.itunes.com/dtds/podcast-1.0.dtd", "version
     xml.copyright t('general.copyright')
     xml.category "Politique"
     xml.image do
-      xml.url root_url + "assets/PG.png"
+      xml.url root_url + "assets/#{@identity_icon}"
       xml.title coder.decode(current_page_title)
       xml.link root_url
     end

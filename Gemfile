@@ -15,14 +15,14 @@
 # See doc/COPYRIGHT.rdoc for more details.
 source 'http://rubygems.org'
 
-gem 'rails', '3.2.10'
+gem 'rails', '3.2.11'
 gem 'sqlite3', '~> 1.3.6', :require => 'sqlite3'
 gem 'jquery-rails', '>=2.0.0'
 gem 'execjs'
 gem "paperclip", "~> 2.4"
-gem 'truncate_html'
+gem 'truncate_html', '0.5.5' # To be removed - version to be used with ruby 1.8 only
 gem 'devise'
-gem 'active_cmis','0.2.6', :require => 'active_cmis'
+gem 'active_cmis',"~> 0.3.2", :require => 'active_cmis'
 gem 'kaminari'
 gem 'htmlentities'
 gem 'dalli'
@@ -30,13 +30,12 @@ gem 'ruby-mp3info'
 
 platforms :ruby do
   gem 'libv8' # necessary to be installed on Ubuntu
-  gem 'therubyracer'
+  gem 'therubyracer', '>=0.11.3'
 end
 
-# Gems used only for assets and not required
-# in production environments by default.
+# Used only for assets and not required in production environments by default.
 group :assets do
-  gem 'sass-rails',   '~> 3.2.3'
+  gem 'sass-rails', '~> 3.2.3'
   gem 'coffee-rails', '~> 3.2.1'
   gem 'uglifier', '>= 1.0.3'
   gem 'compass-rails'
@@ -45,11 +44,8 @@ end
 group :test do
   # Pretty printed test output
   gem 'turn', :require => false
-  gem 'ruby-prof'
-  gem 'database_cleaner' # used to cleanup database during tests: https://github.com/bmabey/database_cleaner
-  gem 'launchy'
-  gem 'pry'
-  #gem 'simplecov' # Requires ruby 1.9.
+  gem 'database_cleaner' # Used to cleanup database during tests: https://github.com/bmabey/database_cleaner
+  gem 'simplecov'
 end
 
 group :development do
@@ -57,16 +53,14 @@ group :development do
   gem 'capistrano_colors'
 end
 
-# Specific gems used for development, to not install them use:
-# > bundle install --without specifics
-group :specifics do
-  gem 'mailcatcher' # used to catch emails in webbrowser: http://mailcatcher.me/
-  gem "system_timer", "~> 1.2.4"
-end
-
 group :development, :test do
-  gem 'rspec-rails', "~> 2.8" #It needs to be in the :development group to expose generators and rake tasks without having to type RAILS_ENV=test
-  gem 'capybara'
+  gem 'rspec-rails', "~> 2.8" # It needs to be in the :development group to expose generators and rake tasks without having to type RAILS_ENV=test
   gem 'factory_girl_rails'
   gem 'valid_attribute'
+end
+
+# Specific gems used for development, to not install them use: > bundle install --without specifics
+group :specifics do
+  gem 'mailcatcher' # Used to catch emails in webbrowser: http://mailcatcher.me/
+  gem "system_timer", "~> 1.2.4"
 end

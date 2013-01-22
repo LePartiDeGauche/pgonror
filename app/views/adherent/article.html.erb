@@ -2,11 +2,12 @@
   <section id="search-box" class="content-bloc">
     <aside class="actions">
       <%= form_tag({:action => :search,
-                    :category => session[:category],
-                    :status => session[:status]}, 
+                    :category => @category},
                     :remote => true,
                     :id => 'search-form') do %>
-        <%= text_field_tag :search, params[:search] %>
+        <%= search_field_tag :search,
+                             @search,
+                             :placeholder => t('action.search') %>
         <%= submit_tag t("action.search") %>
       <% end %>
     </aside>
@@ -20,7 +21,7 @@
     <section class="content-bloc">
       <article class="article">
         <aside class="actions">
-          <a href="<%= session[:prior_url] %>"><%= t('action.back') %></a>
+          <%= link_to t('action.back'), :back %>
         </aside>
         <header>
           <% unless @article.heading.nil? %>

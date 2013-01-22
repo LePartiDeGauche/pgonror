@@ -41,11 +41,11 @@
   </section>
 </section>
 <section id="vdg-photos">
-  <section id="ailleurs-content" class="content-bloc">
+  <section id="ailleurs-content" class="content-bloc bloc-bottom-margin">
     <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @ailleurs, :title => :zoom } %>
   </section>
   <section id="vdg">
-    <section id="vdg-content" class="content-bloc">
+    <section id="vdg-content" class="content-bloc bloc-bottom-margin">
       <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @vdg, :title => :zoom } %>
     </section>
   </section>
@@ -59,12 +59,12 @@
 </section>
 <section id="arguments-blogs">
   <section id="arguments">
-    <section id="arguments-content" class="content-bloc highlighted-bloc">
+    <section id="arguments-content" class="content-bloc highlighted-bloc bloc-bottom-margin">
       <%= render :partial => 'layouts/articles_simplified', :locals => { :articles => @arguments } %>
     </section>
   </section>
   <section id="blogs">
-    <section id="blogs-content" class="content-bloc">
+    <section id="blogs-content" class="content-bloc bloc-bottom-margin">
       <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @directblogs, :title => :zoom } %>
     </section>
   </section>
@@ -75,7 +75,7 @@
   </section>
 </section>
 <section id="agenda">
-  <section id="agenda-content" class="content-bloc">
+  <section id="agenda-content" class="content-bloc bloc-bottom-margin">
     <% unless @evenements.nil? %>
       <div class="rss"><%= link_to icon_medium('rss.png'), militer_rss_feed_path, :target => "_blank" %></div>
       <%= render :partial => 'layouts/articles_1col_1_on_3_agenda', :locals => { :articles => @evenements } %>

@@ -49,8 +49,8 @@ class AdministrationController < ApplicationController
       Audit.logs
     end
     unless logs.nil?
-      logs = logs.filtered_by(params[:search]) if params[:search]
-      @logs = logs.empty? ? logs : logs.page(params[:page])
+      logs = logs.filtered_by(@search) if @search
+      @logs = logs.empty? ? logs : logs.page(@page)
     else
       @label = t('general.administration')
       @logs = []

@@ -21,7 +21,7 @@ class UsersController < ApplicationController
   end
 
   def search
-    @users = User.find_like_email(params[:search])
+    @users = User.find_like_email(@search)
     render :partial => "search_list"
   end
 
@@ -43,9 +43,6 @@ class UsersController < ApplicationController
           @user.update_attributes(params[:user])
           saved = true
         end
-      rescue Exception => invalid
-        log_error "destroy", invalid
-        flash[:alert] = invalid.to_s
       end
     end
     if saved
@@ -65,9 +62,6 @@ class UsersController < ApplicationController
           @user.destroy
           saved = true
         end
-      rescue Exception => invalid
-        log_error "destroy", invalid
-        flash[:alert] = invalid.to_s
       end
     end
     flash[:notice] = t('action.user.deleted') if saved

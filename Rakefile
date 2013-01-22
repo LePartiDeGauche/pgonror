@@ -2,7 +2,7 @@
 # encoding: utf-8
 # PGonror is the corporate web site framework of Le Parti de Gauche based on Ruby on Rails.
 # 
-# Copyright (C) 2012 Le Parti de Gauche
+# Copyright (C) 2013 Le Parti de Gauche
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

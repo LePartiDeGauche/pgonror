@@ -20,8 +20,6 @@ class AdherentController < ApplicationController
 
   def index
     prepare_index
-    reset_backtrace
-    save_backtrace
   end
 
   def search
@@ -31,26 +29,21 @@ class AdherentController < ApplicationController
 
   def article
     prepare_index
-    save_backtrace
   end
 
 private
 
   def prepare_index
-    @articles = Article.find_by_criteria({:status => Article::ONLINE, 
-                                          :category => params[:category], 
-                                          :parent => params[:parent], 
-                                          :search => params[:search],
+    @articles = Article.find_by_criteria({:status => Article::ONLINE,
+                                          :category => @category,
+                                          :parent => @parent,
+                                          :search => @search,
                                           :access_level_reserved => true}, @page)
-    @pages = Article.count_pages_by_criteria({:status => Article::ONLINE, 
-                                              :category => params[:category], 
-                                              :parent => params[:parent], 
-                                              :search => params[:search],
+    @pages = Article.count_pages_by_criteria({:status => Article::ONLINE,
+                                              :category => @category,
+                                              :parent => @parent,
+                                              :search => @search,
                                               :access_level_reserved => true})
     @categories_online = Article.find_by_status_group_by_category Article::ONLINE, :reserved
-    session[:category] = params[:category]
-    session[:parent] = params[:parent]
-    session[:search] = params[:search]
-    session[:page] = @page
   end
 end

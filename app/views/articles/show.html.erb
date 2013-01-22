@@ -44,45 +44,25 @@
     <section class="content-bloc">
       <article class="article">
         <aside class="actions">
-          <a href="<%= session[:prior_url] %>"><%= t('action.back') %></a>&nbsp;&bull;
+          <%= link_to t('action.back'), :back %>&nbsp;&bull;
           <%= link_to t('action.update'), 
                 :action => :edit, 
-                :id => @article.id,
-                :category => session[:category], 
-                :status => session[:status],
-                :parent => session[:parent],
-                :search => session[:search],
-                :page => session[:page] %>
+                :id => @article.id %>
           <% if not @article.draft %>&bull;
             <%= link_to t('action.change_status'),
               :action => :edit,
               :modifier => :change_status, 
-              :id => @article.id,
-              :category => session[:category], 
-              :status => session[:status],
-              :parent => session[:parent],
-              :search => session[:search],
-              :page => session[:page] %>
+              :id => @article.id %>
           <% end %>
           &bull; <%= link_to t('action.change_category'),
             :action => :edit,
             :modifier => :change_category, 
-            :id => @article.id,
-            :category => session[:category], 
-            :status => session[:status],
-            :parent => session[:parent],
-            :search => session[:search],
-            :page => session[:page] %>
+            :id => @article.id %>
           <% if @article.category_option?(:image) %>
             &bull; <%= link_to t('action.change_image_options'),
               :action => :edit,
               :modifier => :change_image_options, 
-              :id => @article.id,
-              :category => session[:category], 
-              :status => session[:status],
-              :parent => session[:parent],
-              :search => session[:search],
-              :page => session[:page] %>
+              :id => @article.id %>
           <% end %>
           <% if current_user.administrator %>&bull;
             <%= link_to t('action.delete'), 

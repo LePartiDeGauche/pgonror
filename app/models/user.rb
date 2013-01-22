@@ -54,6 +54,7 @@ class User < ActiveRecord::Base
                   :notification_subscription, 
                   :notification_donation, 
                   :notification_membership, 
+                  :notification_alert, 
                   :access_level
 
   # List (array) of access levels used in lists of values.
@@ -96,9 +97,10 @@ class User < ActiveRecord::Base
 
   # Triggers a notification when a new user has been created.  
   def notification_new_user
+    recipients = User.notification_recipients("notification_alert")
     Notification.notification_new_user(Devise.mailer_sender,
-                                       User.notification_recipients("administrator"), 
+                                       recipients,
                                        I18n.t('mailer.notification_new_user'),
-                                       self.email).deliver
+                                       self.email).deliver unless recipients.empty?
   end
 end

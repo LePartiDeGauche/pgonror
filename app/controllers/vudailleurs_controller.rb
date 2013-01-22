@@ -87,8 +87,6 @@ class VudailleursController < ApplicationController
       end
     rescue ActiveRecord::RecordInvalid => invalid
       log_warning "envoyer_message", invalid
-    rescue Exception => invalid
-      log_error "envoyer_message", invalid
     end
     if saved
       flash.now[:notice] = t('action.request.created')

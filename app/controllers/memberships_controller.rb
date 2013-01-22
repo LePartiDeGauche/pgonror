@@ -16,7 +16,7 @@
 
 # Controller for memberships.
 class MembershipsController < PaymentController
-  caches_action :adhesion
+  caches_action :adhesion, :layout => false, :if => Proc.new { can_cache? }
 
   # Membership form.
   def adhesion
@@ -36,10 +36,6 @@ class MembershipsController < PaymentController
       saved = true
     rescue ActiveRecord::RecordInvalid => invalid
       log_warning "valider_adhesion", invalid
-      saved = false
-    rescue Exception => invalid
-      log_error "valider_adhesion", invalid
-      saved = false
     end
     if saved
       flash.now[:notice] = t('action.membership.payment')
@@ -62,8 +58,6 @@ class MembershipsController < PaymentController
       elsif @membership.nil?
         log_error "retour_paiement_adhesion: invalid membership"
       end
-    rescue Exception => invalid
-      log_error "retour_paiement_adhesion", invalid
     end
     render :nothing => true
   end
@@ -73,8 +67,6 @@ class MembershipsController < PaymentController
     record = nil
     begin
       record = update_payment_record!
-    rescue Exception => invalid
-      log_error "adhesion_enregistree", invalid
     end
     flash[:notice] = t('action.membership.created') if record.present? and record.payment_ok?
     redirect_to :root
@@ -84,8 +76,6 @@ class MembershipsController < PaymentController
   def adhesion_rejetee
     begin    
       update_payment_record!
-    rescue Exception => invalid
-      log_error "adhesion_rejetee", invalid
     end
     flash[:notice] = t('action.membership.error')
     redirect_to :root

@@ -41,7 +41,7 @@
     <% end %>
     <% if @pages > 1 and @page < @pages %>
       <ol id="liste-articles-page<%= @page+1 %>">
-        <footer><%= render :partial => 'layouts/page_navigator', :locals => { :text => params[:text] } %></footer>
+        <footer><%= render :partial => 'layouts/page_navigator' %></footer>
       </ol>
       <script>
         $(window).scroll(function() {
@@ -50,7 +50,7 @@
                $("#liste-articles-page<%= @page+1 %>").
                 html('<%= escape_javascript(render :partial => "layouts/loading") %>').
                 load(
-                 "<%= url_for :page => @page+1, :search => session[:search], :partial => true %>");
+                 "<%= url_for :page => @page+1, :search => @search, :partial => true %>");
              }
            }
         });

@@ -25,8 +25,6 @@ class ArticlesController < ApplicationController
   # Index page.
   def index
     prepare_index
-    reset_backtrace
-    save_backtrace
   end
 
   # Triggers article search.
@@ -37,20 +35,20 @@ class ArticlesController < ApplicationController
 
   # Searches articles for the panel bar.
   def panel_search
+    @panel_search = params[:panel_search]
+    @category_panel_search = params[:category_panel_search]
+    @parent_panel_search = params[:parent_panel_search]
     @page_searched_articles = params[:page].present? ? params[:page].to_i : 1
-    @searched_articles = Article.find_by_criteria({:search => params[:panel_search],
-                                                   :category => params[:category_panel_search],
-                                                   :parent => params[:parent_panel_search],
+    @searched_articles = Article.find_by_criteria({:search => @panel_search,
+                                                   :category => @category_panel_search,
+                                                   :parent => @parent_panel_search,
                                                    :exclude_status => Article::OFFLINE}, @page_searched_articles)
-    @pages_searched_articles = Article.count_pages_by_criteria({:search => params[:panel_search],
-                                                                :category => params[:category_panel_search],
-                                                                :parent => params[:parent_panel_search],
+    @pages_searched_articles = Article.count_pages_by_criteria({:search => @panel_search,
+                                                                :category => @category_panel_search,
+                                                                :parent => @parent_panel_search,
                                                                 :exclude_status => Article::OFFLINE})
-    @parent_article = Article.find_by_id(params[:parent_panel_search]) unless params[:parent_panel_search].blank?
+    @parent_article = Article.find_by_id(@parent_panel_search) unless @parent_panel_search.blank?
     @parent_parent_article = Article.find_by_id(@parent_article.parent_id) unless @parent_article.blank?
-    session[:panel_search] = params[:panel_search]
-    session[:category_panel_search] = params[:category_panel_search]
-    session[:parent_panel_search] = params[:parent_panel_search]
     render :partial => "panel_search_list"
   end
 
@@ -65,15 +63,14 @@ class ArticlesController < ApplicationController
     @uploaded_document = Article.new
     @parent_page = params[:parent_page].present? ? params[:parent_page].to_i : 1
     @source_page = params[:source_page].present? ? params[:source_page].to_i : 1
-    save_backtrace
   end
 
   # Prepares an article for creation.
   def new
     @article = Article.new
-    @article.defaults params[:category], 
-                      params[:parent].present? ? params[:parent].to_i : session[:parent].to_i, 
-                      params[:source].to_i
+    @article.defaults @category,
+                      @parent.present? ? @parent.to_i : nil,
+                      @source.present? ? @source.to_i : nil
   end
 
   # Prepares an article defined as a child for creation.
@@ -85,11 +82,12 @@ class ArticlesController < ApplicationController
   # Prepares an article for editing.
   def edit
     @article = Article.find_by_id(params[:id])
-    if "change_status" == params[:modifier]
+    @modifier = params[:modifier]
+    if "change_status" == @modifier
       render :action => :change_status
-    elsif "change_category" == params[:modifier]
+    elsif "change_category" == @modifier
       render :action => :change_category
-    elsif "change_image_options" == params[:modifier]
+    elsif "change_image_options" == @modifier
       render :action => :change_image_options
     end
   end
@@ -119,17 +117,8 @@ class ArticlesController < ApplicationController
           end
         rescue ActiveRecord::RecordInvalid => invalid
           log_warning "create", invalid
-        rescue Exception => invalid
-          log_error "create", invalid
         end
       end
-    rescue Exception => invalid
-      log_error "create", invalid
-      flash[:alert] = invalid.to_s
-      params[:category] = params[:article][:category]
-      params[:parent] = params[:article][:parent]
-      params[:source] = params[:article][:source]
-      new
     end
     if saved
       notification_article
@@ -143,13 +132,14 @@ class ArticlesController < ApplicationController
   # Updates an article.
   def update
     saved = false
+    @modifier = params[:modifier]
     begin
       signature = params[:article][:signature]
       @comments = params[:comments]
       @article.transaction do
         @article.updated_by = current_user.email
         @article.update_attributes!(params[:article])
-        if "change_image_options" == params[:modifier]
+        if "change_image_options" == @modifier
           @article.image.reprocess! unless @article.image.nil?
         end
         set_dates @article
@@ -163,20 +153,17 @@ class ArticlesController < ApplicationController
       end
     rescue ActiveRecord::RecordInvalid => invalid
       log_warning "update", invalid
-    rescue Exception => invalid
-      log_error "update", invalid
-      flash[:alert] = invalid.to_s
     end
     if saved
       notification_article true
       flash[:notice] = t('action.article.updated')
       redirect_to @article
     else
-      if "change_status" == params[:modifier]
+      if "change_status" == @modifier
         render :action => :change_status
-      elsif "change_category" == params[:modifier]
+      elsif "change_category" == @modifier
         render :action => :change_category
-      elsif "change_image_options" == params[:modifier]
+      elsif "change_image_options" == @modifier
         render :action => :change_image_options
       else
         render :action => :edit
@@ -195,9 +182,6 @@ class ArticlesController < ApplicationController
         @article.destroy
         saved = true
       end
-    rescue Exception => invalid
-      log_error "destroy", invalid
-      flash[:alert] = invalid.to_s
     end
     flash[:notice] = t('action.article.deleted') if saved
     prepare_index
@@ -206,12 +190,12 @@ class ArticlesController < ApplicationController
 
   # Returns the list of headings based on a search string.
   def headings
-    render :json => Article.all_headings(params[:search])
+    render :json => Article.all_headings(@search)
   end
 
   # Returns the list of signatures based on a search string.
   def signatures
-    render :json => Article.all_signatures(params[:search])
+    render :json => Article.all_signatures(@search)
   end
 
 private
@@ -220,25 +204,28 @@ private
   def prepare_index
     @uploaded_image = Article.new
     @uploaded_document = Article.new
-    if params[:log]
+    @zoom = params[:zoom]
+    @zoom_video = params[:zoom_video]
+    @log = params[:log]
+    if @log
       @articles = Article.find_by_criteria_log({}, @page)
       @pages = Article.count_pages_by_criteria({})
     else
-      @articles = Article.find_by_criteria({:status => params[:status], 
-                                            :category => params[:category],
-                                            :zoom => params[:zoom], 
-                                            :zoom_video => params[:zoom_video], 
-                                            :parent => params[:parent], 
-                                            :source => params[:source], 
-                                            :search => params[:search],
+      @articles = Article.find_by_criteria({:status => @status,
+                                            :category => @category,
+                                            :zoom => @zoom,
+                                            :zoom_video => @zoom_video,
+                                            :parent => @parent,
+                                            :source => @source,
+                                            :search => @search,
                                             :any_date => true}, @page)
-      @pages = Article.count_pages_by_criteria({:status => params[:status], 
-                                                :category => params[:category], 
-                                                :zoom => params[:zoom], 
-                                                :zoom_video => params[:zoom_video], 
-                                                :parent => params[:parent], 
-                                                :source => params[:source], 
-                                                :search => params[:search],
+      @pages = Article.count_pages_by_criteria({:status => @status,
+                                                :category => @category,
+                                                :zoom => @zoom,
+                                                :zoom_video => @zoom_video,
+                                                :parent => @parent,
+                                                :source => @source,
+                                                :search => @search,
                                                 :any_date => true})
     end
     @categories_new = Article.find_by_status_group_by_category Article::NEW
@@ -253,15 +240,6 @@ private
     @zoom_video_rework = Article.count_by_status_zoom_video Article::REWORK
     @zoom_video_reviewed = Article.count_by_status_zoom_video Article::REVIEWED
     @zoom_video_online = Article.count_by_status_zoom_video Article::ONLINE
-    session[:category] = params[:category]
-    session[:status] = params[:status]
-    session[:parent] = params[:parent]
-    session[:source] = params[:source]
-    session[:search] = params[:search]
-    session[:zoom] = params[:zoom]
-    session[:zoom_video] = params[:zoom_video]
-    session[:log] = params[:log]
-    session[:page] = @page
   end
 
   def load_side_data
@@ -272,7 +250,9 @@ private
 
   # Controls current user is allowed to save an article of a given category.
   def pre_control_authorization
-    message = Article::pre_control_authorization(current_user.email, params[:category], params[:source].to_i)
+    message = Article::pre_control_authorization(current_user.email,
+                                                 @category,
+                                                 @source.present? ? @source.to_i : nil)
     if message.present?
       flash.now[:notice] = message.html_safe
       prepare_index

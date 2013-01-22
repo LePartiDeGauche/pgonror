@@ -16,13 +16,9 @@
 // To configure blueprint, edit the partials/base.sass file.
 @import "partials/base";
 
-@mixin pg-shadow {
-  @include single-box-shadow(silver, 2px, 2px, 2px);
-}
+@mixin pg-shadow { @include single-box-shadow(silver, 2px, 2px, 2px); }
 
-@mixin pg-text-shadow {
-	@include single-text-shadow(silver, 2px, 2px, 2px);
-}
+@mixin pg-text-shadow {	@include single-text-shadow(silver, 2px, 2px, 2px); }
 
 @mixin pg-transition {
   @include transition-property(all);
@@ -32,14 +28,10 @@
 
 @mixin undecored-link {
   text-decoration:none;
-  &:hover {
-    text-decoration:none; 
-  } 
+  &:hover { text-decoration:none; } 
 }
 
-.shadow {
-  @include pg-shadow;
-}
+.shadow { @include pg-shadow; }
 
 // Import all the default blueprint modules so that we can access their mixins.
 @import "blueprint";
@@ -67,7 +59,7 @@ body {
   padding-right:$pg-padding;
   margin-top:$pg-padding;
   margin-right:2px;
-  margin-bottom:2px;
+  margin-bottom:$pg-padding/2;
   @include pg-shadow;
   @include border-radius;
   h1 {
@@ -495,6 +487,10 @@ body {
   }
 }
 
+.bloc-bottom-margin {
+  margin-bottom:$pg-padding+$pg-padding/2;
+}
+
 #container {
   @include container;
 }
@@ -841,9 +837,9 @@ $zoom-height:225px;
 }
 
 #communique-content, #inter-content {
-  height:$top-height - $zoom-height - 10px;
+  height:$top-height - $zoom-height - 12px;
   .inner-list {
-    height:$top-height - $zoom-height - 20px;
+    height:$top-height - $zoom-height - 22px;
     overflow:hidden;
   }
 }
@@ -868,9 +864,9 @@ $zoom-height:225px;
 }
 
 #agenda-content {
-  height:491px;
+  height:495px;
   .inner-list {
-    height:481px;
+    height:485px;
     overflow:hidden;
   }
 }
@@ -959,64 +955,19 @@ $zoom-height:225px;
 }
 
 @include two-columns-2third-1third("#search-list", "#search-vignettes");
-
 @include two-columns-1third-2third("#editor-toolbox", "#articles-box");
-
 @include two-columns-1third-2third("#actualites-editos", "#actualites-actus");
-
-#actualites-editos-content, #actualites-dossiers-content {
-  height:576px;
-  .inner-list {
-    height:566px;
-    overflow:hidden;
-  }
-}
-
-#actualites-actus-content, #actualites-communiques-content, #actualites-international-content {
-  height:380px;
-  .inner-list {
-    height:370px;
-    overflow:hidden;
-  }
-}
-
 @include two-columns-2third-1third("#actualites-liste", "#actualites-vignettes");
-
 @include two-columns-half("#arguments-programme", "#arguments-arguments");
-
-#arguments-arguments-content {
-  height:900px;
-  .inner-list {
-    height:890px;
-    overflow:hidden;
-  }
-}
-
-#arguments-programmes-content {
-  height:588px;
-  .inner-list {
-    height:578px;
-    overflow:hidden;
-  }
-}
-
-#arguments-legislatives-content {
-  height:300px;
-  .inner-list {
-    height:290px;
-    overflow:hidden;
-  }
-}
-
 @include two-columns-2third-1third("#arguments-liste", "#arguments-vignettes");
-
 @include two-columns-1third-2third("#arguments-toc", "#arguments-liste2");
-
 @include two-columns-2third-1third("#militer-liste", "#militer-vignettes");
-
 @include two-columns-2third-1third("#militer-campagne", "#militer-agenda");
-
 @include three-columns("#militer-tracts", "#militer-affiches", "#militer-kits");
+
+#agit-prop {
+  @include float-left;
+}
 
 #militer-affiches {
   margin-right:0;
@@ -1065,53 +1016,18 @@ $lateledegauche-zoom-height:220px;
 }
 
 @include three-columns("#lateledegauche-conferences", "#lateledegauche-agitprop", "#lateledegauche-videoseduc");
+@include two-columns-1third-2third("#quisommesnous-identite", "#quisommesnous-instance");
+@include two-columns-2third-1third("#quisommesnous-liste", "#quisommesnous-vignettes");
+@include two-columns-half("#contact-message", "#contact-comites");
+@include two-columns-2third-1third("#contact-liste", "#contact-vignettes");
+@include two-columns-2third-1third("#vudailleurs-liste", "#vudailleurs-vignettes");
+@include two-columns-half("#educpop-dates", "#educpop-revues");
+@include two-columns-2third-1third("#educpop-liste", "#educpop-vignettes");
+@include two-columns-2third-1third("#videos-liste", "#videos-vignettes");
+
 #lateledegauche-conference-content, #lateledegauche-videoagitprop-content, #lateledegauche-videoevenement-content, #lateledegauche-videoweb-content, #lateledegauche-videoeduc-content, #lateledegauche-encampagne-content {
   height:240px;
 }
-
-#quisommesnous-identite-content {
-  height:312px;
-}
-
-#quisommesnous-instances-content {
-  height:150px;
-}
-
-#quisommesnous-commission-content {
-  height:150px;
-}
-
-@include two-columns-1third-2third("#quisommesnous-identite", "#quisommesnous-instance");
-
-@include two-columns-2third-1third("#quisommesnous-liste", "#quisommesnous-vignettes");
-
-@include two-columns-half("#contact-message", "#contact-comites");
-
-@include two-columns-2third-1third("#contact-liste", "#contact-vignettes");
-
-@include two-columns-2third-1third("#vudailleurs-liste", "#vudailleurs-vignettes");
-
-#vudailleurs-web-content, #vudailleurs-directblog-content {
-  height:500px;
-  .inner-list {
-    height:490px;
-    overflow:hidden;
-  }
-}
-
-@include two-columns-half("#educpop-dates", "#educpop-revues");
-
-@include two-columns-2third-1third("#educpop-liste", "#educpop-vignettes");
-
-#educpop-date-content, #educpop-livres-content, #educpop-lecture-content, #educpop-revue-content {
-  height:380px;
-  .inner-list {
-    height:370px;
-    overflow:hidden;
-  }
-}
-
-@include two-columns-2third-1third("#videos-liste", "#videos-vignettes");
 
 table {
   thead {

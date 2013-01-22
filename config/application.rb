@@ -52,7 +52,8 @@ module PartiDeGauche
     config.encoding = "utf-8"
 
     # Configure sensitive parameters which will be filtered from the log file.
-    config.filter_parameters += [:authenticity_token, 
+    config.filter_parameters += [:authenticity_token,
+                                 :user,
                                  :password, 
                                  :user_password, 
                                  :user_password_confirmation]

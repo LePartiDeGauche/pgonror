@@ -38,7 +38,6 @@ class Audit < ActiveRecord::Base
   end
 
   # For logs in Administration panel
-  paginates_per 100
   scope :logs, order('updated_at DESC')
   scope :filtered_by, lambda { |search| where('lower(updated_by) LIKE ?', "%#{search.downcase.strip}%") }
 end

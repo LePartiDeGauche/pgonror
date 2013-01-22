@@ -302,6 +302,7 @@ class Article < ActiveRecord::Base
   def content_with_mini; content_with("mini", MINI_WIDTH, MINI_HEIGHT) end
   def content_with_alternate; content_with("alternate", ALTERNATE_WIDTH, ALTERNATE_HEIGHT) end
   def content_replaced_with_zoom; content_replaced_with("zoom", ZOOM_WIDTH, ZOOM_HEIGHT) end
+  def extract_image_content; extract_image_content_with(available_content) end
 
   # Sets default values for the article.  
   def defaults(category = nil, parent = nil, source = nil)
@@ -444,6 +445,12 @@ class Article < ActiveRecord::Base
                                        self.published_at,
                                        self.will_expire_soon? ? self.expired_at : nil,
                                        self.zoom,
+                                       self.image_remote_url,
+                                       self.show_heading,
+                                       self.zoom_video,
+                                       self.zoom_sequence,
+                                       self.original_url,
+                                       self.home_video,
                                        self.created_by,
                                        comments).deliver
     end
@@ -1068,6 +1075,13 @@ private
     extract = source[IFRAME_EL]
     return extract.gsub(IFRAME_EL, "<iframe src=\"\\2?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>") if extract.present? 
     source
+  end
+
+  # Returns a reference to an image hyperlink. 
+  def extract_image_content_with(source)
+    extract = source[ANY_IMAGE_EL]
+    return extract.gsub(ANY_IMAGE_EL, "\\2") if extract.present? 
+    nil
   end
 
   # Returns the content of the given source of text with the reference of images and documents transformed for storage.

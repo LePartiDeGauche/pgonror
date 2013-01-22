@@ -344,7 +344,6 @@ class Membership < Payment
   end
 
   # For logs in Administration panel
-  paginates_per 100
   scope :logs, order('created_at DESC')
   scope :paid_logs, Membership::find_paid.order('created_at DESC')
   scope :unpaid_logs, Membership::find_unpaid.order('created_at DESC')

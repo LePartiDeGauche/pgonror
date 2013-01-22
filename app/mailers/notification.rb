@@ -47,6 +47,12 @@ class Notification < ActionMailer::Base
                           published_at,
                           expired_at,
                           zoom,
+                          image_remote_url,
+                          show_heading,
+                          zoom_video,
+                          zoom_sequence,
+                          original_url,
+                          home_video,
                           created_by,
                           comments)
     @heading = heading
@@ -64,6 +70,12 @@ class Notification < ActionMailer::Base
     @published_at = published_at.nil? ? nil : I18n.l(published_at, :format => :long_ordinal)
     @expired_at = expired_at.nil? ? nil : I18n.l(expired_at, :format => :long_ordinal)
     @zoom = zoom
+    @image_remote_url = image_remote_url
+    @show_heading = show_heading
+    @zoom_video = zoom_video
+    @zoom_sequence = zoom_sequence
+    @original_url = original_url
+    @home_video = home_video
     @created_by = created_by
     @updated_by = from
     @comments = comments
@@ -203,11 +215,13 @@ class Notification < ActionMailer::Base
                    recipients, 
                    subject, 
                    message,
-                   request, 
+                   request,
+                   remote_ip,
                    params,
                    invalid_backtrace)
     @message = message
     @request = request
+    @remote_ip = remote_ip
     @params = params
     @invalid_backtrace = invalid_backtrace
     mail(:from => from, :to => recipients, :subject => subject.to_s)

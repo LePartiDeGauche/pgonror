@@ -23,6 +23,10 @@
   <td><%= f.check_box :notification_membership %></td>
 </tr>
 <tr>
+  <td><div class="mandatory">*</div><strong><%= t('activerecord.attributes.user.notification_alert') %></strong></td>
+  <td><%= f.check_box :notification_alert %></td>
+</tr>
+<tr>
   <td><div class="mandatory">*</div><strong><%= t('activerecord.attributes.user.administrator') %></strong></td>
   <td><%= f.check_box :administrator %></td>
 </tr>

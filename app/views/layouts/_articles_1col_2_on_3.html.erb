@@ -47,7 +47,7 @@
                $("#liste-articles-page<%= @page+1 %>").
                 html('<%= escape_javascript(render :partial => "layouts/loading") %>').
                 load(
-                 "<%= url_for :page => @page+1, :heading => @page_heading, :search => session[:search], :partial => true %>");
+                 "<%= url_for :page => @page+1, :heading => @page_heading, :search => @search, :partial => true %>");
              }
            }
         });

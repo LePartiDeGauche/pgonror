@@ -6,8 +6,9 @@
   <body>
     <p>
       <strong><%= t('alert.message') %></strong> : <%= @message %>
-      <br/><strong><%= t('alert.request') %></strong> : <%= @request %>
-      <br/><strong><%= t('alert.params') %></strong> : <%= @params %>
+      <br/><%= t('alert.request') %> : <%= @request %>
+      <br/><%= t('alert.params') %> : <%= @params %>
+      <br/><%= t('alert.remote_ip') %> : <%= @remote_ip %>
       <% unless @invalid_backtrace.nil? %>
         <br/><%= @invalid_backtrace.join('<br/>').html_safe %>
       <% end %>

@@ -5,8 +5,8 @@
     <section class="content-bloc">
       <aside class="actions">
         <%= search_field_tag :search,
-                             params[:search],
-                             :size => "30",
+                             @search,
+                             :size => "50",
                              :placeholder => t('action.search') %>
         <%= submit_tag t('action.search') %>
       </aside>

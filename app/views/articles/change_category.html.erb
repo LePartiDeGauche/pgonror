@@ -6,11 +6,11 @@
 <section id="articles-box">
   <section class="content-bloc">
     <%= form_for(@article) do |f| %>
-      <%= hidden_field_tag "modifier", params[:modifier] %>
+      <%= hidden_field_tag "modifier", @modifier %>
       <article class="article">
         <aside class="actions">
           <%= f.label :category %> <%= f.select :category, Article::activated_categories(current_user) %>&nbsp;&bull;
-          <a href="<%= session[:last_url] %>"><%= t('action.back') %></a>&nbsp;&bull;
+          <%= link_to t('action.cancel'), :back %>&nbsp;&bull;
           <%= f.submit t('action.ok'), :disable_with => t('action.wait') %>
         </aside>
         <header>

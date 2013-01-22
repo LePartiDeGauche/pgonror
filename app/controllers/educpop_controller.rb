@@ -15,15 +15,15 @@
 # See doc/COPYRIGHT.rdoc for more details.
 class EducpopController < ApplicationController
   before_filter :find_article, :only => [:date, :livre, :lecture, :revue ]
-  caches_action :index, :layout => false, :if => Proc.new { not user_signed_in? }
-  caches_action :dates, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
-  caches_action :date, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
-  caches_action :librairie, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
-  caches_action :livre, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
-  caches_action :lectures, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
-  caches_action :lecture, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
-  caches_action :revues, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
-  caches_action :revue, :layout => false, :if => Proc.new { @page == 1 and @page_heading.blank? and not user_signed_in? }
+  caches_action :index, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :dates, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :date, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :librairie, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :livre, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :lectures, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :lecture, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :revues, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :revue, :layout => false, :if => Proc.new { can_cache? }
 
   def index
     @dates = Article.find_published 'date', 1, 1

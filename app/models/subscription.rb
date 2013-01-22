@@ -60,7 +60,6 @@ class Subscription < ActiveRecord::Base
   end
   
   # For logs in Administration panel
-  paginates_per 100
   scope :logs, order('created_at DESC')
   scope :filtered_by, lambda { |search| where('lower(first_name) LIKE ? OR lower(last_name) LIKE ? OR lower(email) LIKE ?', "%#{search.downcase.strip}%", "%#{search.downcase.strip}%", "%#{search.downcase.strip}%") }
 end

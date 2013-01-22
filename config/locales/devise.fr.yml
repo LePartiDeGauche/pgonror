@@ -35,6 +35,7 @@ fr:
       unauthenticated: "Vous devez vous connecter ou vous inscrire pour continuer."
       unconfirmed: "Vous devez valider votre accès pour continuer."
       locked: "Votre accès est verrouillé."
+      not_found_in_database: "Adresse électronique inconnue."
       invalid: "Adresse électronique ou mot de passe incorrect."
       invalid_token: "Jeton d’authentification incorrect."
       timeout: "Votre session est expirée, veuillez vous reconnecter pour continuer."

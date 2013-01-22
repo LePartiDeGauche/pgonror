@@ -17,21 +17,42 @@ class ApplicationController < ActionController::Base
   helper :all
   protect_from_forgery
   layout "application"
-  before_filter :page_number
-  before_filter :page_title
-  
+  around_filter :report_exceptions
+  before_filter :page_number, :page_title
+
 protected
+
+  # Reports an exception to administrators.
+  def report_exceptions
+    begin
+      yield
+    rescue ArgumentError, EncodingError => invalid
+      log_warning "ArgumentError", invalid
+      @search = @page_heading = @category = @status = @parent = @source = ""
+      @page =  @pages = 1
+      render :template => '/layouts/not_found', :formats => :html, :status => '404'
+      return 
+    rescue Exception => invalid
+      if Rails.env.production? or Rails.env.beta?
+        log_error invalid.to_s, invalid
+        render :template => '/layouts/error', :formats => :html, :status => '500'
+        return 
+      else
+        raise invalid
+      end
+    end
+  end
 
   # Sets variables used for pagination based on request parameters.
   def page_number
     @page = params[:page].present? ? params[:page].to_i : 1
     @pages = 1
     @page_heading = params[:heading]
-    session[:search] = nil
-    session[:category] = nil
-    session[:parent] = nil
-    session[:heading] = nil
-    session[:source] = nil
+    @search = params[:search]
+    @category = params[:category]
+    @status = params[:status]
+    @parent = params[:parent]
+    @source = params[:source]
   end
 
   # Sets a page title based on menus definition and article categories.
@@ -39,6 +60,7 @@ protected
     @og_type = "website"
     @hide_main_menu = false
     @identity_layout = "layouts/identity"
+    @identity_icon = "PG-FDG.png";
     menu = MENU.find {|meaning, options| options.present? and
                                          options[:controller].present? and
                                          options[:action].present? and 
@@ -51,6 +73,7 @@ protected
       @url = url_for(:controller => menu[1][:controller], :action => menu[1][:action])
       @hide_main_menu = menu[1][:hide_main_menu] == true if menu[1][:hide_main_menu].present?
       @identity_layout = menu[1][:identity_layout] if menu[1][:identity_layout].present?
+      @identity_icon = menu[1][:identity_icon] if menu[1][:identity_icon].present?
     else 
       category = CATEGORIES.find {|meaning, code, options|
                                     options.present? and
@@ -72,6 +95,7 @@ protected
         @header_link = url_for(:controller => header_menu[1][:controller], :action => header_menu[1][:action])
         @hide_main_menu = header_menu[1][:hide_main_menu] == true if header_menu[1][:hide_main_menu].present?
         @identity_layout = header_menu[1][:identity_layout] if header_menu[1][:identity_layout].present?
+        @identity_icon = header_menu[1][:identity_icon] if header_menu[1][:identity_icon].present?
       end
     end
   end
@@ -103,40 +127,9 @@ protected
     end
   end
 
-  # Resets session backtrace information used for navigation.
-  def reset_backtrace
-    session[:breadcrumb_table] = nil
-    session[:prior_url] = nil
-  end
-
   # Returns true when the cache mechanism can be activated.
   def can_cache?
-    @page == 1 and
-    @page_heading.blank? and
-    params[:search].blank? and
-    not(user_signed_in?) and
-    flash[:notice].nil? and
-    flash[:alert].nil?
-  end
-
-  # Pushes current url to the backtrace used for navigation.
-  def save_backtrace
-    session[:breadcrumb_table] = [] if session[:breadcrumb_table].nil?
-    visited = { :url => request.url }
-    session[:prior_url] = visited[:url]
-    session[:last_url] = visited[:url]
-    found = false
-    breadcrumbs = []
-    session[:breadcrumb_table].collect do |item|
-     if request.url == item[:url]
-        found = true
-     elsif !found
-        breadcrumbs << item
-        session[:prior_url] = item[:url]
-     end
-    end
-    breadcrumbs << visited
-    session[:breadcrumb_table] = breadcrumbs
+    not(user_signed_in?) and (params.nil? or params.empty?) and (flash.nil? or flash[:alert].empty?)
   end
 
   # Selects a list of articles based on a category.
@@ -163,7 +156,7 @@ protected
       @article = Article.find_published_by_uri params[:uri]
       if @article.nil?
         log_warning "find_article: not found"
-        render :template => '/layouts/error', :formats => :html, :status => '404'
+        render :template => '/layouts/not_found', :formats => :html, :status => '404'
       else
         controller = @article.category_option(:controller)
         action = @article.category_option(:action)
@@ -172,7 +165,7 @@ protected
            action.nil? or 
            (access_level.present? and access_level == :reserved and current_user.access_level != "reserved") 
           log_warning "find_article: no access"
-          render :template => '/layouts/error', :formats => :html, :status => '404'
+          render :template => '/layouts/not_found', :formats => :html, :status => '404'
         else
           @page_title = ((@article.heading.present? ? @article.heading + " • " : "") + @article.title).gsub(/\"/, "").strip
           @page_description = @article.description
@@ -185,6 +178,8 @@ protected
           @og_type = "article"
           @og_type = "video.movie" if @article.category_option?(:video)
           @og_type = "music.song" if @article.category_option?(:audio)
+          content = @article.extract_image_content
+          @identity_icon = content unless content.nil?
           header_menu = MENU.find {|meaning, options| options.present? and
                                                       options[:controller].present? and
                                                       options[:controller].to_s == params[:controller]
@@ -202,23 +197,25 @@ protected
 
   # Logs a warning message.
   def log_warning(message, invalid = nil)
-    logger.warn "[#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}] WARNING #{message} #{invalid.present? ? invalid.message : ''} [#{request.url}] #{params.inspect}"
+    logger.warn "[#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}] WARNING #{message} #{invalid.present? ? invalid.message : ''} [#{request.url}] from #{request.remote_ip} : #{params.inspect}"
   end
 
   # Logs an error message.
   def log_error(message, invalid = nil)
-    logger.error "[#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}] ERROR #{message} #{invalid.present? ? invalid.message : ''} [#{request.url}] #{params.inspect}"
+    logger.error "[#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}] ERROR #{message} #{invalid.present? ? invalid.message : ''} [#{request.url}]  from #{request.remote_ip} : #{params.inspect}"
     alert_admins(message, invalid)
   end
 
   # Sens a notification to administrators.
   def alert_admins(message, invalid = nil)
+    recipients = User.notification_recipients("notification_alert")
     Notification.alert_admins(Devise.mailer_sender,
-                              User.notification_recipients("administrator"), 
+                              recipients,
                               t('mailer.alert_admins') + " #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}",
                               message + (invalid.present? ? " - " + invalid.message : ""),
                               request.url,
+                              request.remote_ip,
                               params.inspect,
-                              invalid.present? ? invalid.backtrace : nil).deliver
+                              invalid.present? ? invalid.backtrace : nil).deliver unless recipients.empty?
   end
 end

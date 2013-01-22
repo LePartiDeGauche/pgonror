@@ -14,13 +14,13 @@
         <header>
           <h3 class="category"><%= @article.category_display %></h3>&nbsp;&bull;
           <aside class="actions">
-            <a href="<%= session[:last_url] %>"><%= t('action.cancel') %></a>&nbsp;&bull;
+            <%= link_to t('action.cancel'), :back %>&nbsp;&bull;
             <%= f.submit t('action.ok'), :disable_with => t('action.wait') %>
           </aside>
           <%= render :partial => 'layouts/error_messages', :locals => { :item => @article } %>
           <%= render :partial => 'edit', :locals => {:f => f, :comments => true} %>
           <aside class="actions">
-            <a href="<%= session[:last_url] %>"><%= t('action.cancel') %></a>&nbsp;&bull;
+            <%= link_to t('action.cancel'), :back %>&nbsp;&bull;
             <%= f.submit t('action.ok'), :disable_with => t('action.wait') %>
           </aside>
         </header>

@@ -6,7 +6,7 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="description" content="<%= current_page_description %>">
     <meta name="copyright" content="<%= t 'general.copyright' %>">
-    <link rel="image_src" href="<%= asset_path 'PG-FDG.png' %>" />
+    <link rel="image_src" href="<%= asset_path @identity_icon %>" />
     <link rel="canonical" content="<%= @url %>"/>
     <% if @original_url.present? -%><meta name="original-source" content="<%= @original_url %>"><% end %>
     <meta property="og:title" content="<%= current_page_title %>"/>
@@ -14,7 +14,7 @@
     <meta property="og:url" content="<%= @url %>"/>
     <meta property="og:description" content="<%= current_page_description %>"/>
     <meta property="og:site_name" content="<%= t 'general.title' %>"/>
-    <meta property="og:image" content="<%= asset_path 'PG-FDG.png' %>"/>
+    <meta property="og:image" content="<%= asset_path @identity_icon %>"/>
     <meta property="og:locale" content="fr_FR"/>
     <meta name="generator" content="Ruby on Rails 3" />
     <% if @norobot.present? and @norobot -%><meta name="robots" content="noindex,nofollow"><% end -%>

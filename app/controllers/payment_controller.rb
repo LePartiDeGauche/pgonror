@@ -20,8 +20,6 @@ class PaymentController < ApplicationController
   def paiement_annule
     begin
       update_payment_record!
-    rescue Exception => invalid
-      log_error "paiement_annule", invalid
     end
     flash[:notice] = t('action.payment.cancelled')
     redirect_to :root

@@ -42,9 +42,8 @@ class AccueilController < ApplicationController
 
   # Global search functionality.
   def search
-    session[:search] = params[:search]
-    @pages = Article.count_pages_search_published session[:search]
-    @articles = Article.search_published session[:search], @page
+    @pages = Article.count_pages_search_published @search
+    @articles = Article.search_published @search, @page
     if params[:partial].present?
       render :partial => 'layouts/articles_1col_2_on_3_search', :locals => { :articles => @articles, :partial => true }
       return
@@ -54,17 +53,17 @@ class AccueilController < ApplicationController
     @actus = Article.find_published 'actu', 1, 1
     @tout_international = Article.find_published 'inter', 1, 1
   end
-  
+
   # Legal information page.
   def legal
     @legal = Article.find_published('legal', 1, 1)[0]
   end
-  
+
   # Newspaper subscription.
   def agauche
     @presentation = Article.find_published('presentation_agauche', 1, 1)[0]
   end
-  
+
   # Young network.
   def gavroche
     @presentation = Article.find_published('presentation_gavroche', 1, 1)[0]
@@ -77,8 +76,7 @@ class AccueilController < ApplicationController
 
   # RSS output based on recent articles.
   def rss
-    session[:search] = params[:search]
-    @articles = Article.find_by_criteria({:status => Article::ONLINE, :feedable => true, :search => params[:search]}, 1, 50)
+    @articles = Article.find_by_criteria({:status => Article::ONLINE, :feedable => true, :search => @search}, 1, 50)
     render :template => 'layouts/rss'
   end
 
@@ -128,6 +126,6 @@ class AccueilController < ApplicationController
       render :nothing => true, :status => '404'
       return
     end
-    render :template => '/layouts/error', :formats => :html, :status => '404'
+    render :template => '/layouts/not_found', :formats => :html, :status => '404'
   end
 end
