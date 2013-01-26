@@ -82,6 +82,7 @@ GEM
       factory_girl (~> 4.1.0)
       railties (>= 3.0.0)
     fssm (0.2.9)
+    geocoder (1.1.6)
     haml (3.1.7)
     highline (1.6.15)
     hike (1.2.1)
@@ -228,6 +229,7 @@ DEPENDENCIES
   devise
   execjs
   factory_girl_rails
+  geocoder
   htmlentities
   jquery-rails (>= 2.0.0)
   kaminari

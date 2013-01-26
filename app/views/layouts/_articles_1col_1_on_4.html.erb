@@ -13,20 +13,16 @@
     <ol>
       <% for article in articles %>
         <li>
-          <article class="article">
+          <article class="article one-fourth-column">
             <header>
               <% unless article.heading.blank? %>
                 <h4><%= article.heading_display.html_safe %></h4><br/>
               <% end %>
               <h1><%= link_to article.title_display.html_safe, article.path %></h1>
             </header>
-            <div class="one-fourth-column">
-              <%= truncate_html(article.content_with_small).html_safe %>
-            </div>
+            <%= truncate_html(article.content_with_small).html_safe %>
             <footer class="actions">
-              <%= link_to (article.category_option?(:video) ? 
-                              t('titre.voir_video') :
-                              t('titre.lire_suite')), article.path %>
+              <%= link_to (article.category_option?(:video) ? t('titre.voir_video') : t('titre.lire_suite')), article.path %>
             </footer>
           </article>
         </li>

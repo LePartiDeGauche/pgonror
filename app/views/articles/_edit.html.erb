@@ -69,11 +69,11 @@
         <td></td>
         <td><%= f.check_box :no_endtime %>&nbsp;<%= f.label :no_endtime %> <%= f.check_box :all_day %>&nbsp;<%= f.label :all_day %></td>
       </tr>
-      <tr>
-        <td><%= f.label :address %></td>
-        <td><%= f.text_field :address, :size => "80x1" %></td>
-      </tr>
     <% end %>
+    <tr>
+      <td><%= f.label :address %></td>
+      <td><%= f.text_field :address, :size => "80x1" %></td>
+    </tr>
     <% if @article.category_option?(:email) %>
       <tr>
         <td><%= f.label :email %></td>

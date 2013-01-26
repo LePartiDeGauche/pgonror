@@ -17,22 +17,36 @@
         var marker;
         <% for article in @articles %>
           <% if article.category_option?(:start_end_dates) and article.start_datetime.present? and article.address.present? %>
-            geocoder.geocode(
-              { address: "<%= article.address_to_txt.gsub(/\"/, '\"') %>", region: "FR" },
-              function(results, status) {
-                if (status == google.maps.GeocoderStatus.OK) {
-                  marker = new google.maps.Marker({
-                    map: map,
-                    position: results[0].geometry.location,
-                    title:"<%= l(article.start_datetime, :format => :short) %> > " +
-                          "<%= article.title_to_txt.gsub(/\"/, '\"').html_safe %> " +
-                          "> <%= article.address_to_txt.gsub(/\"/, '\"').html_safe %>"
-                  });
-                  google.maps.event.addListener(marker, 'click', function() {
-                    window.location.href = "<%= url_for(article.path) %>";
-                  });
-                }
+            <% if article.longitude.present? and article.latitude.present? and article.longitude > 0.0 and article.latitude > 0.0 %>
+              latlng = new google.maps.LatLng(<%= article.latitude %>, <%= article.longitude %>);
+              marker = new google.maps.Marker({
+                map: map,
+                position: latlng,
+                title:"<%= l(article.start_datetime, :format => :short) %> > " +
+                      "<%= article.title_to_txt.gsub(/\"/, '\"').html_safe %> " +
+                      "> <%= article.address_to_txt.gsub(/\"/, '\"').html_safe %>"
               });
+              google.maps.event.addListener(marker, 'click', function() {
+                window.location.href = "<%= url_for(article.path) %>";
+              });
+            <% else %>
+              geocoder.geocode(
+                { address: "<%= article.address_to_txt.gsub(/\"/, '\"') %>", region: "FR" },
+                function(results, status) {
+                  if (status == google.maps.GeocoderStatus.OK) {
+                    marker = new google.maps.Marker({
+                      map: map,
+                      position: results[0].geometry.location,
+                      title:"<%= l(article.start_datetime, :format => :short) %> > " +
+                            "<%= article.title_to_txt.gsub(/\"/, '\"').html_safe %> " +
+                            "> <%= article.address_to_txt.gsub(/\"/, '\"').html_safe %>"
+                    });
+                    google.maps.event.addListener(marker, 'click', function() {
+                      window.location.href = "<%= url_for(article.path) %>";
+                    });
+                  }
+                });
+            <% end %>
           <% end %>
         <% end %>
       </script>

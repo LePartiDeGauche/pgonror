@@ -11,6 +11,7 @@
   <% end %>
     <% for article in articles %>
       <li>
+        <br/>
         <article class="article article-separator">
           <header>
             <% unless article.heading.blank? %><h4><%= article.heading_display.html_safe %></h4>&nbsp;&bull;<% end %>

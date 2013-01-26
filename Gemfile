@@ -27,6 +27,7 @@ gem 'kaminari'
 gem 'htmlentities'
 gem 'dalli'
 gem 'ruby-mp3info'
+gem 'geocoder'
 
 platforms :ruby do
   gem 'libv8' # necessary to be installed on Ubuntu

@@ -15,16 +15,30 @@
 # See doc/COPYRIGHT.rdoc for more details.
 module Paperclip
   class Padder < Thumbnail
+    def initialize(file, options = {}, attachment = nil)
+      super
+      @gravity = options[:gravity].nil? ? "Center" : options[:gravity]
+    end
+
     def transformation_command
-      super + ["-strip",
-               "-gravity center",
-               "-background white",
-               "-extent", %["#{geometry_extent}"]]
+      scale, crop = @current_geometry.transformation_to(@target_geometry, crop?)
+      trans = []
+      trans << "-resize" << %["#{scale}"] unless scale.nil? or scale.empty?
+      if @current_geometry.width.to_i > @current_geometry.height.to_i
+        if crop?
+          crop = "#{@target_geometry.width.to_i}x#{@target_geometry.height.to_i}+0+0"
+          trans << "-gravity #{@gravity} -crop" << %["#{crop}"] << "+repage"
+        end
+      else
+        trans << "-gravity Center"
+      end
+      trans << "-strip" << "-background white" << "-extent" << %["#{geometry_extent}"]
+      trans
     end
 
     def geometry_extent
-      target_geometry.height.to_i > 0 ? 
-        "#{target_geometry.width.to_i}x#{target_geometry.height.to_i}" : 
+      target_geometry.height.to_i > 0 ?
+        "#{target_geometry.width.to_i}x#{target_geometry.height.to_i}" :
         "#{target_geometry.width.to_i}"
     end
   end

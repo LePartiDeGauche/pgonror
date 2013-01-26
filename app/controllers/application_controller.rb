@@ -61,6 +61,7 @@ protected
     @hide_main_menu = false
     @identity_layout = "layouts/identity"
     @identity_icon = "PG-FDG.png";
+    @root_path = url_for root_path(:only_path => false)
     menu = MENU.find {|meaning, options| options.present? and
                                          options[:controller].present? and
                                          options[:action].present? and 

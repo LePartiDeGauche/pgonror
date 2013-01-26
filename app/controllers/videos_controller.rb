@@ -56,6 +56,7 @@ class VideosController < ApplicationController
 
   # RSS output based on recent articles.
   def rss
+    @root_path = url_for lateledegauche_path(:only_path => false)
     @articles = Article.find_published_video 1, 50
     render :template => 'layouts/rss'
   end

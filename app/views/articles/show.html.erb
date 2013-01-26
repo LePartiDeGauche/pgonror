@@ -44,7 +44,9 @@
     <section class="content-bloc">
       <article class="article">
         <aside class="actions">
-          <%= link_to t('action.back'), :back %>&nbsp;&bull;
+          <% if session[:last_url].present? %>
+            <a href="<%= session[:last_url] %>"><%= t('action.back') %></a>&nbsp;&bull;
+          <% end %>
           <%= link_to t('action.update'), 
                 :action => :edit, 
                 :id => @article.id %>

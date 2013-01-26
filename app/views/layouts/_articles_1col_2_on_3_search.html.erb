@@ -24,7 +24,7 @@
                   <%= article.signature if article.category_option?(:signature) %>
                 </div>
               <% end %>
-              <% if article.category_option?(:address) and not article.address.blank? %>
+              <% if not article.address.blank? %>
                 <strong><%= t('activerecord.attributes.article.address') %></strong>&nbsp;
                 <%= article.address %><br/>
               <% end %>

@@ -42,7 +42,7 @@ fr:
     exclusive:        "Une des informations est obligatoire"
     more_videos:      "Plus de vidéos sur le site de la télé de Gauche "
     title:            "Le Parti de Gauche"
-    copyright:        "Le Parti de Gauche, 63 avenue de la République, 75011 Paris"
+    copyright:        "Le Parti de Gauche, 8 rue Chassagnolle, 93260 Les Lilas"
     mentions:         "Mentions légales, crédits et sources du site"
 
   identity:
@@ -93,13 +93,13 @@ fr:
     follow_tele_fb_link:  "http://www.facebook.com/pages/La-T%C3%A9l%C3%A9-de-Gauche/160251490652395"
     follow_tele_tw:       "Lateledegauche"
     follow_tele_tw_link:  "https://twitter.com/Lateledegauche"
-    
+
   alert:
     message:              "Message"
     request:              "URL"
     remote_ip:            "Adresse IP du client"
     params:               "Parametres"
-  
+
   action:
     cancel:         "Annuler"
     ok:             "Enregistrer"
@@ -198,7 +198,7 @@ fr:
 
   passwd:
     no_auth:    "Vous n’avez pas accès à cette partie du site."
-    
+
   permission:
     authorization:
       editor:     "Rédaction"
@@ -220,11 +220,11 @@ fr:
     receipt_donation_subject:                   "[lepartidegauche.fr] Don"
     notification_new_user:                      "[lepartidegauche.fr] Nouvel utilisateur"
     alert_admins:                               "[lepartidegauche.fr] ALERTE"
-      
+
   user:
     type:       "UTILISATEUR"
     empty:      "Il n’y a pas d’utilisateur répondant aux critères."
-      
+
   article:
     status:
       rework:     "À revoir (en attente de modification)"
@@ -234,14 +234,8 @@ fr:
       offline:    "Hors ligne (non publié)"
     gravity:
       center:     "Centré (par défaut)"
-      west:       "À gauche"
-      east:       "À droite"
       south:      "En bas"
-      southwest:  "En bas à gauche"
-      southeast:  "En bas à droite"
       north:      "En haut"
-      northwest:  "En haut à gauche"
-      northeast:  "En haut à droite"
     empty:        "Il n’y a pas d’article répondant aux critères."
   titre:
     lire:                "+ lire"
@@ -258,7 +252,7 @@ fr:
       long: "%e %B %Y"
       long_ordinal: "%A %e %B %Y"
       only_day: "%e"
- 
+
     day_names: [Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi]
     abbr_day_names: [dim, lun, mar, mer, jeu, ven, sam]
     month_names: [~, Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Septembre, Octobre, Novembre, Décembre]
@@ -272,7 +266,7 @@ fr:
     datepicker-monthNamesShort: "['Jan.','Fév.','Mar.','Avr.','Mai','Juin','Juil.','Août','Sept.','Oct.','Nov.','Déc.']"
     datepicker-currentText: "Aujourd’hui"
     datepicker-closeText: "Fermer"
-  
+
   time:
     formats:
       default: "%d %B %Y - %Hh%M"
@@ -284,7 +278,7 @@ fr:
       iso_date_only: "%Y%B%D"
     am: 'am'
     pm: 'pm'
-    
+
   datetime:
     distance_in_words:
       half_a_minute: "une demi-minute"
@@ -327,7 +321,7 @@ fr:
       hour:   "Heure"
       minute: "Minute"
       second: "Seconde"
-  
+
   number:
     format:
       precision: 3
@@ -352,7 +346,7 @@ fr:
           mb: "Mo"
           gb: "Go"
           tb: "To"
- 
+
   support:
     array:
       sentence_connector: 'et'
@@ -360,7 +354,7 @@ fr:
       words_connector: ", "
       two_words_connector: " et "
       last_word_connector: " et "
-  
+
   activerecord:
     errors:
       full_messages:

@@ -86,6 +86,10 @@ class Article < ActiveRecord::Base
                   :created_by,
                   :updated_by
 
+  # Sets geographical data based on the address.
+  geocoded_by :address
+  after_validation :geocode, :if => :address_changed?
+
   # Paperclip interpolation rule: used to include article uri in attachment paths.
   Paperclip.interpolates :uri do |attachment, style|
     attachment.instance.uri
@@ -104,21 +108,38 @@ class Article < ActiveRecord::Base
   # The style 'inline' is considered as the default style used for the display
   # of articles in full format.
   # References to images are stored using the 'inline' style.
-  has_attached_file :image, 
-                    :styles => lambda { |attachment| { 
-                       # Full display
-                       :inline => {
+  has_attached_file :image,
+                    :styles => lambda { |attachment| {
+                       :inline => { # Full display
                          :geometry => attachment.instance.reduce(LARGE_WIDTH),
                          :watermark_path => attachment.instance.watermark
                        },
-                       :large => attachment.instance.crop(LARGE_WIDTH,LARGE_HEIGHT), # 2/3 layout 
-                       :alternate => attachment.instance.crop(ALTERNATE_WIDTH,ALTERNATE_HEIGHT), # 1/2 layout
-                       :medium => attachment.instance.crop(MEDIUM_WIDTH,MEDIUM_HEIGHT), # 1/3 layout
-                       :small => attachment.instance.crop(SMALL_WIDTH,SMALL_HEIGHT), # 1/4 layout
-                       :mini => attachment.instance.crop(MINI_WIDTH,MINI_HEIGHT), # (2/3)/3 layout
-                       :zoom => attachment.instance.crop(ZOOM_WIDTH,ZOOM_HEIGHT) # Display in home page
-                      } 
-                    }, 
+                       :large => { # 2/3 layout
+                         :geometry => attachment.instance.crop(LARGE_WIDTH,LARGE_HEIGHT),
+                         :gravity => attachment.instance.gravity
+                       },
+                       :alternate => { # 1/2 layout
+                         :geometry => attachment.instance.crop(ALTERNATE_WIDTH,ALTERNATE_HEIGHT),
+                         :gravity => attachment.instance.gravity
+                       },
+                       :medium => { # 1/3 layout
+                         :geometry => attachment.instance.crop(MEDIUM_WIDTH,MEDIUM_HEIGHT),
+                         :gravity => attachment.instance.gravity
+                       },
+                       :small => { # 1/4 layout
+                         :geometry => attachment.instance.crop(SMALL_WIDTH,SMALL_HEIGHT),
+                         :gravity => attachment.instance.gravity
+                       },
+                       :mini => { # (2/3)/3 layout
+                         :geometry => attachment.instance.crop(MINI_WIDTH,MINI_HEIGHT),
+                         :gravity => attachment.instance.gravity
+                       },
+                       :zoom => { # Display in home page
+                         :geometry => attachment.instance.crop(ZOOM_WIDTH,ZOOM_HEIGHT),
+                         :gravity => attachment.instance.gravity
+                       },
+                      }
+                    },
                     :path => ":rails_root/public/system/:attachment/:style/:uri",
                     :url => "/system/:attachment/:style/:uri",
                     :processors => [:Padder, :Watermark]
@@ -147,17 +168,15 @@ class Article < ActiveRecord::Base
       end
     end
   end
-  
+
   # Defines the watermark to be applied on thumbnails using PaperClip.
   def watermark
-    not(self.signature.blank?) and self.signature.match(/photosdegauche.fr/) ? 
+    not(self.signature.blank?) and self.signature.match(/photosdegauche.fr/) ?
       "#{Rails.root}/public/phototheque.png" : ""
   end
-  
+
   # Controls on images: types and sizes.                       
-  validates_attachment_content_type :image, :content_type=>['image/jpeg', 
-                                                            'image/png', 
-                                                            'image/gif']
+  validates_attachment_content_type :image, :content_type=>['image/jpeg', 'image/png', 'image/gif']
   validates_attachment_size :image, options = {:less_than => 4.megabyte}
 
   # Attached images (using PaperClip).
@@ -189,53 +208,35 @@ class Article < ActiveRecord::Base
 
   # Managed gravities.
   CENTER = "Center"
-  WEST = "West"
-  EAST = "East"
   SOUTH = "South"
-  SOUTHWEST = "SouthWest"
-  SOUTHEAST = "En bas à droite"
   NORTH = "North"
-  NORTHWEST = "NorthWest"
-  NORTHEAST = "NorthEast"
 
   # List of managed gravities.
   GRAVITY = {
    CENTER => I18n.t('article.gravity.center'),
-   WEST => I18n.t('article.gravity.west'),
-   EAST => I18n.t('article.gravity.east'),
    SOUTH => I18n.t('article.gravity.south'),
-   SOUTHWEST => I18n.t('article.gravity.southwest'),
-   SOUTHEAST => I18n.t('article.gravity.southeast'),
-   NORTH => I18n.t('article.gravity.north'),
-   NORTHWEST => I18n.t('article.gravity.northwest'),
-   NORTHEAST => I18n.t('article.gravity.northeast'),
+   NORTH => I18n.t('article.gravity.north')
   }
 
   # List of categories (array) used in lists of values.
-  def self.categories
-    CATEGORIES
-  end
+  def self.categories; CATEGORIES end
 
   # Returns the 'published' status of the article.
-  def published?
-    self.status == ONLINE
-  end
+  def published?; self.status == ONLINE end
 
   # Returns the 'published' status of the article before latest change.
-  def was_published?
-    self.status_was == ONLINE
-  end
+  def was_published?; self.status_was == ONLINE end
 
   # List of articles (array) defined as folders used in lists of values.
   def self.folders
     array_of_articles_by_categories_by_parent where("category in #{where_clause_by_categories(:parent)}").order('category, title')
   end
-  
+
   # List of articles (array) defined as sources of information used in lists of values.
   def self.sources
     array_of_articles_by_categories :source
   end
-  
+
   # Returns the value of one option defined for a given article category.
   def self.category_option(category, option)
     category_def = get_category_definition(category)
@@ -277,21 +278,15 @@ class Article < ActiveRecord::Base
     [I18n.t('article.status.offline'), OFFLINE]
    ]
   end
-  
+
   # List of gravities(array) used in lists of values.
   def self.gravities
    [[I18n.t('article.gravity.center'), CENTER],
-    [I18n.t('article.gravity.west'), WEST],
-    [I18n.t('article.gravity.east'), EAST],
     [I18n.t('article.gravity.south'), SOUTH],
-    [I18n.t('article.gravity.southwest'), SOUTHWEST],
-    [I18n.t('article.gravity.southeast'), SOUTHEAST],
-    [I18n.t('article.gravity.north'), NORTH],
-    [I18n.t('article.gravity.northwest'), NORTHWEST],
-    [I18n.t('article.gravity.northeast'), NORTHEAST]
+    [I18n.t('article.gravity.north'), NORTH]
    ]
   end
-  
+
   # Returns the content of the article prepared for a specific display of images and videos.
   def content_with_inline; content_only_with("inline", INLINE_WIDTH, INLINE_HEIGHT) end
   def content_with_inline_small; content_only_with("inline", INLINE_WIDTH, INLINE_HEIGHT, MEDIUM_HEIGHT) end
@@ -313,7 +308,7 @@ class Article < ActiveRecord::Base
     self.parent_id = parent if parent.present?
     self.source_id = source if source.present?
   end
-  
+
   # Creates an audit entry for the article (status).
   def create_audit!(status, updated_by, comments=nil)
     audits.create!(:status => status, :updated_by => updated_by, :comments => comments)
@@ -330,7 +325,7 @@ class Article < ActiveRecord::Base
       a[1].downcase.gsub(/É/, "e").gsub(/À/, "a") <=> b[1].downcase.gsub(/É/, "e").gsub(/À/, "a") 
     }
   end
-  
+
   # Returns available tags, unused by any article.
   def unused_tags
     Tag.select("tag").
@@ -394,21 +389,15 @@ class Article < ActiveRecord::Base
     self.tags.each{|tag| tags << (tags.blank? ? "" : ",") + tag.tag}
     tags
   end
-  
+
   # Returns the content as a pure text string.
-  def content_to_txt
-    convert_to_txt self.content
-  end
+  def content_to_txt; convert_to_txt self.content end
 
   # Returns the title as a pure text string.
-  def title_to_txt
-    convert_to_txt self.title
-  end
+  def title_to_txt; convert_to_txt self.title end
 
   # Returns the address as a pure text string.
-  def address_to_txt
-    convert_to_txt self.address
-  end
+  def address_to_txt; convert_to_txt self.address end
 
   # Returns a description of the article.
   def description
@@ -455,12 +444,12 @@ class Article < ActiveRecord::Base
                                        comments).deliver
     end
   end
-  
+
   # Returns the attribute used in the form in order to copy an image from an external URL.
   def image_remote_url_input
     self.image_remote_url
   end
-  
+
   # Sets the attribute used from the form in order to copy an image from an external URL.
   require 'open-uri'
   def image_remote_url_input=(url)
@@ -519,12 +508,12 @@ class Article < ActiveRecord::Base
     category_def = get_category_definition(category)
     category_def.present? ? category_def[0] : "-"
   end
-  
+
   # Returns the title (displayed label) of the article category.
   def category_display
     self.class.category_display(self.category)
   end
-  
+
   # Returns the title of the folder the article is attached to.  
   def folder_display
    if self.parent_id.present? and self.parent_id > 0 
@@ -794,7 +783,7 @@ class Article < ActiveRecord::Base
   def self.count_pages_published_by_start_datetime(category)
     calc_count_pages count_by_criteria_by_start_datetime({:status => ONLINE, :category => category})
   end
-  
+
   # Selects published articles for video categories.  
   def self.find_published_video(page = 1, limit = ARTICLES_PER_PAGE)
     find_by_criteria({:status => ONLINE, :video => true}, page, limit)
@@ -863,7 +852,7 @@ class Article < ActiveRecord::Base
     end
     articles
   end
-  
+
   # Selects all the available headings defined in articles.
   def self.all_headings(search)
     select('heading').
@@ -950,7 +939,7 @@ private
       end
     end
   end
-  
+
   # Updates tags: adds a new tag to the article when a default tag is found in the title, 
   # or the content of the article.
   # This way articles are tagged automatically by default with the predefined tags.
@@ -971,7 +960,7 @@ private
       end
     end
   end
-  
+
   # Creates a tag in the list of tags proposed by default.
   def self.create_default_tag(tag, user_email)
     if Tag.select("tag").where("article_id is null").where("tag = ?", tag).first().nil?
@@ -982,7 +971,7 @@ private
       new_tag.save!
     end
   end
-  
+
   # Returns the definition (title, code and options) of a given article category.
   def self.get_category_definition(category)
     categories.find {|meaning, code| category == code}
@@ -1055,7 +1044,7 @@ private
     source = convert_content_with available_content, target, width, height, videoheight 
     source.gsub(ANY_IMAGE_EL, "<img src=\"\\2\">")
   end
-  
+
   # Returns the content of the article with the reference of images or videos transformed with appropriate format.
   def content_only_with(target, width, height, videoheight=height)
     convert_content_with content, target, width, height, videoheight
@@ -1067,20 +1056,20 @@ private
   def content_replaced_with(target, width, height, videoheight=height)
     source = convert_content_with available_content, target, width, height, videoheight 
     extract = source[ANY_IMAGE_EL]
-    return extract.gsub(ANY_IMAGE_EL, "<img src=\"\\2\" width=\"#{width}\" height=\"#{height}\">") if extract.present? 
+    return extract.sub(ANY_IMAGE_EL, "<img src=\"\\2\" width=\"#{width}\" height=\"#{height}\">") if extract.present? 
     extract = source[DMOTION_TAG]
-    return extract.gsub(DMOTION_TAG, "<iframe src=\"http://www.dailymotion.com/embed/video/\\1?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>") if extract.present? 
+    return extract.sub(DMOTION_TAG, "<iframe src=\"http://www.dailymotion.com/embed/video/\\1?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>") if extract.present? 
     extract = source[DAILYMOTION_OLD]
-    return extract.gsub(DAILYMOTION_OLD, "<iframe src=\"\\4?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>") if extract.present? 
+    return extract.sub(DAILYMOTION_OLD, "<iframe src=\"\\4?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>") if extract.present? 
     extract = source[IFRAME_EL]
-    return extract.gsub(IFRAME_EL, "<iframe src=\"\\2?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>") if extract.present? 
+    return extract.sub(IFRAME_EL, "<iframe src=\"\\2?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>") if extract.present? 
     source
   end
 
   # Returns a reference to an image hyperlink. 
   def extract_image_content_with(source)
     extract = source[ANY_IMAGE_EL]
-    return extract.gsub(ANY_IMAGE_EL, "\\2") if extract.present? 
+    return extract.sub(ANY_IMAGE_EL, "\\2") if extract.present? 
     nil
   end
 
@@ -1119,14 +1108,14 @@ private
           "<a\\1href=\"\\2/system/documents/\\3\\4\\5\"\\6>") if target == "inline"
     converted
   end
-  
+
   # Returns the content into a pure text format.
   def convert_to_txt(source)
     return "" if source.blank?
     coder = HTMLEntities.new
     coder.decode source.gsub(/<\/p>/, "\n").gsub(/<br\s*\/>/,"\n").gsub(/<([^>]*)>/,"").strip
   end
-  
+
   # Returns the duration of associated mp3 file.
   require "mp3info"
   def self.mp3_duration(source)
@@ -1188,7 +1177,7 @@ private
   def self.count_by_criteria(options)
     where(criteria(options)).count
   end
-  
+
   # Counts articles based on various criteria.  
   # See comments on method <tt>criteria</tt> for the details of the search options.  
   def self.count_by_criteria_by_start_datetime(options)
@@ -1196,7 +1185,7 @@ private
     where('start_datetime >= ?', Time.now - 4.hour).
     count
   end
-  
+
   # Defines the SQL where clause for selecting articles based on various criteria.
   # - status: selects articles with a given status.
   # - exclude_status: selects articles excluding given status.

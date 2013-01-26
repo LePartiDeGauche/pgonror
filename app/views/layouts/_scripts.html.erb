@@ -6,6 +6,10 @@
     else {
       $("audio").show(); $(".player-fallback").hide();
     }
+    $( ".zoom-title" ).each(function() {
+      var top = $(this).closest('.content-bloc').height()-$(this).closest('.article').height()-52;
+      $(this).css({top:top});
+    });
   });
   function getDocHeight() {
     var D = document;

@@ -24,6 +24,7 @@ class ArticlesController < ApplicationController
 
   # Index page.
   def index
+    session[:last_url] = request.url
     prepare_index
   end
 
@@ -134,7 +135,6 @@ class ArticlesController < ApplicationController
     saved = false
     @modifier = params[:modifier]
     begin
-      signature = params[:article][:signature]
       @comments = params[:comments]
       @article.transaction do
         @article.updated_by = current_user.email
@@ -296,8 +296,8 @@ private
                                 url_for(:controller => :accueil,
                                         :action => :index,
                                         :only_path => false),
-                                url_for(:controller => :articles, 
-                                        :action => :show, 
+                                url_for(:controller => :articles,
+                                        :action => :show,
                                         :id => @article.id,
                                         :only_path => false),
                                 (@article.status == Article::ONLINE and

@@ -175,7 +175,7 @@ describe Article do
     end
 
     it "#gravities returns a list of supported gravities" do
-      Article.gravities.length.should be == 9
+      Article.gravities.length.should be == 3
     end
 
     it "#content_with_inline returns a content adapted to pages" do

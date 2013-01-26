@@ -3,7 +3,7 @@ xml.instruct!
 xml.rss("xmlns:itunes" => "http://www.itunes.com/dtds/podcast-1.0.dtd", "version" => "2.0") do
   xml.channel do
     xml.title coder.decode(current_page_title) + (session[:search].present? ? (" (" + session[:search] + ")") : "")
-    xml.link url_for root_path(:only_path => false)
+    xml.link @root_path
     xml.description coder.decode(current_page_description)
     xml.lastBuildDate Time.now.to_s(:rfc822)
     xml.language "fr-FR"

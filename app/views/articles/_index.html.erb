@@ -3,6 +3,7 @@
     <article class="article">
       <%= article.status_display_with_style.html_safe %>
       <header>
+        <small><%= display_time_by(article.updated_by, article.updated_at) %></small><br/>
         <% if article.heading.present? %>
           <h4><%= article.heading_display.html_safe %><br/></h4>
         <% end %>
@@ -11,7 +12,6 @@
           <%= link_to article.title_display.html_safe,
                 :action => :show,
                 :id => article.id %>
-          <br/><%= display_time_by(article.updated_by, article.updated_at) %>
           <% if article.will_expire_soon? %>
             <br/><%= t('activerecord.attributes.article.expired_at') %>&nbsp;<%= l article.expired_at, :format => :long_ordinal %>
           <% end %>
@@ -43,7 +43,7 @@
         <%= article.start_end_datetime_display %>
         <br/>
       <% end %>
-      <% if (article.category_option?(:address) or not article.agenda.blank?) and not article.address.blank? %>
+      <% if not article.address.blank? %>
         <strong><%= t('activerecord.attributes.article.address') %></strong>
         <%= article.address %>
         <br/>

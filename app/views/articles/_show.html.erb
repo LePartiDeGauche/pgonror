@@ -25,11 +25,12 @@
 <% end %>
 <% if @article.category_option?(:start_end_dates) or not @article.agenda.blank? %>
   <div class="date"><%= @article.start_end_datetime_display(true) %></div>
-  <% if (@article.category_option?(:address) or not @article.agenda.blank?) and not @article.address.blank? %>
-    <strong><%= @article.address %></strong>
-  <% end %>
-  <br/>
 <% end %>
+<% if not @article.address.blank? %>
+  <strong><%= @article.address %></strong>
+  <small>(<%= @article.longitude %>, <%= @article.latitude %>)</small>
+<% end %>
+<br/>
 <% if @article.category_option?(:email) and not @article.email.blank? %>
   <strong><%= t('activerecord.attributes.article.email') %></strong>&nbsp;:
   <%= @article.email %><br/>

@@ -15,18 +15,17 @@
 # See doc/COPYRIGHT.rdoc for more details.
 module Paperclip
   class Watermark < Processor
-
     attr_accessor :format, :watermark_path, :position
-    
-    def initialize file, options = {}, attachment = nil
-       super
-       @file             = file
-       @basename         = File.basename(@file.path, File.extname(@file.path))
-       @format           = options[:format]
-       @watermark_path   = options[:watermark_path]
-       @position         = options[:position].nil? ? "SouthWest" : options[:position]
-     end
-     
+
+    def initialize(file, options = {}, attachment = nil)
+      super
+      @file = file
+      @basename = File.basename(@file.path, File.extname(@file.path))
+      @format = options[:format]
+      @watermark_path = options[:watermark_path]
+      @position = options[:position].nil? ? "SouthWest" : options[:position]
+    end
+
     def make
       dest = Tempfile.new([@basename, @format].compact.join("."))
       dest.binmode

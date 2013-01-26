@@ -43,35 +43,6 @@
       <% end %>
       <% if @article.category_option?(:start_end_dates) or not @article.agenda.blank? %>
         <div class="date"><%= @article.start_end_datetime_display(true) %></div>
-        <% if (@article.category_option?(:address) or not @article.agenda.blank?) and @article.address.present? %>
-          <strong><%= @article.address %></strong>
-          <% if defined?(GOOGLE_MAPS_SCRIPT) %>
-            <div id="carte" style="width:612px;height:260px;margin-top:10px;"></div>
-            <script src="<%= GOOGLE_MAPS_SCRIPT %>"></script>
-            <script>
-              var geocoder = new google.maps.Geocoder();
-              var latlng = new google.maps.LatLng(47,1.5);
-              var mapOptions = { zoom: 12, center: latlng, mapTypeId: google.maps.MapTypeId.ROADMAP }
-              var map = new google.maps.Map(document.getElementById('carte'), mapOptions);
-              var marker;
-              geocoder.geocode(
-                { address: "<%= @article.address_to_txt.gsub(/\"/, '\"') %>", region: "FR" },
-                function(results, status) {
-                  if (status == google.maps.GeocoderStatus.OK) {
-                    map.setCenter(results[0].geometry.location);
-                    marker = new google.maps.Marker({
-                      map: map,
-                      position: results[0].geometry.location,
-                      title:"<%= @article.address_to_txt.gsub(/\"/, '\"').html_safe %>"
-                    });
-                  } else { 
-                    $("#carte").hide(); 
-                  }
-                }
-              );
-            </script>
-          <% end %>
-        <% end %>
       <% else %>
         <div class="signature">
           <div class="date"><%= l @article.published_at, :format => :long_ordinal %></div>&nbsp;
@@ -79,6 +50,43 @@
         </div>
       <% end %>
     </header>
+    <% if not @article.address.blank? %>
+      <strong><%= @article.address %></strong>
+      <% if defined?(GOOGLE_MAPS_SCRIPT) %>
+        <div id="carte" style="width:612px;height:260px;margin-top:10px;"></div>
+        <script src="<%= GOOGLE_MAPS_SCRIPT %>"></script>
+        <script>
+          var geocoder = new google.maps.Geocoder();
+          var latlng = new google.maps.LatLng(47,1.5);
+          var mapOptions = { zoom: 12, center: latlng, mapTypeId: google.maps.MapTypeId.ROADMAP }
+          var map = new google.maps.Map(document.getElementById('carte'), mapOptions);
+          var marker;
+          <% if @article.longitude.present? and @article.latitude.present? and @article.longitude > 0.0 and @article.latitude > 0.0 %>
+            latlng = new google.maps.LatLng(<%= @article.latitude %>, <%= @article.longitude %>);
+            map.setCenter(latlng);
+            marker = new google.maps.Marker({
+              map: map,
+              position: latlng,
+              title:"<%= @article.address_to_txt.gsub(/\"/, '\"').html_safe %>"
+            });
+          <% else %>
+            geocoder.geocode(
+              { address: "<%= @article.address_to_txt.gsub(/\"/, '\"') %>", region: "FR" },
+              function(results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                  map.setCenter(results[0].geometry.location);
+                  marker = new google.maps.Marker({
+                    map: map,
+                    position: results[0].geometry.location,
+                    title:"<%= @article.address_to_txt.gsub(/\"/, '\"').html_safe %>"
+                  });
+                } else { $("#carte").hide(); }
+              }
+            );
+          <% end %>
+        </script>
+      <% end %>
+    <% end %>
     <br/>
     <% if @article.category_option?(:audio) and @article.document_file_name.present? %>
       <%= render :partial => 'layouts/audio', :locals => {:article => @article} %>
