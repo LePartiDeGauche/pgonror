@@ -429,6 +429,7 @@ body {
     @include border-radius;
   }
   table {
+    margin:0;
     td {
       vertical-align:top;
       padding:0;

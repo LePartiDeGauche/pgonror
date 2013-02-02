@@ -19,15 +19,16 @@ namespace :membership do
   task :init => :environment do
   end
 
-  desc 'Export all paid memberships'
-  task :export_all_paid => :init do
-    memberships = Membership.find_paid.order('created_at')
+  desc 'Archive and delete all memberships'
+  task :archive_all => :init do
+    memberships = Membership.where('updated_at < ?', Time.now - 3.month).order('created_at')
     if not memberships.empty? 
-      file = File.new("tmp/total-adhesions_payees-#{Date.current.strftime("%Y%m%d")}.csv", "w:iso-8859-1")
+      file = File.new("tmp/archives-adhesions-#{Date.current.strftime("%Y%m%d")}.csv", "w:iso-8859-1")
       file.puts Membership::header_to_csv
       for membership in memberships
-        puts "-- Export membership #{membership}"
+        puts "-- Archive membership #{membership}"
         file.puts Iconv.conv('iso-8859-15', 'utf-8', membership.to_csv)
+        membership.destroy
       end
       file.close
     else
@@ -45,7 +46,7 @@ namespace :membership do
       file = File.new("tmp/adhesions_payees-#{Date.current.strftime("%Y%m%d")}.csv", "w:iso-8859-1")
       file.puts Membership::header_to_csv
       for membership in memberships
-        puts "-- Export membership #{membership}"
+        puts "-- Export paid membership #{membership}"
         file.puts Iconv.conv('iso-8859-15', 'utf-8', membership.to_csv)
       end
       file.close
@@ -64,16 +65,12 @@ namespace :membership do
       file = File.new("tmp/adhesions_suspens-#{Date.current.strftime("%Y%m%d")}.csv", "w:iso-8859-1")
       file.puts Membership::header_to_csv
       for membership in memberships
-        puts "-- Export membership #{membership}"
+        puts "-- Export unpaid membership #{membership}"
         file.puts Iconv.conv('iso-8859-15', 'utf-8', membership.to_csv)
       end
       file.close
     else
       puts "-- No data."
     end
-  end
-
-  desc 'Destroy memberships created within a quarter'
-  task :destroy_old => :init do
   end
 end

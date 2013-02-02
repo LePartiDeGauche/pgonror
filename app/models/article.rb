@@ -86,6 +86,9 @@ class Article < ActiveRecord::Base
                   :created_by,
                   :updated_by
 
+  ## HTML coder used to tranform HTML special characters.
+  @@coder = HTMLEntities.new
+
   # Sets geographical data based on the address.
   geocoded_by :address
   after_validation :geocode, :if => :address_changed?
@@ -226,11 +229,6 @@ class Article < ActiveRecord::Base
 
   # Returns the 'published' status of the article before latest change.
   def was_published?; self.status_was == ONLINE end
-
-  # List of articles (array) defined as folders used in lists of values.
-  def self.folders
-    array_of_articles_by_categories_by_parent where("category in #{where_clause_by_categories(:parent)}").order('category, title')
-  end
 
   # List of articles (array) defined as sources of information used in lists of values.
   def self.sources
@@ -380,7 +378,8 @@ class Article < ActiveRecord::Base
 
   # Returns the content of the article.
   def available_content
-    self.content.present? ? self.content : "" 
+    return "" if self.content.nil?
+    @@coder.decode self.content
   end
 
   # Return a concatenated list of tags  
@@ -857,7 +856,7 @@ class Article < ActiveRecord::Base
   def self.all_headings(search)
     select('heading').
     where('heading is not null').
-    where('heading like ?', search.nil? ? "%" : "%" + search + "%").
+    where('lower(heading) like ?', search.nil? ? "%" : "%" + search.downcase.strip + "%").
     group('heading').
     order('heading').
     limit(25)
@@ -867,9 +866,19 @@ class Article < ActiveRecord::Base
   def self.all_signatures(search)
     select('signature').
     where('signature is not null').
-    where('signature like ?', search.nil? ? "%" : "%" + search + "%").
+    where('lower(signature) like ?', search.nil? ? "%" : "%" + search.downcase.strip + "%").
     group('signature').
     order('signature').
+    limit(25)
+  end
+
+  # Selects all the available directories defined.
+  def self.all_directories(search)
+    select('title').
+    where("category in #{where_clause_by_categories(:parent)}").
+    where('lower(title) like ?', search.nil? ? "%" : "%" + search.downcase.strip + "%").
+    group('title').
+    order('title').
     limit(25)
   end
 
@@ -945,9 +954,8 @@ private
   # This way articles are tagged automatically by default with the predefined tags.
   def update_tags
     return if self.id.nil? or not(self.tags.empty?)
-    coder = HTMLEntities.new
     for tag in unused_tags
-      esc_tag = coder.encode(tag.tag, :named).downcase
+      esc_tag = @@coder.encode(tag.tag, :named).downcase
       if (self.content.present? and self.content.downcase.include?(esc_tag)) or
          (self.title.present? and self.title.downcase.include?(tag.tag))
         if self.tags.where("tag = ?", tag.tag).first.nil?
@@ -1007,25 +1015,6 @@ private
     self.where("category in #{where_clause_by_categories(option)}").
     order('category, title').
     collect { |item| [("[" + item.category_display + "] " + item.title_display).html_safe, item.id]}
-  end
-
-  # Builds an array with articles for a given set of categories for a give parent.
-  def self.array_of_articles_by_categories_by_parent(all_folders, parent_id = nil, level=0)
-    articles = []
-    sub_folfers = []
-    all_folders.each do |item|
-      sub_folfers << item if ((parent_id.nil? and item.parent_id.nil?) or (item.parent_id == parent_id))
-    end
-    sub_folfers.each do |item|
-      articles << [ (("&nbsp;&nbsp;" * level) + "[" + item.category_display + "] " + item.title_display).html_safe, item.id ] 
-      sub_articles = array_of_articles_by_categories_by_parent(all_folders, item.id, level+1)
-      if not sub_articles.empty?
-        for sub_item in sub_articles
-          articles << sub_item 
-        end
-      end
-    end
-    articles
   end
 
   # Regular expressions used to transform references to images and videos.
@@ -1112,8 +1101,7 @@ private
   # Returns the content into a pure text format.
   def convert_to_txt(source)
     return "" if source.blank?
-    coder = HTMLEntities.new
-    coder.decode source.gsub(/<\/p>/, "\n").gsub(/<br\s*\/>/,"\n").gsub(/<([^>]*)>/,"").strip
+    @@coder.decode source.gsub(/<\/p>/, "\n").gsub(/<br\s*\/>/,"\n").gsub(/<([^>]*)>/,"").strip
   end
 
   # Returns the duration of associated mp3 file.
@@ -1191,6 +1179,7 @@ private
   # - exclude_status: selects articles excluding given status.
   # - category: selects articles with a given category.
   # - parent: selects articles with a given parent_id.
+  # - parent_search: selects articles with a given parent title or heading.
   # - source: selects articles with a given source_id.
   # - id: selects articles with a given id.
   # - video: selects articles with a 'video' category.
@@ -1226,11 +1215,16 @@ private
       (options[:feedable].present? ? " and category in (#{categories_without(:unfeedable)})" : "") +
       (options[:access_level_reserved].present? ? " and category in (#{access_level_reserved_categories})" : "") +
       (options[:heading].present? ? " and lower(heading) = #{quote(options[:heading].downcase.strip)}" : "") +
-      (options[:search].present? ? 
-          (" and (lower(title) like #{quote('%' + options[:search].downcase.strip + '%')}" + 
-           " or lower(heading) like #{quote('%' + options[:search].downcase.strip + '%')}" +
-           " or exists (select 1 from tags where article_id = articles.id and tag like #{quote('%' + options[:search].downcase.strip + '%')})" + 
-           " or lower(address) like #{quote('%' + options[:search].downcase.strip + '%')}" + 
-           " or lower(signature) like #{quote('%' + options[:search].downcase.strip + '%')})") : "")
+      (options[:parent_search].present? ?
+        " and parent_id in (" +
+        "select id from articles where " +
+        "(lower(title) like #{quote('%' + options[:parent_search].downcase.strip + '%')} " +
+        "or lower(heading) like #{quote('%' + options[:parent_search].downcase.strip + '%')}))" : "") +
+      (options[:search].present? ?
+        (" and (lower(title) like #{quote('%' + options[:search].downcase.strip + '%')}" + 
+         " or lower(heading) like #{quote('%' + options[:search].downcase.strip + '%')}" +
+         " or exists (select 1 from tags where article_id = articles.id and tag like #{quote('%' + options[:search].downcase.strip + '%')})" + 
+         " or lower(address) like #{quote('%' + options[:search].downcase.strip + '%')}" + 
+         " or lower(signature) like #{quote('%' + options[:search].downcase.strip + '%')})") : "")
   end
 end

@@ -1,0 +1,10 @@
+<hgroup>
+  <h3 class="category"><%= Article::category_option('blog', :category_title) %></h3>&nbsp;&bull;<br/>
+  <% if Article::category_option?('blog', :link_all_title) %>
+    <h2 class="main-title">
+      <%= link_to Article::category_option('blog', :link_all_title), 
+                  :controller => Article::category_option('blog', :controller), 
+                  :action => Article::category_option('blog', :action_all) %>
+    </h2>
+  <% end %>
+</hgroup>

@@ -19,15 +19,16 @@ namespace :donation do
   task :init => :environment do
   end
   
-  desc 'Export all paid donations'
-  task :export_all_paid => :init do
-    donations = Donation.find_paid.order('created_at')
+  desc 'Archive and deletes all donations'
+  task :archive_all => :init do
+    donations = Donation.where('updated_at < ?', Time.now - 3.month).order('created_at')
     if not donations.empty? 
-      file = File.new("tmp/total-dons_payes-#{Date.current.strftime("%Y%m%d")}.csv", "w:iso-8859-1")
+      file = File.new("tmp/archives-dons-#{Date.current.strftime("%Y%m%d")}.csv", "w:iso-8859-1")
       file.puts Donation::header_to_csv
       for donation in donations
-        puts "-- Export donation #{donation}"
+        puts "-- Archive donation #{donation}"
         file.puts Iconv.conv('iso-8859-15', 'utf-8', donation.to_csv)
+        donation.destroy
       end
       file.close
     else
@@ -45,7 +46,7 @@ namespace :donation do
       file = File.new("tmp/dons_payes-#{Date.current.strftime("%Y%m%d")}.csv", "w:iso-8859-1")
       file.puts Donation::header_to_csv
       for donation in donations
-        puts "-- Export donation #{donation}"
+        puts "-- Export paid donation #{donation}"
         file.puts Iconv.conv('iso-8859-15', 'utf-8', donation.to_csv)
       end
       file.close
@@ -64,7 +65,7 @@ namespace :donation do
       file = File.new("tmp/dons_suspens-#{Date.current.strftime("%Y%m%d")}.csv", "w:iso-8859-1")
       file.puts Donation::header_to_csv
       for donation in donations
-        puts "-- Export donation #{donation}"
+        puts "-- Export unpaid donation #{donation}"
         file.puts Iconv.conv('iso-8859-15', 'utf-8', donation.to_csv)
       end
       file.close

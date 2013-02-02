@@ -13,25 +13,23 @@
         <br/>
       </hgroup>
       <header>
+        <% length = 460 %>
+        <% omission = link_to(article.category_option?(:video) ? t('titre.voir_video').html_safe : t('titre.lire_suite').html_safe, article.path) %>
         <% unless article.heading.blank? %>
           <h4><%= article.heading_display.html_safe %></h4><br/>
+          <% length = length-30*(1+(article.heading_display.length/30).floor) %>
         <% end %>
         <h1>
-          <%= link_to article.title_display.html_safe,
-                :controller => article.category_option(:controller),
-                :action => article.category_option(:action),
-                :uri => article.uri %>
+          <%= link_to article.title_display.html_safe, article.path %>
+          <% length = length-30*(1+(article.title_display.length/30).floor) %>
         </h1>
       </header>
-      <%= truncate_html(article.content_with_small, :length => 120).html_safe %>
-      <footer class="actions">
-        <%= link_to (article.category_option?(:video) ? 
-                            t('titre.voir_video') :
-                            t('titre.lire_suite')),
-              :controller => article.category_option(:controller),
-              :action => article.category_option(:action),
-              :uri => article.uri %>
-      </footer>
+      <% content = truncate_html(article.content_with_small, :length => length, :omission => omission) %>
+      <% if content["<img src"] or content["<iframe src"] %>
+        <% length = length - 110 %>
+        <% content = truncate_html(article.content_with_small, :length => length, :omission => omission) %>
+      <% end %>
+      <%= content.html_safe %>
     </article>
   </div>
 <% end %>

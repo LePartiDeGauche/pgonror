@@ -23,13 +23,9 @@
             </header>
             <% if first_row %>
               <div class="one-third-column">
-                <%= truncate_html(article.content_with_medium.html_safe) %>
+                <%= truncate_html(article.content_with_medium,
+                                  :omission => link_to(article.category_option?(:video) ? t('titre.voir_video').html_safe : t('titre.lire_suite').html_safe, article.path)) %>
               </div>
-              <footer class="actions">
-                <%= link_to (article.category_option?(:video) ? 
-                              t('titre.voir_video') :
-                              t('titre.lire_suite')), article.path %>
-              </footer>
               <% first_row = false %>
             <% end %>
           </article>

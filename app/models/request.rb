@@ -79,7 +79,63 @@ class Request < ActiveRecord::Base
                             self.last_name).deliver
   end
 
+  # Formats phone number.
+  def phone_format(phone)
+    phone.nil? ? "" : phone.gsub(/\D/, "").gsub(/(\d{2,})(\d{2})(\d{2})(\d{2})(\d{2})/, "\\1 \\2 \\3 \\4 \\5")
+  end
+
+  # Returns the header of a file used for export (csv format).  
+  def self.header_to_csv
+    "Nom;" +
+    "Prenom;" +
+    "Adresse;" +
+    "CodePostal;" +
+    "Ville;" +
+    "Telephone;" +
+    "Email;" +
+    "Commentaire"
+  end
+
+  # Returns the content as a string used for export (csv format).  
+  def to_csv
+    "#{clean_identifier last_name};" +
+    "#{clean_identifier first_name};" +
+    "#{escape_csv address};" +
+    "#{escape_csv zip_code};" +
+    "#{escape_csv city};" +
+    "#{phone_format phone};" +
+    "#{escape_csv email};" +
+    "#{escape_csv comment}"
+  end
+
   # For logs in Administration panel
   scope :logs, order('created_at DESC')
   scope :filtered_by, lambda { |search| where('lower(first_name) LIKE ? OR lower(last_name) LIKE ? OR lower(email) LIKE ? OR lower(comment) LIKE ?', "%#{search.downcase.strip}%", "%#{search.downcase.strip}%", "%#{search.downcase.strip}%", "%#{search.downcase.strip}%") }
+
+protected
+
+  # Prepares a string for .csv export.
+  def escape_csv(text)
+    text.nil? ? "" : text.strip.gsub(/(;|\n|\r|\")/, " ")
+  end
+
+  # Returns a clean identifier given as parameter. 
+  def clean_identifier(identifier)
+    identifier.
+        gsub(/[àâä]/,"a").
+        gsub(/[ÀÂÄ]/,"A").
+        gsub(/[éèêë]/,"e").
+        gsub(/[ÉÈÊË]/,"E").
+        gsub(/[ìîï]/,"i").
+        gsub(/[ÌÎÏ]/,"I").
+        gsub(/[òôö]/,"o").
+        gsub(/[ÒÔÖ]/,"O").
+        gsub(/[ùûü]/,"u").
+        gsub(/[ÙÛÜ]/,"U").
+        gsub(/[ç]/,"c").
+        gsub(/[Ç]/,"C").
+        gsub(/[œ]/,"oe").
+        gsub(/[Œ]/,"OE").
+        gsub(/[^a-zA-Z0-9\-\ ]/,"")
+  end
 end

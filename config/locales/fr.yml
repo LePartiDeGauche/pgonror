@@ -239,8 +239,8 @@ fr:
     empty:        "Il n’y a pas d’article répondant aux critères."
   titre:
     lire:                "+ lire"
-    lire_suite:          "+ lire la suite"
-    voir_video:          "+ voir la vidéo"
+    lire_suite:          "&nbsp;+&nbsp;lire la suite&hellip;"
+    voir_video:          "&nbsp;+&nbsp;voir la vidéo&hellip;"
     autres:              "Articles récents"
     same_heading:        "Sur le même thème"
 

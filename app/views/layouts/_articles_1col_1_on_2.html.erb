@@ -21,18 +21,12 @@
               <% end %>
               <h1><%= link_to article.title_display.html_safe, article.path %></h1>
               <% if not first_row %>
-                <aside class="actions">
-                  <%= link_to t('titre.lire'), article.path %>
-                </aside>
+                <aside class="actions"><%= link_to t('titre.lire'), article.path %></aside>
               <% end %>
             </header>
             <% if first_row %>
-              <%= truncate_html(article.content_with_alternate.html_safe) %>
-              <footer class="actions">
-                <%= link_to (article.category_option?(:video) ? 
-                              t('titre.voir_video') :
-                              t('titre.lire_suite')), article.path %>
-              </footer>
+              <%= truncate_html(article.content_with_alternate,
+                                :omission => link_to(article.category_option?(:video) ? t('titre.voir_video').html_safe : t('titre.lire_suite').html_safe, article.path)) %>
               <% first_row = false %>
             <% end %>
           </article>

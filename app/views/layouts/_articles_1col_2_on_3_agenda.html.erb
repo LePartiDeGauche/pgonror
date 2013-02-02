@@ -20,9 +20,9 @@
               <% unless article.address.blank? %><br/><%= article.address %><% end %>
             </header>
             <% if article.content.present? and article.content.length > 0 %>
-              <%= link_to (article.category_option?(:video) ? 
-                            t('titre.voir_video') :
-                            t('titre.lire_suite')), article.path %>
+              <%= truncate_html(article.content_with_mini,
+                                :length => 200,
+                                :omission => link_to(article.category_option?(:video) ? t('titre.voir_video').html_safe : t('titre.lire_suite').html_safe, article.path)) %>
             <% end %>
           </article>
         </td>

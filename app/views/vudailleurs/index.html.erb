@@ -4,6 +4,9 @@
   </section>
 </section>
 <section id="vudailleurs-vignettes">
+  <section id="vudailleurs-blogs-content" class="content-bloc">
+    <%= render :partial => 'blogs' %>
+  </section>
   <section id="vudailleurs-directblog-content" class="content-bloc">
     <%= render :partial => 'layouts/articles_1col_1_on_3', :locals => { :articles => @articlesblog } %>
   </section>

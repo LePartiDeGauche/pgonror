@@ -281,7 +281,7 @@ class Membership < Payment
   def to_csv
     "#{clean_identifier last_name};" + 
     "#{clean_identifier first_name};" + 
-    "#{I18n.l(birthdate,:format => '%d/%m/%Y')};" + 
+    "#{birthdate.nil? ? '' : I18n.l(birthdate,:format => '%d/%m/%Y')};" + 
     "#{escape_csv gender};" +
     "#{escape_csv address};" +
     "#{escape_csv zip_code};" +

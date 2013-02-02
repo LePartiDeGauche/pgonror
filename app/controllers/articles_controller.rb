@@ -37,19 +37,17 @@ class ArticlesController < ApplicationController
   # Searches articles for the panel bar.
   def panel_search
     @panel_search = params[:panel_search]
+    @panel_parent_search = params[:panel_parent_search]
     @category_panel_search = params[:category_panel_search]
-    @parent_panel_search = params[:parent_panel_search]
     @page_searched_articles = params[:page].present? ? params[:page].to_i : 1
     @searched_articles = Article.find_by_criteria({:search => @panel_search,
                                                    :category => @category_panel_search,
-                                                   :parent => @parent_panel_search,
+                                                   :parent_search => @panel_parent_search,
                                                    :exclude_status => Article::OFFLINE}, @page_searched_articles)
     @pages_searched_articles = Article.count_pages_by_criteria({:search => @panel_search,
                                                                 :category => @category_panel_search,
-                                                                :parent => @parent_panel_search,
+                                                                :parent_search => @panel_parent_search,
                                                                 :exclude_status => Article::OFFLINE})
-    @parent_article = Article.find_by_id(@parent_panel_search) unless @parent_panel_search.blank?
-    @parent_parent_article = Article.find_by_id(@parent_article.parent_id) unless @parent_article.blank?
     render :partial => "panel_search_list"
   end
 
@@ -198,6 +196,11 @@ class ArticlesController < ApplicationController
     render :json => Article.all_signatures(@search)
   end
 
+  # Returns the list of signatures based on a search string.
+  def directories
+    render :json => Article.all_directories(@search)
+  end
+
 private
 
   # Prepares data for display in the index page.  
@@ -243,7 +246,6 @@ private
   end
 
   def load_side_data
-    @folders = Article::folders
     @sources = Article::sources
     @categories = Article::categories
   end

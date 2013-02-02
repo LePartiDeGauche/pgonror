@@ -14,16 +14,22 @@
       <% for article in articles %>
         <li>
           <article class="article one-fourth-column">
+            <% length = 800 %>
+            <% omission = link_to(article.category_option?(:video) ? t('titre.voir_video').html_safe : t('titre.lire_suite').html_safe, article.path) %>
             <header>
               <% unless article.heading.blank? %>
                 <h4><%= article.heading_display.html_safe %></h4><br/>
+                <% length = length-30*(1+(article.heading_display.length/30).floor) %>
               <% end %>
               <h1><%= link_to article.title_display.html_safe, article.path %></h1>
+              <% length = length-30*(1+(article.title_display.length/30).floor) %>
             </header>
-            <%= truncate_html(article.content_with_small).html_safe %>
-            <footer class="actions">
-              <%= link_to (article.category_option?(:video) ? t('titre.voir_video') : t('titre.lire_suite')), article.path %>
-            </footer>
+            <% content = truncate_html(article.content_with_small, :length => length, :omission => omission) %>
+            <% if content["<img src"] or content["<iframe src"] %>
+              <% length = length - 110 %>
+              <% content = truncate_html(article.content_with_mini, :length => length, :omission => omission) %>
+            <% end %>
+            <%= content.html_safe %>
           </article>
         </li>
       <% end %>

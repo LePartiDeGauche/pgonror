@@ -150,11 +150,6 @@ describe Article do
   end
 
   context "Scopes" do
-    it "#folders returns a list of directories" do
-      FactoryGirl.create(:article_directory)
-      Article.folders.length.should be == 1
-    end
-
     it "#sources returns a list of sources" do
       FactoryGirl.create(:article_source)
       Article.sources.length.should be == 1

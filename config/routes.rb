@@ -166,6 +166,7 @@ PartiDeGauche::Application.routes.draw do
     get 'new_child', :on => :collection
     get 'headings', :on => :collection
     get 'signatures', :on => :collection
+    get 'directories', :on => :collection
     resources :tags
   end
   resources :tags

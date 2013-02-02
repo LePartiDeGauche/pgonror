@@ -5,6 +5,7 @@
     <% for article in articles %>
       <% if article.category_option?(:controller) and article.category_option?(:action) %>
         <li>
+          <br/>
           <article class="article article-separator">
             <header>
               <h3 class="category"><%= article.category_display %></h3>&nbsp;&bull;
@@ -29,12 +30,8 @@
                 <%= article.address %><br/>
               <% end %>
             </header>
-            <%= truncate_html(article.content_with_large.html_safe) %>
-            <footer class="actions">
-              <%= link_to (article.category_option?(:video) ? 
-                      t('titre.voir_video') :
-                      t('titre.lire_suite')), article.path %>
-            </footer>
+            <%= truncate_html(article.content_with_large,
+                              :omission => link_to(article.category_option?(:video) ? t('titre.voir_video').html_safe : t('titre.lire_suite').html_safe, article.path)) %>
           </article>
         </li>
       <% end %>

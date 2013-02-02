@@ -29,7 +29,7 @@ class VudailleursController < ApplicationController
 
   def index
     @articlesweb = Article.find_published 'web', 1, 3
-    @articlesblog = Article.find_published 'directblog', 1, 10
+    @articlesblog = Article.find_published 'directblog', 1, 6
   end
   
   def articleweb
@@ -59,7 +59,7 @@ class VudailleursController < ApplicationController
   end
   
   def blogs
-    find_list_articles_by_category 'blog'
+    @articles = Article.find_published_order_by_title 'blog', 1, 999
     return if params[:partial].present?
     @side_articles = [
       Article.find_published('web', 1, 5)
