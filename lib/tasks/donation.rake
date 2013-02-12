@@ -14,20 +14,19 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 # 
 # See doc/COPYRIGHT.rdoc for more details.
-require 'iconv'
 namespace :donation do
   task :init => :environment do
   end
-  
+
   desc 'Archive and deletes all donations'
   task :archive_all => :init do
     donations = Donation.where('updated_at < ?', Time.now - 3.month).order('created_at')
     if not donations.empty? 
-      file = File.new("tmp/archives-dons-#{Date.current.strftime("%Y%m%d")}.csv", "w:iso-8859-1")
+      file = File.new("tmp/archives-dons-#{Date.current.strftime("%Y%m%d")}.csv", "w:iso-8859-15")
       file.puts Donation::header_to_csv
       for donation in donations
         puts "-- Archive donation #{donation}"
-        file.puts Iconv.conv('iso-8859-15', 'utf-8', donation.to_csv)
+        file.puts donation.to_csv.encode('iso-8859-15', undef: :replace)
         donation.destroy
       end
       file.close
@@ -43,11 +42,11 @@ namespace :donation do
                           Time.now - 26.hour,
                           Time.now).order('created_at')
     if not donations.empty? 
-      file = File.new("tmp/dons_payes-#{Date.current.strftime("%Y%m%d")}.csv", "w:iso-8859-1")
+      file = File.new("tmp/dons_payes-#{Date.current.strftime("%Y%m%d")}.csv", "w:iso-8859-15")
       file.puts Donation::header_to_csv
       for donation in donations
         puts "-- Export paid donation #{donation}"
-        file.puts Iconv.conv('iso-8859-15', 'utf-8', donation.to_csv)
+        file.puts donation.to_csv.encode('iso-8859-15', undef: :replace)
       end
       file.close
     else
@@ -62,11 +61,11 @@ namespace :donation do
                           Time.now - 26.hour,
                           Time.now).order('created_at')
     if not donations.empty? 
-      file = File.new("tmp/dons_suspens-#{Date.current.strftime("%Y%m%d")}.csv", "w:iso-8859-1")
+      file = File.new("tmp/dons_suspens-#{Date.current.strftime("%Y%m%d")}.csv", "w:iso-8859-15")
       file.puts Donation::header_to_csv
       for donation in donations
         puts "-- Export unpaid donation #{donation}"
-        file.puts Iconv.conv('iso-8859-15', 'utf-8', donation.to_csv)
+        file.puts donation.to_csv.encode('iso-8859-15', undef: :replace)
       end
       file.close
     else

@@ -6,10 +6,7 @@
         <tr>
           <td>
             <%= link_to "mailto:" + t('identity.teledegauche_email') do %>
-              <img src="<%= asset_path 'logo-tele-de-gauche.png' %>"
-                   alt="<%= t('identity.teledegauche') %>"
-                   width="32"
-                   height="32">
+              <img src="<%= asset_path 'logo-tele-de-gauche.png' %>" alt="<%= t('identity.teledegauche') %>" width="32" height="32">
             <% end %>
           </td>
           <td>
@@ -19,10 +16,7 @@
         <tr>
           <td>
             <%= link_to t('identity.follow_dm_link') do %>
-              <img src="<%= asset_path 'DM.png' %>"
-                   alt="<%= t('identity.follow_dm') %>"
-                   width="32"
-                   height="32">
+              <img src="<%= asset_path 'DM.png' %>" alt="<%= t('identity.follow_dm') %>" width="32" height="32">
             <% end %>
           </td>
           <td>
@@ -34,10 +28,7 @@
         <tr>
           <td>
             <%= link_to t('identity.follow_tele_fb_link'), :target => "_blank" do %>
-              <img src="<%= asset_path 'f_logo.png' %>" 
-                   alt="<%= t 'identity.follow_tele_fb' %>" 
-                   width="32"
-                   height="32">
+              <img src="<%= asset_path 'f_logo.png' %>" alt="<%= t 'identity.follow_tele_fb' %>" width="32" height="32">
             <% end %>
           </td>
           <td>
@@ -49,10 +40,7 @@
         <tr>
           <td>
             <%= link_to t('identity.follow_tele_tw_link'), :target => "_blank" do %>
-              <img src="<%= asset_path 'twitter-bird-light-bgs.png' %>" 
-                   alt="<%= t 'identity.follow_tele_tw' %>" 
-                   width="32"
-                   height="32">
+              <img src="<%= asset_path 'twitter-bird-light-bgs.png' %>" alt="<%= t 'identity.follow_tele_tw' %>" width="32" height="32">
             <% end %>
           </td>
           <td>
@@ -112,55 +100,55 @@
   </section>
 </section>
 <script>
-  function nextActualite() {
+  function nextVideo() {
     $('#zoom li:last').after($('#zoom li:first'));
-    showOnlyFirstActualite();
+    showOnlyFirstVideo();
   };
-  function showOnlyFirstActualite() {
+  function showOnlyFirstVideo() {
     $('#zoom li').hide();
     $('#zoom li:first').show(300);
     var top = -34-$('#zoom li:first section').height();
     $('#zoom li:first section').css({top:top}).show(300);
   };
-  var runActualite = setInterval('nextActualite()', 6000);
-  showOnlyFirstActualite();
+  var runVideo = setInterval('nextVideo()', 6000);
+  showOnlyFirstVideo();
   $('.zoom-button1').click(function() {
     $('#zoom li#zoom-article2').insertAfter($('#zoom li#zoom-article1'));
     $('#zoom li#zoom-article3').insertAfter($('#zoom li#zoom-article2'));
     $('#zoom li#zoom-article4').insertAfter($('#zoom li#zoom-article3'));
     $('#zoom li#zoom-article5').insertAfter($('#zoom li#zoom-article4'));
-    showOnlyFirstActualite();
+    showOnlyFirstVideo();
   });
   $('.zoom-button2').click(function() {
     $('#zoom li#zoom-article3').insertAfter($('#zoom li#zoom-article2'));
     $('#zoom li#zoom-article4').insertAfter($('#zoom li#zoom-article3'));
     $('#zoom li#zoom-article5').insertAfter($('#zoom li#zoom-article4'));
     $('#zoom li#zoom-article1').insertAfter($('#zoom li#zoom-article5'));
-    showOnlyFirstActualite();
+    showOnlyFirstVideo();
   });
   $('.zoom-button3').click(function() {
     $('#zoom li#zoom-article4').insertAfter($('#zoom li#zoom-article3'));
     $('#zoom li#zoom-article5').insertAfter($('#zoom li#zoom-article4'));
     $('#zoom li#zoom-article1').insertAfter($('#zoom li#zoom-article5'));
     $('#zoom li#zoom-article2').insertAfter($('#zoom li#zoom-article1'));
-    showOnlyFirstActualite();
+    showOnlyFirstVideo();
   });
   $('.zoom-button4').click(function() {
     $('#zoom li#zoom-article5').insertAfter($('#zoom li#zoom-article4'));
     $('#zoom li#zoom-article1').insertAfter($('#zoom li#zoom-article5'));
     $('#zoom li#zoom-article2').insertAfter($('#zoom li#zoom-article1'));
     $('#zoom li#zoom-article3').insertAfter($('#zoom li#zoom-article2'));
-    showOnlyFirstActualite();
+    showOnlyFirstVideo();
   });
   $('.zoom-button5').click(function() {
     $('#zoom li#zoom-article1').insertAfter($('#zoom li#zoom-article5'));
     $('#zoom li#zoom-article2').insertAfter($('#zoom li#zoom-article1'));
     $('#zoom li#zoom-article3').insertAfter($('#zoom li#zoom-article2'));
     $('#zoom li#zoom-article4').insertAfter($('#zoom li#zoom-article3'));
-    showOnlyFirstActualite();
+    showOnlyFirstVideo();
   });
   $('#zoom').hover(
-    function() { clearInterval(runActualite); },
-    function() { runActualite = setInterval('nextActualite()', 6000); }
+    function() { clearInterval(runVideo); },
+    function() { runVideo = setInterval('nextVideo()', 6000); }
   ); 
 </script>

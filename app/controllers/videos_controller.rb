@@ -22,27 +22,27 @@ class VideosController < ApplicationController
                                          :educpop,
                                          :encampagne,
                                          :web]
-  caches_action :index, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :lateledegauche, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :conferences, :layout => false, :if => Proc.new { can_cache? } 
-  caches_action :conference, :layout => false, :if => Proc.new { can_cache? } 
-  caches_action :videospresdechezvous, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :presdechezvous, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :medias, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :media, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :videosagitprop, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :agitprop, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :touteducpop, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :educpop, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :videosencampagne, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :encampagne, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :toutweb, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :web, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :index, :if => Proc.new { can_cache? }
+  caches_action :lateledegauche, :if => Proc.new { can_cache? }
+  caches_action :conferences, :if => Proc.new { can_cache? } 
+  caches_action :conference, :if => Proc.new { can_cache? } 
+  caches_action :videospresdechezvous, :if => Proc.new { can_cache? }
+  caches_action :presdechezvous, :if => Proc.new { can_cache? }
+  caches_action :medias, :if => Proc.new { can_cache? }
+  caches_action :media, :if => Proc.new { can_cache? }
+  caches_action :videosagitprop, :if => Proc.new { can_cache? }
+  caches_action :agitprop, :if => Proc.new { can_cache? }
+  caches_action :touteducpop, :if => Proc.new { can_cache? }
+  caches_action :educpop, :if => Proc.new { can_cache? }
+  caches_action :videosencampagne, :if => Proc.new { can_cache? }
+  caches_action :encampagne, :if => Proc.new { can_cache? }
+  caches_action :toutweb, :if => Proc.new { can_cache? }
+  caches_action :web, :if => Proc.new { can_cache? }
   caches_action :rss, :expires_in => 1.hour, :if => Proc.new { can_cache? }
 
   def index
     find_list_articles_by_category 'video'
-    return if params[:partial].present?
+    return unless @partial.nil?
     @side_articles = [
       Article.find_published('videoevenement', 1, 1),
       Article.find_published('media', 1, 1),
@@ -84,7 +84,7 @@ class VideosController < ApplicationController
 
   def conferences
     find_list_articles_by_category 'conference'
-    return if params[:partial].present?
+    return unless @partial.nil?
     @side_articles = [
       Article.find_published('videoevenement', 1, 1),
       Article.find_published('media', 1, 1),
@@ -108,7 +108,7 @@ class VideosController < ApplicationController
 
   def videospresdechezvous
     find_list_articles_by_category 'videoevenement'
-    return if params[:partial].present?
+    return unless @partial.nil?
     @side_articles = [
       Article.find_published('conference', 1, 1),
       Article.find_published('media', 1, 1),
@@ -132,7 +132,7 @@ class VideosController < ApplicationController
 
   def medias
     find_list_articles_by_category 'media'
-    return if params[:partial].present?
+    return unless @partial.nil?
     @side_articles = [
       Article.find_published('conference', 1, 1),
       Article.find_published('videoevenement', 1, 1),
@@ -156,7 +156,7 @@ class VideosController < ApplicationController
 
   def videosagitprop
     find_list_articles_by_category 'videoagitprop'
-    return if params[:partial].present?
+    return unless @partial.nil?
     @side_articles = [
       Article.find_published('conference', 1, 1),
       Article.find_published('videoevenement', 1, 1),
@@ -180,7 +180,7 @@ class VideosController < ApplicationController
 
   def touteducpop
     find_list_articles_by_category 'videoeduc'
-    return if params[:partial].present?
+    return unless @partial.nil?
     @side_articles = [
       Article.find_published('conference', 1, 1),
       Article.find_published('videoevenement', 1, 1),
@@ -204,7 +204,7 @@ class VideosController < ApplicationController
 
   def videosencampagne
     find_list_articles_by_category 'encampagne'
-    return if params[:partial].present?
+    return unless @partial.nil?
     @side_articles = [
       Article.find_published('conference', 1, 1),
       Article.find_published('videoevenement', 1, 1),
@@ -228,7 +228,7 @@ class VideosController < ApplicationController
 
   def toutweb
     find_list_articles_by_category 'videoweb'
-    return if params[:partial].present?
+    return unless @partial.nil?
     @side_articles = [
       Article.find_published('conference', 1, 1),
       Article.find_published('videoevenement', 1, 1),

@@ -15,17 +15,17 @@
 # See doc/COPYRIGHT.rdoc for more details.
 class ActualitesController < ApplicationController
   before_filter :find_article, :only => [:edito, :actualite, :communique, :international, :dossier]
-  caches_action :index, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :editos, :layout => false, :if => Proc.new { can_cache? } 
-  caches_action :edito, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :actualites, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :actualite, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :communiques, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :communique, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :tout_international, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :international, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :dossiers, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :dossier, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :index, :if => Proc.new { can_cache? }
+  caches_action :editos, :if => Proc.new { can_cache? } 
+  caches_action :edito, :if => Proc.new { can_cache? }
+  caches_action :actualites, :if => Proc.new { can_cache? }
+  caches_action :actualite, :if => Proc.new { can_cache? }
+  caches_action :communiques, :if => Proc.new { can_cache? }
+  caches_action :communique, :if => Proc.new { can_cache? }
+  caches_action :tout_international, :if => Proc.new { can_cache? }
+  caches_action :international, :if => Proc.new { can_cache? }
+  caches_action :dossiers, :if => Proc.new { can_cache? }
+  caches_action :dossier, :if => Proc.new { can_cache? }
 
   def index
     @editos = Article.find_published 'edito', 1, 15
@@ -37,7 +37,7 @@ class ActualitesController < ApplicationController
 
   def editos
     find_list_articles_by_category 'edito'
-    return if params[:partial].present?
+    return unless @partial.nil?
     @side_articles = [
       Article.find_published('dossier', 1, 1),
       Article.find_published('com', 1, 1),
@@ -45,7 +45,6 @@ class ActualitesController < ApplicationController
       Article.find_published('inter', 1, 1)
     ]
     render :template => 'layouts/index'
-    
   end
 
   def edito
@@ -60,7 +59,7 @@ class ActualitesController < ApplicationController
 
   def actualites
     find_list_articles_by_category 'actu'
-    return if params[:partial].present?
+    return unless @partial.nil?
     @side_articles = [
       Article.find_published('edito', 1, 1),
       Article.find_published('dossier', 1, 1),
@@ -82,7 +81,7 @@ class ActualitesController < ApplicationController
 
   def communiques
     find_list_articles_by_category 'com'
-    return if params[:partial].present?
+    return unless @partial.nil?
     @side_articles = [
       Article.find_published('edito', 1, 1),
       Article.find_published('dossier', 1, 1),
@@ -104,7 +103,7 @@ class ActualitesController < ApplicationController
 
   def tout_international
     find_list_articles_by_category 'inter'
-    return if params[:partial].present?
+    return unless @partial.nil?
     @side_articles = [
       Article.find_published('edito', 1, 1),
       Article.find_published('dossier', 1, 1),
@@ -126,7 +125,7 @@ class ActualitesController < ApplicationController
 
   def dossiers
     find_list_articles_by_category 'dossier'
-    return if params[:partial].present?
+    return unless @partial.nil?
     @side_articles = [
       Article.find_published('edito', 1, 1),
       Article.find_published('com', 1, 1),

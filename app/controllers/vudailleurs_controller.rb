@@ -19,13 +19,13 @@ class VudailleursController < ApplicationController
                                                :blog,
                                                :envoyer_message]
 
-  caches_action :index, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :articlesweb, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :articleweb, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :articlesblog, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :articleblog, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :blogs, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :blog, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :index, :if => Proc.new { can_cache? }
+  caches_action :articlesweb, :if => Proc.new { can_cache? }
+  caches_action :articleweb, :if => Proc.new { can_cache? }
+  caches_action :articlesblog, :if => Proc.new { can_cache? }
+  caches_action :articleblog, :if => Proc.new { can_cache? }
+  caches_action :blogs, :if => Proc.new { can_cache? }
+  caches_action :blog, :if => Proc.new { can_cache? }
 
   def index
     @articlesweb = Article.find_published 'web', 1, 3
@@ -39,7 +39,7 @@ class VudailleursController < ApplicationController
   def articlesweb
     create_request
     find_list_articles_by_category 'web'
-    return if params[:partial].present?
+    return unless @partial.nil?
   end
   
   def articleblog
@@ -51,7 +51,7 @@ class VudailleursController < ApplicationController
   
   def articlesblog
     find_list_articles_by_category 'directblog'
-    return if params[:partial].present?
+    return unless @partial.nil?
     @side_articles = [
       Article.find_published('web', 1, 5)
     ]
@@ -60,7 +60,6 @@ class VudailleursController < ApplicationController
   
   def blogs
     @articles = Article.find_published_order_by_title 'blog', 1, 999
-    return if params[:partial].present?
     @side_articles = [
       Article.find_published('web', 1, 5)
     ]
@@ -70,7 +69,7 @@ class VudailleursController < ApplicationController
   def blog
     @attached_articles = @article.present? ? @article.find_published_by_source(@page) : nil
     @pages = @article.present? ? @article.count_pages_published_by_source : 0
-    if params[:partial].present?
+    unless @partial.nil?
       render :partial => 'layouts/articles_1col_2_on_3', :locals => { :articles => @attached_articles, :partial => true }
       return
     end

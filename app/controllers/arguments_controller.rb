@@ -15,13 +15,13 @@
 # See doc/COPYRIGHT.rdoc for more details.
 class ArgumentsController < ApplicationController
   before_filter :find_article, :only => [:programme, :argument, :legislative]
-  caches_action :index, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :leprogramme, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :programme, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :arguments, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :argument, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :legislatives, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :legislative, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :index, :if => Proc.new { can_cache? }
+  caches_action :leprogramme, :if => Proc.new { can_cache? }
+  caches_action :programme, :if => Proc.new { can_cache? }
+  caches_action :arguments, :if => Proc.new { can_cache? }
+  caches_action :argument, :if => Proc.new { can_cache? }
+  caches_action :legislatives, :if => Proc.new { can_cache? }
+  caches_action :legislative, :if => Proc.new { can_cache? }
   
   def index
     @programmes = Article.find_published 'programme', 1, 10
@@ -31,7 +31,7 @@ class ArgumentsController < ApplicationController
   
   def leprogramme
     find_list_articles_by_category 'programme'
-    return if params[:partial].present?
+    return unless @partial.nil?
     @side_articles = [
       Article.find_published('argument', 1, 5),
       Article.find_published('legislative', 1, 1)
@@ -49,7 +49,7 @@ class ArgumentsController < ApplicationController
   
   def arguments
     find_list_articles_by_category 'argument'
-    return if params[:partial].present?
+    return unless @partial.nil?
     @side_articles = [
       Article.find_published('programme', 1, 1),
       Article.find_published('legislative', 1, 5)
@@ -67,7 +67,7 @@ class ArgumentsController < ApplicationController
   
   def legislatives
     find_list_articles_by_category 'legislative'
-    return if params[:partial].present?
+    return unless @partial.nil?
     @side_articles = [
       Article.find_published('programme', 1, 1),
       Article.find_published('argument', 1, 5)

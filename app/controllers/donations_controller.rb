@@ -16,7 +16,7 @@
 
 # Controller for donations.
 class DonationsController < PaymentController
-  caches_action :don, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :don, :if => Proc.new { can_cache? }
 
   # Donation form.
   def don

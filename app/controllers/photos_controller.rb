@@ -16,13 +16,13 @@
 class PhotosController < ApplicationController
   before_filter :find_article, :only => [:diaporama]
 
-  caches_action :index, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :diaporama, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :index, :if => Proc.new { can_cache? }
+  caches_action :diaporama, :if => Proc.new { can_cache? }
 
   def index
     @pages = Article.count_pages_published 'diaporama'
     @articles = Article.find_published 'diaporama', @page
-    @article = Article.find_published_by_uri(params[:uri]) if not params[:uri].blank?
+    @article = Article.find_published_by_uri(@uri) if not @uri.blank?
   end
 
   def diaporama

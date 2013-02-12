@@ -44,7 +44,7 @@ class Payment < ActiveRecord::Base
 
   # Prepares a string for .csv export.
   def escape_csv(text)
-    text.nil? ? "" : text.strip.gsub(/(;|\n|\r|\")/, " ")
+    text.nil? ? "" : text.strip.gsub(/(;|\n|\r|\|’")/, " ")
   end
 
 protected

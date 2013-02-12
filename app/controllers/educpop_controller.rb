@@ -15,15 +15,15 @@
 # See doc/COPYRIGHT.rdoc for more details.
 class EducpopController < ApplicationController
   before_filter :find_article, :only => [:date, :livre, :lecture, :revue ]
-  caches_action :index, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :dates, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :date, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :librairie, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :livre, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :lectures, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :lecture, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :revues, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :revue, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :index, :if => Proc.new { can_cache? }
+  caches_action :dates, :if => Proc.new { can_cache? }
+  caches_action :date, :if => Proc.new { can_cache? }
+  caches_action :librairie, :if => Proc.new { can_cache? }
+  caches_action :livre, :if => Proc.new { can_cache? }
+  caches_action :lectures, :if => Proc.new { can_cache? }
+  caches_action :lecture, :if => Proc.new { can_cache? }
+  caches_action :revues, :if => Proc.new { can_cache? }
+  caches_action :revue, :if => Proc.new { can_cache? }
 
   def index
     @dates = Article.find_published 'date', 1, 1
@@ -34,7 +34,7 @@ class EducpopController < ApplicationController
   
   def dates
     find_list_articles_by_category 'date'
-    return if params[:partial].present?
+    return unless @partial.nil?
     @side_articles = [
       Article.find_published('livre', 1, 1),
       Article.find_published('lecture', 1, 1),
@@ -54,7 +54,7 @@ class EducpopController < ApplicationController
   
   def librairie
     find_list_articles_by_category 'livre'
-    return if params[:partial].present?
+    return unless @partial.nil?
     @side_articles = [
       Article.find_published('date', 1, 1),
       Article.find_published('lecture', 1, 1),
@@ -74,7 +74,7 @@ class EducpopController < ApplicationController
   
   def lectures
     find_list_articles_by_category 'lecture'
-    return if params[:partial].present?
+    return unless @partial.nil?
     @side_articles = [
       Article.find_published('date', 1, 1),
       Article.find_published('livre', 1, 1),
@@ -94,7 +94,7 @@ class EducpopController < ApplicationController
   
   def revues
     find_list_articles_by_category 'revue'
-    return if params[:partial].present?
+    return unless @partial.nil?
     @side_articles = [
       Article.find_published('date', 1, 1),
       Article.find_published('livre', 1, 1),

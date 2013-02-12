@@ -15,14 +15,14 @@
 # See doc/COPYRIGHT.rdoc for more details.
 class ViedegaucheController < ApplicationController
   before_filter :find_article, :only => [:article, :journalvdg]
-  caches_action :index, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :article, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :journauxvdg, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :journalvdg, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :index, :if => Proc.new { can_cache? }
+  caches_action :article, :if => Proc.new { can_cache? }
+  caches_action :journauxvdg, :if => Proc.new { can_cache? }
+  caches_action :journalvdg, :if => Proc.new { can_cache? }
 
   def index
     find_list_articles_by_category 'articlevdg'
-    return if params[:partial].present?
+    return unless @partial.nil?
     @side_articles = [
       Article.find_published('vdg', 1, 1),
       Article.find_published('actu', 1, 1),
@@ -54,7 +54,7 @@ class ViedegaucheController < ApplicationController
   
   def journauxvdg
     find_list_articles_by_category 'vdg'
-    return if params[:partial].present?
+    return unless @partial.nil?
     @side_articles = [
       Article.find_published('articlevdg', 1, 1),
       Article.find_published('actu', 1, 1),

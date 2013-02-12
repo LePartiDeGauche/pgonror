@@ -21,6 +21,8 @@
   }
   <% if defined?(GOOGLE_ANALYTICS_ID) and Rails.env.production? and not user_signed_in? %>
     var _gaq = _gaq || [];
+    var pluginUrl = '//www.google-analytics.com/plugins/ga/inpage_linkid.js';
+    _gaq.push(['_require', 'inpage_linkid', pluginUrl]);
     _gaq.push(['_setAccount', '<%= GOOGLE_ANALYTICS_ID %>']);
     _gaq.push(['_trackPageview']);
     (function() {

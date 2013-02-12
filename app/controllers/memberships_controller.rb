@@ -16,7 +16,7 @@
 
 # Controller for memberships.
 class MembershipsController < PaymentController
-  caches_action :adhesion, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :adhesion, :if => Proc.new { can_cache? }
 
   # Membership form.
   def adhesion

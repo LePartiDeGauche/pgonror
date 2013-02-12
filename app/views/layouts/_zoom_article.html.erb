@@ -16,12 +16,7 @@
           </div>
           <section style="display:none;">
             <% if defined?(category) and category == :zoom %>
-              <h3 class="category"><%= article.category_display %></h3>&nbsp;&bull;
-              <% if article.category_option?(:link_all_title) %>
-                <h2 class="main-title"><%= link_to article.category_option(:link_all_title),
-                                              :controller => article.category_option(:controller),
-                                              :action => article.category_option(:action_all) %></h2>
-               <% end %><br/>
+              <h3 class="category"><%= article.category_display %></h3><br/>
              <% end %>
              <% unless article.heading.blank? %><h4><%= article.heading_display.html_safe %><br/></h4><% end %>
             <h1><%= link_to article.title_display.html_safe,

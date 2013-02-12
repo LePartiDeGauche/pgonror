@@ -47,12 +47,28 @@ protected
   def page_number
     @page = params[:page].present? ? params[:page].to_i : 1
     @pages = 1
-    @page_heading = params[:heading]
-    @search = params[:search]
-    @category = params[:category]
-    @status = params[:status]
+    @page_heading = params[:heading].encode('utf-8', undef: :replace) unless params[:heading].nil?
+    @search = params[:search].encode('utf-8', undef: :replace) unless params[:search].nil?
+    @category = params[:category].encode('utf-8', undef: :replace) unless params[:category].nil?
+    @status = params[:status].encode('utf-8', undef: :replace) unless params[:status].nil?
     @parent = params[:parent]
     @source = params[:source]
+    @partial = params[:partial]
+    @uri = params[:uri].encode('utf-8', undef: :replace) unless params[:uri].nil?
+  end
+  
+  # Returns true when the cache mechanism can be activated.
+  def can_cache?
+    not(user_signed_in?) and
+    params[:search].nil? and
+    params[:category].nil? and
+    params[:status].nil? and
+    params[:page].nil? and
+    params[:source].nil? and
+    params[:parent].nil? and
+    params[:heading].nil? and
+    flash[:alert].nil? and
+    flash[:notice].nil?
   end
 
   # Sets a page title based on menus definition and article categories.
@@ -128,11 +144,6 @@ protected
     end
   end
 
-  # Returns true when the cache mechanism can be activated.
-  def can_cache?
-    not(user_signed_in?) and (params.nil? or params.empty?) and (flash.nil? or flash[:alert].empty?)
-  end
-
   # Selects a list of articles based on a category.
   # The selection takes care of selected heading and page number.
   def find_list_articles_by_category(category)
@@ -140,7 +151,7 @@ protected
     @pages = Article.count_pages_published_by_heading category, @page_heading
     @articles = Article.find_published_by_heading category, @page_heading, @page
     @headings = Article.find_published_group_by_heading category
-    if params[:partial].present?
+    unless @partial.nil?
       render :partial => 'layouts/articles_1col_2_on_3', :locals => { :articles => @articles, :partial => true }
       return
     end
@@ -154,7 +165,7 @@ protected
       redirect_to(URI.encode(uri.to_s))
     else
       @source = @last_published = @same_heading = @tags = nil
-      @article = Article.find_published_by_uri params[:uri]
+      @article = Article.find_published_by_uri @uri
       if @article.nil?
         log_warning "find_article: not found"
         render :template => '/layouts/not_found', :formats => :html, :status => '404'
@@ -168,28 +179,30 @@ protected
           log_warning "find_article: no access"
           render :template => '/layouts/not_found', :formats => :html, :status => '404'
         else
-          @page_title = ((@article.heading.present? ? @article.heading + " • " : "") + @article.title).gsub(/\"/, "").strip
-          @page_description = @article.description
-          @source = @article.source if @article.present? and not @article.source_id.nil?
-          @last_published = @article.find_last_published if not @article.category_option?(:hide_category_name)
-          @same_heading = @article.find_published_by_heading if not @article.heading.blank?
-          @tags = @article.tags
-          @url = url_for(:controller => controller, :action => action, :uri => @article.uri)
-          @original_url = @article.original_url
-          @og_type = "article"
-          @og_type = "video.movie" if @article.category_option?(:video)
-          @og_type = "music.song" if @article.category_option?(:audio)
-          content = @article.extract_image_content
-          @identity_icon = content unless content.nil?
-          header_menu = MENU.find {|meaning, options| options.present? and
+          if can_cache? and stale?(:etag => @article, :last_modified => @article.updated_at, :public => true)
+            @page_title = ((@article.heading.present? ? @article.heading + " • " : "") + @article.title).gsub(/\"/, "").strip
+            @page_description = @article.description
+            @source = @article.source if @article.present? and not @article.source_id.nil?
+            @last_published = @article.find_last_published if not @article.category_option?(:hide_category_name)
+            @same_heading = @article.find_published_by_heading if not @article.heading.blank?
+            @tags = @article.tags
+            @url = url_for(:controller => controller, :action => action, :uri => @article.uri)
+            @original_url = @article.original_url
+            @og_type = "article"
+            @og_type = "video.movie" if @article.category_option?(:video)
+            @og_type = "music.song" if @article.category_option?(:audio)
+            content = @article.extract_image_content
+            @identity_icon = content unless content.nil?
+            header_menu = MENU.find {|meaning, options| options.present? and
                                                       options[:controller].present? and
                                                       options[:controller].to_s == params[:controller]
-          }
-          if header_menu.present?
-            @header_name = header_menu[0]
-            @header_link = url_for(:controller => header_menu[1][:controller], :action => header_menu[1][:action])
-            @hide_main_menu = header_menu[1][:hide_main_menu] == true if header_menu[1][:hide_main_menu].present?
-            @identity_layout = header_menu[1][:identity_layout] if header_menu[1][:identity_layout].present?
+            }
+            if header_menu.present?
+              @header_name = header_menu[0]
+              @header_link = url_for(:controller => header_menu[1][:controller], :action => header_menu[1][:action])
+              @hide_main_menu = header_menu[1][:hide_main_menu] == true if header_menu[1][:hide_main_menu].present?
+              @identity_layout = header_menu[1][:identity_layout] if header_menu[1][:identity_layout].present?
+            end
           end
         end
       end

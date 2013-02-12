@@ -17,13 +17,13 @@
 # Controller for the podcast.
 class PodcastController < ApplicationController
   before_filter :find_article, :only => [:son]
-  caches_action :index, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :son, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :index, :if => Proc.new { can_cache? }
+  caches_action :son, :if => Proc.new { can_cache? }
   caches_action :rss, :expires_in => 1.hour, :if => Proc.new { can_cache? }
 
   def index
     find_list_articles_by_category 'son'
-    return if params[:partial].present?
+    return unless @partial.nil?
     @side_articles = [
       Article.find_published('edito', 1, 1),
       Article.find_published('dossier', 1, 1),

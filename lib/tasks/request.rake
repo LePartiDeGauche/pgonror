@@ -14,20 +14,19 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 # 
 # See doc/COPYRIGHT.rdoc for more details.
-require 'iconv'
 namespace :request do
   task :init => :environment do
   end
-  
+
   desc 'Archive and deletes all requests'
   task :archive_all => :init do
     requests = Request.where('updated_at < ?', Time.now - 3.month).order('created_at')
     if not requests.empty? 
-      file = File.new("tmp/archives-messages-#{Date.current.strftime("%Y%m%d")}.csv", "w:iso-8859-1")
+      file = File.new("tmp/archives-messages-#{Date.current.strftime("%Y%m%d")}.csv", "w:iso-8859-15")
       file.puts Request
       for request in requests
         puts "-- Archive request #{request}"
-        file.puts Iconv.conv('iso-8859-15', 'utf-8', request.to_csv)
+        file.puts request.to_csv.encode('iso-8859-15', undef: :replace)
         request.destroy
       end
       file.close

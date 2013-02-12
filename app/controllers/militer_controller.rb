@@ -19,12 +19,12 @@ class MiliterController < ApplicationController
   caches_action :index, :layout => false, :expires_in => 1.hour, :if => Proc.new { can_cache? }
   caches_action :agenda, :layout => false, :expires_in => 1.hour, :if => Proc.new { can_cache? }
   caches_action :evenement, :layout => false, :expires_in => 1.hour, :if => Proc.new { can_cache? }
-  caches_action :tracts, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :tract, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :kits, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :kit, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :affiches, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :affiche, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :tracts, :if => Proc.new { can_cache? }
+  caches_action :tract, :if => Proc.new { can_cache? }
+  caches_action :kits, :if => Proc.new { can_cache? }
+  caches_action :kit, :if => Proc.new { can_cache? }
+  caches_action :affiches, :if => Proc.new { can_cache? }
+  caches_action :affiche, :if => Proc.new { can_cache? }
   caches_action :rss, :expires_in => 1.hour, :if => Proc.new { can_cache? }
 
   def index
@@ -47,7 +47,7 @@ class MiliterController < ApplicationController
   
   def tracts
     find_list_articles_by_category 'tract'
-    return if params[:partial].present?
+    return unless @partial.nil?
     @side_articles = [
       Article.find_published('affiche', 1, 3),
       Article.find_published('kit', 1, 1)
@@ -65,7 +65,7 @@ class MiliterController < ApplicationController
 
   def kits
     find_list_articles_by_category 'kit'
-    return if params[:partial].present?
+    return unless @partial.nil?
     @side_articles = [
       Article.find_published('tract', 1, 2),
       Article.find_published('affiche', 1, 2)
@@ -83,7 +83,7 @@ class MiliterController < ApplicationController
 
   def affiches
     find_list_articles_by_category 'affiche'
-    return if params[:partial].present?
+    return unless @partial.nil?
     @side_articles = [
       Article.find_published('tract', 1, 3),
       Article.find_published('kit', 1, 1)

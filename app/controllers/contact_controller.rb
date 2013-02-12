@@ -16,8 +16,8 @@
 class ContactController < ApplicationController
   before_filter :find_article, :only => [:departement]
   before_filter :load_index
-  caches_action :index, :layout => false, :if => Proc.new { can_cache? }
-  caches_action :departement, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :index, :if => Proc.new { can_cache? }
+  caches_action :departement, :if => Proc.new { can_cache? }
 
   def index
     create_request

@@ -16,8 +16,8 @@
 
 # Controller for the web site home page.
 class AccueilController < ApplicationController
-  caches_action :index, :layout => false, :expires_in => 1.hour, :if => Proc.new { can_cache? }
-  caches_action :legal, :layout => false, :if => Proc.new { can_cache? }
+  caches_action :index, :expires_in => 1.hour, :if => Proc.new { can_cache? }
+  caches_action :legal, :if => Proc.new { can_cache? }
   caches_action :rss, :expires_in => 1.hour, :if => Proc.new { can_cache? }
   caches_action :sitemap, :expires_in => 1.hour
   
@@ -44,7 +44,7 @@ class AccueilController < ApplicationController
   def search
     @pages = Article.count_pages_search_published @search
     @articles = Article.search_published @search, @page
-    if params[:partial].present?
+    unless @partial.nil?
       render :partial => 'layouts/articles_1col_2_on_3_search', :locals => { :articles => @articles, :partial => true }
       return
     end
