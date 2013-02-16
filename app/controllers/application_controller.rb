@@ -179,7 +179,7 @@ protected
           log_warning "find_article: no access"
           render :template => '/layouts/not_found', :formats => :html, :status => '404'
         else
-          if can_cache? and stale?(:etag => @article, :last_modified => @article.updated_at, :public => true)
+          if not(can_cache?) or stale?(:etag => @article, :last_modified => @article.updated_at, :public => true)
             @page_title = ((@article.heading.present? ? @article.heading + " • " : "") + @article.title).gsub(/\"/, "").strip
             @page_description = @article.description
             @source = @article.source if @article.present? and not @article.source_id.nil?

@@ -880,7 +880,6 @@ $zoom-height:225px;
   @include column(5);
   @include clearfix;
   table {
-    text-align:center;
     margin-top:$pg-padding;
     margin-bottom:$pg-padding;
     width:auto;
@@ -914,17 +913,7 @@ $zoom-height:225px;
 #agauche {
   @include column(6);
   @include clearfix;
-  p {
-    margin-top:2*$pg-padding;
-    text-align:center;
-  }
-}
-
-#gavroche {
-  @include column(6, true);
-  @include clearfix;
   table {
-    text-align:center;
     margin-top:$pg-padding;
     margin-bottom:$pg-padding;
     width:auto;
@@ -938,7 +927,25 @@ $zoom-height:225px;
   }
 }
 
-#connect-content, #network-content, #agauche-content, #gavroche-content {
+#teleradio {
+  @include column(6, true);
+  @include clearfix;
+  table {
+    margin-top:$pg-padding;
+    margin-bottom:$pg-padding;
+    width:auto;
+    td {
+      padding-left:$pg-padding/2;
+      padding-right:$pg-padding/2;
+      padding-top:0;
+      padding-bottom:0;
+      vertical-align:middle;
+      text-align:center;
+    }
+  }
+}
+
+#connect-content, #network-content, #agauche-content, #teleradio-content {
   height:140px;
 }
 

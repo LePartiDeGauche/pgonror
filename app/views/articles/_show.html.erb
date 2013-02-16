@@ -36,10 +36,8 @@
   <%= @article.email %><br/>
 <% end %>
 <br/>
-<% if @article.category_option?(:audio) and @article.document_file_name.present? %>
-  <%= render :partial => 'layouts/audio', :locals => {:article => @article} %>
-<% elsif @article.category_option?(:document) and @article.document_file_name.present? %>
-  <%= link_to @article.document.url do %>
+<% if @article.category_option?(:document) and @article.document_file_name.present? %>
+  <%= link_to @article.document.url(:default, false) do %>
     <%= @article.title_display %> 
     (<%= @article.document_content_type %>)&nbsp;&bull;
     <%= t("activerecord.attributes.article.file_size") %>&nbsp;:
@@ -56,21 +54,24 @@
   <%= number_to_human_size @article.image_file_size %><br/>
   <br/>
   <div class="information"><%= t("activerecord.attributes.article.image_inline") %></div><br/>
-  <%= image_tag @article.image.url(:inline) %><br/>
+  <%= image_tag @article.image.url(:inline, false) %><br/>
   <div class="information"><%= t("activerecord.attributes.article.image_large") %></div><br/>
-  <%= image_tag @article.image.url(:large) %><br/>
+  <%= image_tag @article.image.url(:large, false) %><br/>
   <div class="information"><%= t("activerecord.attributes.article.image_zoom") %></div><br/>
-  <%= image_tag @article.image.url(:zoom) %><br/>
+  <%= image_tag @article.image.url(:zoom, false) %><br/>
   <div class="information"><%= t("activerecord.attributes.article.image_alternate") %></div><br/>
-  <%= image_tag @article.image.url(:alternate) %><br/>
+  <%= image_tag @article.image.url(:alternate, false) %><br/>
   <div class="information"><%= t("activerecord.attributes.article.image_medium") %></div><br/>
-  <%= image_tag @article.image.url(:medium) %><br/>
+  <%= image_tag @article.image.url(:medium, false) %><br/>
   <div class="information"><%= t("activerecord.attributes.article.image_small") %></div><br/>
-  <%= image_tag @article.image.url(:small) %><br/>
+  <%= image_tag @article.image.url(:small, false) %><br/>
   <div class="information"><%= t("activerecord.attributes.article.image_mini") %></div><br/>
-  <%= image_tag @article.image.url(:mini) %><br/>
+  <%= image_tag @article.image.url(:mini, false) %><br/>
 <% end %>
 <%= @article.content_with_inline.html_safe unless @article.content.blank? %>
+<% if @article.category_option?(:audio) and @article.document_file_name.present? %>
+  <%= render :partial => 'layouts/audio', :locals => {:article => @article} %>
+<% end %>
 <% if @article.original_url.present? %>
   <strong><a href="<%= @article.original_url %>" title="<%= @article.title_display.html_safe %>" rel="canonical" target="_blank"><%= t("activerecord.attributes.article.original_url_long") %></a></strong>
 <% end %>

@@ -19,7 +19,7 @@
           <%= f.text_field :image_remote_url_input, :size => "80" %>
           <% if @article.image_file_name.present? %>
             <br/>
-            <%= image_tag @article.image.url(:medium) if @article.image_file_name.present? %>
+            <%= image_tag @article.image.url(:medium, false) if @article.image_file_name.present? %>
           <% end %>
         </td>
       </tr>
@@ -60,6 +60,10 @@
       <td><%= f.label :title %></td>
       <td><%= f.text_field :title, :size => "80x1" %></td>
     </tr>
+    <tr>
+      <td><%= f.label :signature %></td>
+      <td><%= f.text_field :signature, :size => "80x1", :id => "signature" %></td>
+    </tr>
     <% if @article.category_option?(:start_end_dates) %>
       <tr>
         <td><%= f.label :schedule %></td>
@@ -80,11 +84,7 @@
         <td><%= f.text_field :email, :size => "80x1" %></td>
       </tr>
     <% end %>
-    <tr>
-      <td><%= f.label :signature %></td>
-      <td><%= f.text_field :signature, :size => "80x1", :id => "signature" %></td>
-    </tr>
-    <% if not(@article.category_option?(:image)) and not(@article.category_option?(:audio)) and not(@article.category_option?(:document)) %>
+    <% if not(@article.category_option?(:image)) and not(@article.category_option?(:document)) %>
       <tr>
         <td><%= f.label :options %></td>
         <td>

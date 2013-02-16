@@ -25,9 +25,6 @@
               <%= article.signature if article.category_option?(:signature) %>
             </div>
           </header>
-          <% if article.category_option?(:audio) %>
-            <%= render :partial => 'layouts/audio', :locals => {:article => article} %>
-          <% end %>
           <%= truncate_html(article.content_with_large,
                             :omission => link_to(article.category_option?(:video) ? t('titre.voir_video').html_safe : t('titre.lire_suite').html_safe, article.path)) %>
         </article>

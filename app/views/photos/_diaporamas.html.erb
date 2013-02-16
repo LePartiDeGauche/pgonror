@@ -13,7 +13,7 @@
             <p class="photos">
               <% for photo in article.find_published_by_folder_and_category('image',1,3) %>
                 <% unless photo.image.blank? %>
-                  <%= link_to image_tag(photo.image.url(:medium)),
+                  <%= link_to image_tag(photo.image.url(:medium, false)),
                               :controller => :photos,
                               :action => :diaporama,
                               :uri => article.uri %>

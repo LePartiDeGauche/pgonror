@@ -17,7 +17,7 @@
             <p class="photos">
               <% photo = article.find_published_by_folder_random 'image' %>
               <% if photo.present? and photo.image.present? %>
-                <%= link_to image_tag(photo.image.url(:medium)),
+                <%= link_to image_tag(photo.image.url(:medium, false)),
                             :controller => :photos,
                             :action => :diaporama,
                             :uri => article.uri %>

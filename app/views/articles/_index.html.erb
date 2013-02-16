@@ -50,7 +50,7 @@
       <% end %>
       <%= truncate_html(article.content_with_large).html_safe %>
       <% if article.category_option?(:image) and article.image_file_name.present? %>
-        <%= image_tag article.image.url(:large) %>
+        <%= image_tag article.image.url(:large, false) %>
       <% end %>
     </article>
   </li>

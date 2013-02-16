@@ -31,7 +31,7 @@ PartiDeGauche::Application.routes.draw do
   match '/don_enregistre' => 'donations#don_enregistre'
   match '/don_rejete' => 'donations#don_rejete'
   match '/paiement_annule' => 'payment#paiement_annule'
-  match '/agauche' => 'accueil#agauche'
+  match '/agauche' => 'accueil#agauche', :as => 'agauche'
   match '/gavroche' => 'accueil#gavroche'
   match '/accueil', :to => redirect('/')
   match '/actualites' => 'actualites#index', :as => 'actualites'

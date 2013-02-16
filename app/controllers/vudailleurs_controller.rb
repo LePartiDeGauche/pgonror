@@ -16,7 +16,7 @@
 class VudailleursController < ApplicationController
   before_filter :find_article, :only => [:articleweb, :articleblog, :blog]
   before_filter :load_side_articles, :only => [:articleweb, :articlesweb,
-                                               :blog,
+                                               :blog, :articlesblog, :articleblog,
                                                :envoyer_message]
 
   caches_action :index, :if => Proc.new { can_cache? }
@@ -43,19 +43,11 @@ class VudailleursController < ApplicationController
   end
   
   def articleblog
-    @side_articles = [
-      Article.find_published('web', 1, 5)
-    ]
-    render :template => 'layouts/article'
   end
   
   def articlesblog
     find_list_articles_by_category 'directblog'
     return unless @partial.nil?
-    @side_articles = [
-      Article.find_published('web', 1, 5)
-    ]
-    render :template => 'layouts/index'
   end
   
   def blogs

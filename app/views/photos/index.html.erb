@@ -6,7 +6,7 @@
           <h1><%= link_to @article.title_display.html_safe, @article.path %></h1>
         </header>
           <p class="photos">
-            <%= link_to image_tag(@article.image.url(:inline)),
+            <%= link_to image_tag(@article.image.url(:inline, false)),
                         :controller => :photos,
                         :action => :diaporama,
                         :uri => @article.uri %>

@@ -187,8 +187,8 @@ class Article < ActiveRecord::Base
                     :path => ":rails_root/public/system/:attachment/:uri",
                     :url => "/system/:attachment/:uri"
 
-  # Controls on documents: types and sizes.                       
-  validates_attachment_size :document, options = {:less_than => 10.megabyte}
+  # Controls on documents: types and sizes.
+  validates_attachment_size :document, options = {:less_than => 20.megabyte}
 
   # Number of articles to be displayed in a page.
   ARTICLES_PER_PAGE = 10.0
@@ -429,7 +429,7 @@ class Article < ActiveRecord::Base
                                        published_url,
                                        self.tags_display,
                                        self.content.present? ? externalize_images(self.content, host) : nil,
-                                       (category_option?(:image) and self.image_file_name.present?) ? host + self.image.url(:inline) : nil,
+                                       (category_option?(:image) and self.image_file_name.present?) ? host + self.image.url(:inline, false) : nil,
                                        self.published_at,
                                        self.will_expire_soon? ? self.expired_at : nil,
                                        self.zoom,

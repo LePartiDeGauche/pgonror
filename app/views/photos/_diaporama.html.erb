@@ -25,7 +25,7 @@
           <% unless photo.image.blank? %>
             <div style="<%= first ? "" : "display: none" %>">
               <a class="previous" style="display: none"><%= icon_large 'previous.png' %></a>
-              <%= link_to image_tag(photo.image.url(:inline)), photo.image.url(:original), :target => "_blank" %>
+              <%= link_to image_tag(photo.image.url(:inline, false)), photo.image.url(:original, false), :target => "_blank" %>
               <a class="next" style="display: none"><%= icon_large 'next.png' %></a>
               <br/>
               <% if photo.category_option?(:signature) and not photo.signature.blank? %>

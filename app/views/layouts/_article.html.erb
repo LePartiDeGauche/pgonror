@@ -14,7 +14,7 @@
         </h2>
       <% end %>
       <% if @header_link.present? %>
-        &bull;<h2 class="main-title"><%= link_to @header_name, @header_link %></h2>
+        &bull;&nbsp;<h2 class="main-title"><%= link_to @header_name, @header_link %></h2>
       <% end %>
       <br/>
     </hgroup>
@@ -85,10 +85,10 @@
       <% end %>
     <% end %>
     <br/>
+    <span itemprop="articleBody"><%= @article.content_with_inline.html_safe unless @article.content.blank? %></span>
     <% if @article.category_option?(:audio) and @article.document_file_name.present? %>
       <%= render :partial => 'layouts/audio', :locals => {:article => @article} %>
     <% end %>
-    <span itemprop="articleBody"><%= @article.content_with_inline.html_safe unless @article.content.blank? %></span>
     <footer>
       <% if @original_url.present? %>
         <strong><a href="<%= @original_url %>" title="<%= @page_title %>" rel="canonical" target="_blank"><%= t("activerecord.attributes.article.original_url_long") %></a></strong>
