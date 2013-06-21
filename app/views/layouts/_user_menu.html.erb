@@ -3,5 +3,29 @@
   <% if current_user.publisher %><%= link_to_unless_current t('general.content'), articles_path(:status => :new) %>&nbsp;&bull;<% end %>
   <%= render :partial => 'layouts/logged_user_menu' %>&bull;
 <% end %>
-<span title="<%= t('identity.txt_explain') %>"><%= link_to '.txt', :controller => :accueil, :action => :export_txt %></span>&nbsp;&bull;
-<span title="<%= t('identity.rss_explain') %>"><%= link_to_unless_current icon_medium('rss.png'), accueil_rss_path %></span>
+<span title="<%= t('identity.follow_fb_link') %>">
+            <%= link_to t('identity.follow_fb_link'), :target => "_blank" do %>
+              <img src="<%= asset_path 'f_logo.png' %>" 
+                   alt="<%= t 'identity.follow_fb' %>" 
+                   width="16"
+                   height="16">
+            <% end %>
+</span>
+<span style="text-align:center;" title="<%= t('identity.follow_tw_link') %>">
+            <%= link_to t('identity.follow_tw_link'), :target => "_blank" do %>
+              <img src="<%= asset_path 'twitter2.png' %>" 
+                   alt="<%= t 'identity.follow_tw' %>" 
+                   width="16"
+                   height="16">
+            <% end %>
+</span>
+<span title="<%= t('identity.profile_googleplus') %>">
+            <a href="<%= t 'identity.profile_googleplus' %>" rel="publisher" target="_blank">
+              <img src="<%= asset_path 'GooglePlus-new_logo.png' %>" 
+                   alt="<%= t 'identity.follow_gp' %>" 
+                   width="16"
+                   height="16">
+            </a>
+</span>
+<span title="<%= t('identity.rss_explain') %>"><%= link_to_unless_current icon_medium('rss.png'), accueil_rss_path %></span>&nbsp;&bull;
+<span title="<%= t('identity.txt_explain') %>"><%= link_to '.txt', :controller => :accueil, :action => :export_txt %></span>

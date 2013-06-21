@@ -107,13 +107,11 @@ class ArticleUploadPhototheque < Article
             start = Time.now
             file_name = "tmp/#{self.clean_filename(node.attributes["cmis:contentStreamFileName"])}"
             if file_name =~ /(.*)(.jpg|.jpeg|.gif|.png)/i
-              uri = clean_uri(folder.name) + "-" + node.name
+              uri = clean_uri(folder.name) + "-" + clean_filename(node.name)
               signature = node.attributes["cmis:createdBy"]
               print "#{@@count+1}: #{uri}..."; STDOUT.flush
-              print "download #{file_name}..."; STDOUT.flush
               node.content_stream.get_file(file_name)
               if File.exist?(file_name)
-                print "upload..."; STDOUT.flush
                 upload_image parent, objectId, uri, node.name, file_name, signature
                 File.delete file_name
                 elapsed = (Time.now - start).ceil
@@ -179,6 +177,8 @@ class ArticleUploadPhototheque < Article
         gsub(/[œŒ]/,"oe").
         gsub(/[^a-z0-9-.]/,"").
         gsub(/-{2,}/,"-").
-        gsub(/-\z/,"\\1")
+        gsub(/-\z/,"\\1").
+        gsub(/\./, "-").
+        gsub(/(.*)-(jpg|jpeg|gif|png)/i, "\\1.\\2")
   end
 end

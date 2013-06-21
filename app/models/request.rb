@@ -33,6 +33,7 @@ class Request < ActiveRecord::Base
                   :address,
                   :zip_code,
                   :city,
+                  :country,
                   :phone,
                   :comment,
                   :recipient
@@ -60,19 +61,20 @@ class Request < ActiveRecord::Base
     end
     recipients = User.notification_recipients("notification_message") if recipients.nil?
     if not recipients.empty?
-      Notification.notification_message(self.email, 
+      Notification.notification_message(self.email,
                                         recipients.join(', '),
                                         I18n.t('mailer.notification_message_subject'),
                                         self.first_name,
-                                        self.last_name, 
-                                        self.email, 
-                                        self.address, 
+                                        self.last_name,
+                                        self.email,
+                                        self.address,
                                         self.zip_code,
-                                        self.city, 
+                                        self.city,
+                                        self.country,
                                         self.phone,
                                         self.comment).deliver
     end
-    Receipt.receipt_message(Devise.mailer_sender, 
+    Receipt.receipt_message(Devise.mailer_sender,
                             self.email,
                             I18n.t('mailer.receipt_message_subject'),
                             self.first_name,
@@ -91,6 +93,7 @@ class Request < ActiveRecord::Base
     "Adresse;" +
     "CodePostal;" +
     "Ville;" +
+    "Pays;" +
     "Telephone;" +
     "Email;" +
     "Commentaire"
@@ -103,6 +106,7 @@ class Request < ActiveRecord::Base
     "#{escape_csv address};" +
     "#{escape_csv zip_code};" +
     "#{escape_csv city};" +
+    "#{escape_csv country};" +
     "#{phone_format phone};" +
     "#{escape_csv email};" +
     "#{escape_csv comment}"

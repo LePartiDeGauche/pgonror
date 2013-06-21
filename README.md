@@ -1,6 +1,6 @@
 # Pgonror
 
-Pgonror est le nom informatique du projet de site web www.lepartidegauche.fr édité par Le Parti de Gauche, 63 avenue de la République, 75011 Paris.
+Pgonror est le nom informatique du projet de site web www.lepartidegauche.fr édité par Le Parti de Gauche, 20-22 rue Doudeauville, 75018 Paris.
 
 Le projet adopte la licence publique générale GNU (GNU GENERAL PUBLIC LICENSE) et est disponible gratuitement au téléchargement.
 

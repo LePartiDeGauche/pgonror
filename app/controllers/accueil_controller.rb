@@ -20,14 +20,14 @@ class AccueilController < ApplicationController
   caches_action :legal, :if => Proc.new { can_cache? }
   caches_action :rss, :expires_in => 1.hour, :if => Proc.new { can_cache? }
   caches_action :sitemap, :expires_in => 1.hour
-  
+
   # Content of the home page
   def index
-    @edito = Article.find_published_exclude_zoom 'edito', 1, 1
+    @zooms = Article.find_published_zoom 1, 5
+    @communiques = Article.find_published_exclude_zoom('com', 1, 4) +
+                   Article.find_published_exclude_zoom('inter', 1, 4)
     @dossier = Article.find_published_exclude_zoom 'dossier', 1, 1
-    @actus = Article.find_published_zoom 1, 5
-    @communiques = Article.find_published_exclude_zoom 'com', 1, 8
-    @inter = Article.find_published_exclude_zoom('inter', 1, 1)[0]
+    @actus = Article.find_published_exclude_zoom 'actu', 1, 2
     @vdg = Article.find_published_exclude_zoom 'articlevdg', 1, 1
     @ailleurs = Article.find_published_exclude_zoom 'web', 1, 1
     @livres = Article.find_published_exclude_zoom 'livre', 1, 3
@@ -35,7 +35,7 @@ class AccueilController < ApplicationController
     @campagne = Article.find_published_exclude_zoom('campagne', 1, 1)[0]
     @directblogs = Article.find_published_exclude_zoom 'directblog', 1, 1
     @evenements = Article.find_published_order_by_start_datetime 'evenement', 1, 15
-    @tracts = Article.find_published_exclude_zoom 'tract', 1, 1
+    @tracts = Article.find_published_militer 1, 1
     @videos = Article.find_published_home_video 1, 1
     @diapos = Article.find_published_exclude_zoom 'diaporama', 1, 1
   end
@@ -80,7 +80,7 @@ class AccueilController < ApplicationController
     render :template => 'layouts/rss'
   end
 
-  # Renders most recent articles in a text format.  
+  # Renders most recent articles in a text format.
   def export_txt
     file_path = "tmp/#{Date.current.strftime("%Y-%m-%d")}-lepartidegauche.txt"
     file = File.new(file_path, "w:utf-8")
@@ -111,12 +111,12 @@ class AccueilController < ApplicationController
   def sitemap
   end
 
-  # Default action that shows a message due to an invalid route.  
+  # Default action that shows a message due to an invalid route.
   def default
     id = params[:id]
     if id.present? and id.to_i > 0
       article = Article.find_published_by_id id
-      if article.present?
+      if article.present? and article.path.present? and article.published?
         redirect_to article.path
         return
       end

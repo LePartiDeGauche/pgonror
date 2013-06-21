@@ -19,6 +19,9 @@
       <br/><strong><%= t('activerecord.attributes.membership.address') %></strong> : <%= @address %>
       <br/><strong><%= t('activerecord.attributes.membership.zip_code') %></strong> : <%= @zip_code %>
       <br/><strong><%= t('activerecord.attributes.membership.city') %></strong> : <%= @city %>
+      <% unless @country.blank? %>
+        <br/><strong><%= t('activerecord.attributes.membership.country') %></strong> : <%= @country %>
+      <% end %>
       <% unless @phone.blank? %>
         <br/><strong><%= t('activerecord.attributes.membership.phone') %></strong> : <%= @phone %>
       <% end %>

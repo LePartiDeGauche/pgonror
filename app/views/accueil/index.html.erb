@@ -1,26 +1,25 @@
-<section id="editos">
-  <section id="editos-content" class="content-bloc">
-    <%= render :partial => 'layouts/articles_1col_1_on_4', :locals => { :articles => @edito } %>
-  </section>
-</section>
 <section id="recent">
   <section id="zoom" class="content-bloc zoom">
-    <%= render :partial => 'layouts/zoom_article', :locals => { :articles => @actus, :category => :zoom } %>
+    <%= render :partial => 'layouts/zoom_article', :locals => { :articles => @zooms, :category => :zoom } %>
   </section>
   <section id="communique">
     <section id="communique-content" class="content-bloc">
-      <%= render :partial => 'layouts/articles_simplified', :locals => { :articles => @communiques } %>
+      <%= render :partial => 'layouts/articles_simplified', :locals => { :articles => @communiques,
+                                                                         :category_title => t('identity.comm_title'),
+                                                                         :link_all_title => t('identity.comm_tout'),
+                                                                         :controller => :actualites,
+                                                                         :action_all => :index } %>
     </section>
   </section>
-  <section id="inter">
-    <section id="inter-content" class="content-bloc">
-      <%= render :partial => 'layouts/summary_article', :locals => { :article => @inter } %>
+  <section id="dossier">
+    <section id="dossier-content" class="content-bloc">
+      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @dossier, :title => :zoom } %>
     </section>
   </section>
 </section>
 <section id="actualites">
   <section id="actualites-content" class="content-bloc">
-    <%= render :partial => 'layouts/articles_1col_1_on_4', :locals => { :articles => @dossier } %>
+    <%= render :partial => 'layouts/articles_1col_1_on_3', :locals => { :articles => @actus } %>
   </section>
 </section>
 <section id="campagne">
@@ -45,12 +44,12 @@
     <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @ailleurs, :title => :zoom } %>
   </section>
   <section id="vdg">
-    <section id="vdg-content" class="content-bloc bloc-bottom-margin">
+    <section id="vdg-content" class="content-bloc highlighted-bloc bloc-bottom-margin">
       <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @vdg, :title => :zoom } %>
     </section>
   </section>
   <section id="diapos">
-    <section id="diapos-content" class="content-bloc highlighted-bloc">
+    <section id="diapos-content" class="content-bloc">
       <% unless @diapos.nil? %>
         <%= render :partial => 'layouts/articles_1col_1_on_3_diaporama', :locals => { :articles => @diapos } %>
       <% end %>
@@ -82,8 +81,13 @@
     <% end %>
   </section>
   <section id="tracts">
-    <section id="tracts-content" class="content-bloc">
-      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @tracts, :title => :hide } %>
+    <section id="tracts-content" class="content-bloc highlighted-bloc">
+      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @tracts,
+                                                                                  :title => :hide,
+                                                                                  :category_title => t('identity.materiel_title'),
+                                                                                  :link_all_title => t('identity.materiel_tout'),
+                                                                                  :controller => :militer,
+                                                                                  :action_all => :index} %>
     </section>
   </section>
 </section>

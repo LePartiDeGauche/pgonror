@@ -5,7 +5,7 @@
         <%= link_to icon('edit.gif'), article %>
       <% end %>
       <% if not article.category_option?(:hide_category_name) %>
-        <h3 class="category"><%= article.category_display %></h3>&nbsp;&bull;
+        <h3 class="main-title"><%= article.category_display %></h3>&nbsp;&bull;
       <% end %>
       <% unless article.heading.blank? %>
         <h4><%= article.heading_display.html_safe %></h4>&nbsp;&bull;

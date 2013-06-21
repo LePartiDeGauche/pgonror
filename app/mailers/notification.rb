@@ -26,24 +26,24 @@ class Notification < ActionMailer::Base
   def notification_new_user(from, recipients, subject, email)
     @email = email
     mail(:from => from, :to => recipients, :subject => subject)
-  end  
+  end
 
   # Notifies an article is created or updated.
-  def notification_update(from, 
-                          recipients, 
-                          subject, 
+  def notification_update(from,
+                          recipients,
+                          subject,
                           heading,
                           title,
                           category,
                           source,
-                          folder, 
-                          status, 
-                          signature, 
+                          folder,
+                          status,
+                          signature,
                           url,
                           published_url,
                           tags,
                           content,
-                          image_url, 
+                          image_url,
                           published_at,
                           expired_at,
                           zoom,
@@ -80,18 +80,19 @@ class Notification < ActionMailer::Base
     @updated_by = from
     @comments = comments
     mail(:from => from, :to => recipients, :subject => subject.to_s + " " + category + " - " + status + " : " + title)
-  end  
+  end
 
   # Notifies a new message has been entered.
-  def notification_message(from, 
-                           recipients, 
-                           subject, 
+  def notification_message(from,
+                           recipients,
+                           subject,
                            first_name,
                            last_name, 
-                           email, 
-                           address, 
+                           email,
+                           address,
                            zip_code,
-                           city, 
+                           city,
+                           country,
                            phone,
                            comment)
     @first_name = first_name
@@ -100,21 +101,22 @@ class Notification < ActionMailer::Base
     @address = address
     @zip_code = zip_code
     @city = city
+    @country = country
     @phone = phone_format phone
     @comment = comment
     mail(:from => from, :to => recipients, :subject => subject)
-  end  
+  end
 
   # Notifies new subscription.
-  def notification_subscription(from, 
-                                recipients, 
-                                subject, 
+  def notification_subscription(from,
+                                recipients,
+                                subject,
                                 first_name,
-                                last_name, 
-                                email, 
-                                address, 
+                                last_name,
+                                email,
+                                address,
                                 zip_code,
-                                city, 
+                                city,
                                 phone)
     @first_name = first_name
     @last_name = last_name
@@ -124,19 +126,20 @@ class Notification < ActionMailer::Base
     @city = city
     @phone = phone_format phone
     mail(:from => from, :to => recipients, :subject => subject)
-  end  
+  end
 
   # Notifies new membership.
-  def notification_membership(from, 
-                              recipients, 
-                              subject, 
+  def notification_membership(from,
+                              recipients,
+                              subject,
                               first_name,
-                              last_name, 
+                              last_name,
                               gender,
-                              email, 
-                              address, 
+                              email,
+                              address,
                               zip_code,
-                              city, 
+                              city,
+                              country,
                               phone,
                               mobile,
                               renew,
@@ -160,6 +163,7 @@ class Notification < ActionMailer::Base
     @address = address
     @zip_code = zip_code
     @city = city
+    @country = country
     @phone = phone_format phone
     @mobile = phone_format mobile
     @renew = renew
@@ -176,21 +180,20 @@ class Notification < ActionMailer::Base
     @comment = comment
     @amount = number_to_currency(amount)
     @payment_identifier = payment_identifier
-    mail(:from => from, 
-         :to => recipients, 
-         :subject => subject + " " + payment_identifier)
-  end  
+    mail(:from => from, :to => recipients, :subject => subject + " " + payment_identifier)
+  end
 
   # Notifies new donation.
-  def notification_donation(from, 
-                           recipients, 
-                           subject, 
+  def notification_donation(from,
+                           recipients,
+                           subject,
                            first_name,
-                           last_name, 
-                           email, 
-                           address, 
+                           last_name,
+                           email,
+                           address,
                            zip_code,
-                           city, 
+                           city,
+                           country,
                            phone,
                            comment,
                            amount,
@@ -201,19 +204,18 @@ class Notification < ActionMailer::Base
     @address = address
     @zip_code = zip_code
     @city = city
+    @country = country
     @phone = phone_format phone
     @comment = comment
     @amount = number_to_currency(amount)
     @payment_identifier = payment_identifier
-    mail(:from => from, 
-         :to => recipients, 
-         :subject => subject + " " + payment_identifier)
-  end  
+    mail(:from => from, :to => recipients, :subject => subject + " " + payment_identifier)
+  end
 
   # Notifies a administrators or an alert.
-  def alert_admins(from, 
-                   recipients, 
-                   subject, 
+  def alert_admins(from,
+                   recipients,
+                   subject,
                    message,
                    request,
                    remote_ip,
@@ -225,5 +227,5 @@ class Notification < ActionMailer::Base
     @params = params
     @invalid_backtrace = invalid_backtrace
     mail(:from => from, :to => recipients, :subject => subject.to_s)
-  end  
+  end
 end

@@ -57,6 +57,7 @@ class VideosController < ApplicationController
   # RSS output based on recent articles.
   def rss
     @root_path = url_for lateledegauche_path(:only_path => false)
+    @rss_path = url_for lateledegauche_rss_feed_path(:only_path => false)
     @articles = Article.find_published_video 1, 50
     render :template => 'layouts/rss'
   end
@@ -72,10 +73,9 @@ class VideosController < ApplicationController
   end
 
   def lateledegauche
-    @zoom = Article.find_published_zoom_video 1, 5
     @conferences = Article.find_published_exclude_zoom_video 'conference', 1, 1
     @videosevenement = Article.find_published_exclude_zoom_video 'videoevenement', 1, 1
-    @medias = Article.find_published_exclude_zoom_video 'media', 1, 10
+    @medias = Article.find_published_exclude_zoom_video 'media', 1, 1
     @videosagitprop = Article.find_published_exclude_zoom_video 'videoagitprop', 1, 1
     @videoseduc = Article.find_published_exclude_zoom_video 'videoeduc', 1, 1
     @encampagne = Article.find_published_exclude_zoom_video 'encampagne', 1, 1

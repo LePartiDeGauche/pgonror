@@ -3,18 +3,16 @@
     <hgroup>
       <% if user_signed_in? and current_user.publisher %><%= link_to icon('edit.gif'), @article %><% end %>
       <% if not @article.category_option?(:hide_category_name) %>
-        <h3 class="category"><%= @article.category_display %></h3>
-      <% end %>
-      <% if @article.category_option?(:link_all_title) %>
-        &bull;
-        <h2 class="main-title">
-          <%= link_to @article.category_option(:link_all_title),
-                :controller => @article.category_option(:controller),
-                :action => @article.category_option(:action_all) %>
-        </h2>
-      <% end %>
-      <% if @header_link.present? %>
-        &bull;&nbsp;<h2 class="main-title"><%= link_to @header_name, @header_link %></h2>
+        <h3 class="main-title">
+        <% if @article.category_option?(:link_all_title) %>
+          <%= link_to @article.category_option(:category_title), 
+                      { :controller => @article.category_option(:controller), 
+                      :action => @article.category_option(:action_all) },
+                      :title => @article.category_option(:link_all_title) %>
+        <% else %>
+          <%= @article.category_option(:category_title) %>
+        <% end %>
+        </h3>&nbsp;&bull;
       <% end %>
       <br/>
     </hgroup>
@@ -84,9 +82,8 @@
         </script>
       <% end %>
     <% end %>
-    <br/>
     <span itemprop="articleBody"><%= @article.content_with_inline.html_safe unless @article.content.blank? %></span>
-    <% if @article.category_option?(:audio) and @article.document_file_name.present? %>
+    <% if @article.category_option?(:audio) and @article.audio_file_name.present? %>
       <%= render :partial => 'layouts/audio', :locals => {:article => @article} %>
     <% end %>
     <footer>

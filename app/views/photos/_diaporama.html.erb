@@ -1,14 +1,16 @@
 <% unless article.nil? %>
   <article class="article">
     <header>
-      <h3 class="category"><%= article.category_display %></h3>&nbsp;&bull;
+      <h3 class="main-title">
       <% if article.category_option?(:link_all_title) %>
-        <h2 class="main-title">
-          <%= link_to article.category_option(:link_all_title),
-                :controller => article.category_option(:controller),
-                :action => article.category_option(:action_all) %>
-        </h2>
+        <%= link_to article.category_option(:category_title), 
+                    { :controller => article.category_option(:controller), 
+                    :action => article.category_option(:action_all) },
+                    :title => article.category_option(:link_all_title) %>
+      <% else %>
+        <%= article.category_option(:category_title) %>
       <% end %>
+      </h3>&nbsp;&bull;
       <br/>
       <h1 class="large-title"><%= article.title_display.html_safe %></h1>
       <div class="tag">

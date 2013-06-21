@@ -176,6 +176,7 @@ class ArticlesController < ApplicationController
       @article.transaction do
         @article.image = nil
         @article.document = nil
+        @article.audio = nil
         @article.save
         @article.destroy
         saved = true
@@ -208,7 +209,6 @@ private
     @uploaded_image = Article.new
     @uploaded_document = Article.new
     @zoom = params[:zoom]
-    @zoom_video = params[:zoom_video]
     @log = params[:log]
     if @log
       @articles = Article.find_by_criteria_log({}, @page)
@@ -217,7 +217,6 @@ private
       @articles = Article.find_by_criteria({:status => @status,
                                             :category => @category,
                                             :zoom => @zoom,
-                                            :zoom_video => @zoom_video,
                                             :parent => @parent,
                                             :source => @source,
                                             :search => @search,
@@ -225,7 +224,6 @@ private
       @pages = Article.count_pages_by_criteria({:status => @status,
                                                 :category => @category,
                                                 :zoom => @zoom,
-                                                :zoom_video => @zoom_video,
                                                 :parent => @parent,
                                                 :source => @source,
                                                 :search => @search,
@@ -239,10 +237,6 @@ private
     @zoom_rework = Article.count_by_status_zoom Article::REWORK
     @zoom_reviewed = Article.count_by_status_zoom Article::REVIEWED
     @zoom_online = Article.count_by_status_zoom Article::ONLINE
-    @zoom_video_new = Article.count_by_status_zoom_video Article::NEW
-    @zoom_video_rework = Article.count_by_status_zoom_video Article::REWORK
-    @zoom_video_reviewed = Article.count_by_status_zoom_video Article::REVIEWED
-    @zoom_video_online = Article.count_by_status_zoom_video Article::ONLINE
   end
 
   def load_side_data

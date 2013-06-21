@@ -48,6 +48,12 @@
               <td><%= f.text_field :city, :required => true %></td>
             </tr>
             <tr>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+              <td><%= f.label :country %></td>
+              <td><%= f.text_field :country %></td>
+            </tr>
+            <tr>
               <td><div class="mandatory">*</div><%= f.label :email %></td>
               <td><%= f.email_field :email, :required => true %></td>
               <td><div class="mandatory">*</div><%= f.label :birthdate %></td>

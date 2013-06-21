@@ -1,14 +1,16 @@
 <div class="inner-list">
   <% unless articles.nil? or articles[0].nil? %>
     <hgroup>
-      <h3 class="category"><%= articles[0].category_option(:category_title) %></h3>&nbsp;&bull;<br/>
+      <h3 class="main-title">
       <% if articles[0].category_option?(:link_all_title) %>
-        <h2 class="main-title">
-          <%= link_to articles[0].category_option(:link_all_title), 
-                      :controller => articles[0].category_option(:controller), 
-                      :action => articles[0].category_option(:action_all) %>
-        </h2>
+        <%= link_to articles[0].category_option(:category_title), 
+                    { :controller => articles[0].category_option(:controller), 
+                    :action => articles[0].category_option(:action_all) },
+                    :title => articles[0].category_option(:link_all_title) %>
+      <% else %>
+        <%= articles[0].category_option(:category_title) %>
       <% end %>
+      </h3>&nbsp;&bull;
     </hgroup>
     <ol>
       <% for article in articles %>

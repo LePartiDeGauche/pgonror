@@ -26,6 +26,10 @@ protected
   def report_exceptions
     begin
       yield
+    rescue ActionView::MissingTemplate => invalid
+      log_warning "MissingTemplate", invalid
+      render :template => '/layouts/not_found', :formats => :html, :status => '404'
+      return 
     rescue ArgumentError, EncodingError => invalid
       log_warning "ArgumentError", invalid
       @search = @page_heading = @category = @status = @parent = @source = ""
@@ -56,7 +60,7 @@ protected
     @partial = params[:partial]
     @uri = params[:uri].encode('utf-8', undef: :replace) unless params[:uri].nil?
   end
-  
+
   # Returns true when the cache mechanism can be activated.
   def can_cache?
     not(user_signed_in?) and
@@ -78,6 +82,7 @@ protected
     @identity_layout = "layouts/identity"
     @identity_icon = "PG-FDG.png";
     @root_path = url_for root_path(:only_path => false)
+    @rss_path = url_for rss_feed_path(:only_path => false)
     menu = MENU.find {|meaning, options| options.present? and
                                          options[:controller].present? and
                                          options[:action].present? and 
@@ -188,6 +193,8 @@ protected
             @tags = @article.tags
             @url = url_for(:controller => controller, :action => action, :uri => @article.uri)
             @original_url = @article.original_url
+            @created_at = @article.created_at.to_s(:rfc822)
+            @updated_at = @article.updated_at.to_s(:rfc822)
             @og_type = "article"
             @og_type = "video.movie" if @article.category_option?(:video)
             @og_type = "music.song" if @article.category_option?(:audio)
@@ -211,13 +218,21 @@ protected
 
   # Logs a warning message.
   def log_warning(message, invalid = nil)
-    logger.warn "[#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}] WARNING #{message} #{invalid.present? ? invalid.message : ''} [#{request.url}] from #{request.remote_ip} : #{params.inspect}"
+    begin
+      logger.warn "[#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}] WARNING #{message} #{invalid.present? ? invalid.message : ''} [#{request.url}] from #{request.remote_ip} : #{params.inspect}".encode('utf-8', undef: :replace)
+    rescue Exception => invalid
+      logger.warn "[#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}] WARNING #{message}".encode('utf-8', undef: :replace)
+    end
   end
 
   # Logs an error message.
   def log_error(message, invalid = nil)
-    logger.error "[#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}] ERROR #{message} #{invalid.present? ? invalid.message : ''} [#{request.url}]  from #{request.remote_ip} : #{params.inspect}"
-    alert_admins(message, invalid)
+    begin
+      logger.error "[#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}] ERROR #{message} #{invalid.present? ? invalid.message : ''} [#{request.url}]  from #{request.remote_ip} : #{params.inspect}".encode('utf-8', undef: :replace)
+      alert_admins(message, invalid)
+    rescue Exception => invalid
+      logger.error "[#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}] ERROR #{message}".encode('utf-8', undef: :replace)
+    end
   end
 
   # Sens a notification to administrators.

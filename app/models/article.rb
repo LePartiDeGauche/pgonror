@@ -34,6 +34,7 @@ class Article < ActiveRecord::Base
   validates :heading, :format => {:with => /.*[^\.:-]$/}, :if => "heading.present?"
   validates :image_file_name, :format => {:with => /^([a-zA-Z0-9_-]+)\.(\w+)$/}, :if => "image_file_name.present?"
   validates :document_file_name, :format => {:with => /^([a-zA-Z0-9_-]+)\.(\w+)$/}, :if => "document_file_name.present?"
+  validates :audio_file_name, :format => {:with => /^([a-zA-Z0-9_-]+)\.(\w+)+$/}, :if => "audio_file_name.present?"
 
   # Associated articles using the 'parent' relationship.
   # This relationship is used in order to manage folders or repertories or articles,
@@ -83,6 +84,7 @@ class Article < ActiveRecord::Base
                   :image_remote_url_input,
                   :image,
                   :document,
+                  :audio,
                   :created_by,
                   :updated_by
 
@@ -105,7 +107,7 @@ class Article < ActiveRecord::Base
   MEDIUM_WIDTH = 292 ; MEDIUM_HEIGHT = 194
   SMALL_WIDTH = 212 ; SMALL_HEIGHT = 53
   MINI_WIDTH = 196 ; MINI_HEIGHT = 49
-  ZOOM_WIDTH = 468 ; ZOOM_HEIGHT = 225
+  ZOOM_WIDTH = 628 ; ZOOM_HEIGHT = 309
 
   # Attached images (using PaperClip).
   # The style 'inline' is considered as the default style used for the display
@@ -182,13 +184,23 @@ class Article < ActiveRecord::Base
   validates_attachment_content_type :image, :content_type=>['image/jpeg', 'image/png', 'image/gif']
   validates_attachment_size :image, options = {:less_than => 4.megabyte}
 
+  # Attached audio (using PaperClip).
+  has_attached_file :audio,
+                    :styles => { :ogg => { :extension =>'.ogg' } },
+                    :path => ":rails_root/public/system/:attachment/:style/:uri",
+                    :url => "/system/:attachment/:style/:uri",
+                    :processors => [:Ogg]
+
+  # Controls on audio documents sizes.
+  validates_attachment_size :audio, options = {:less_than => 80.megabyte}
+
   # Attached images (using PaperClip).
   has_attached_file :document,
                     :path => ":rails_root/public/system/:attachment/:uri",
                     :url => "/system/:attachment/:uri"
 
-  # Controls on documents: types and sizes.
-  validates_attachment_size :document, options = {:less_than => 20.megabyte}
+  # Controls on documents sizes.
+  validates_attachment_size :document, options = {:less_than => 10.megabyte}
 
   # Number of articles to be displayed in a page.
   ARTICLES_PER_PAGE = 10.0
@@ -482,9 +494,9 @@ class Article < ActiveRecord::Base
   # Returns the duration of associated mp3 file.
   def mp3_duration
     if self.category_option?(:audio) and 
-       self.document_file_name.present? and
-       self.document_file_name.match(/.mp3/i)
-       return self.class.mp3_duration(self.document.path)
+       self.audio_file_name.present? and
+       self.audio_file_name.match(/.mp3/i)
+       return self.class.mp3_duration(self.audio.path)
     end
     ""
   end
@@ -582,8 +594,18 @@ class Article < ActiveRecord::Base
     '</div>'
   end
 
+  # Returns the filename of the attachment.
+  def download_path(type, folder, format)
+    {:controller => :files,
+     :action => :download,
+     :type => type,
+     :folder => folder,
+     :name => self.uri.gsub(/[a-z0-9]{3,4}$/, format)}
+  end
+
   # Returns the canonical path to the article.
   def path
+    return nil unless self.category_option?(:controller) and self.category_option?(:action)
     {:controller => self.category_option(:controller),
      :action => self.category_option(:action),
      :uri => self.uri}
@@ -788,6 +810,11 @@ class Article < ActiveRecord::Base
     find_by_criteria({:status => ONLINE, :video => true}, page, limit)
   end
 
+  # Selects published articles for militer categories.  
+  def self.find_published_militer(page = 1, limit = ARTICLES_PER_PAGE)
+    find_by_criteria({:status => ONLINE, :militer => true}, page, limit)
+  end
+
   # Selects published articles for the zoom.  
   def self.find_published_zoom(page = 1, limit = ARTICLES_PER_PAGE)
     find_by_criteria({:status => ONLINE, :zoom => true}, page, limit)
@@ -921,6 +948,8 @@ private
       self.title = self.image_file_name
     elsif self.document_file_name.present? and self.title.blank?
       self.title = self.document_file_name
+    elsif self.audio_file_name.present? and self.title.blank?
+      self.title = self.audio_file_name
     end
     self.heading = self.folder_display if self.heading.blank? and self.parent_id.present?
   end
@@ -931,15 +960,14 @@ private
     self.source_id = nil if self.source_id.present? and self.source_id == 0 
     if not self.legacy and not self.published?
       if self.image_file_name.present?
-        if self.uri.blank?
-          self.uri = self.parent_id.present? ? self.class.clean_uri(folder_display) + "-" : ""
-          self.uri << image_file_name
-        end
+        self.uri = self.parent_id.present? ? self.class.clean_uri(folder_display) + "-" : ""
+        self.uri << image_file_name
       elsif self.document_file_name.present?
-        if self.uri.blank?
-          self.uri = self.parent_id.present? ? self.class.clean_uri(folder_display) + "-" : ""
-          self.uri << document_file_name
-        end
+        self.uri = self.parent_id.present? ? self.class.clean_uri(folder_display) + "-" : ""
+        self.uri << document_file_name
+      elsif self.audio_file_name.present?
+        self.uri = self.parent_id.present? ? self.class.clean_uri(folder_display) + "-" : ""
+        self.uri << audio_file_name
       elsif self.title.present?
         self.uri = ""
         self.uri << self.class.clean_uri(self.heading) + "-" if not self.heading.blank? 
@@ -1021,11 +1049,11 @@ private
   INTERNAL_IMAGE_EL = /<img(.*)src="(\S*)\/system\/images\/(large|medium|small|mini|inline|alternate|zoom)\/(\S+)(.jpg|.jpeg|.png|.gif)(\S*)"([^>]*)>/i
   INTERNAL_IMAGE_LINK_EL = /<a(.*)href="(\S*)\/system\/images\/(original|large|medium|small|mini|inline|alternate|zoom)\/(\S+)(.jpg|.jpeg|.png|.gif)(\S*)"([^>]*)>/i
   INTERNAL_DOCUMENT_LINK_EL = /<a(.*)href="(\S*)\/system\/documents\/(\S+)(.pdf|.doc|.docx|.odt|.zip|.txt|.mp3)(\S*)"([^>]*)>/i
-  INTERNAL_AUDIO_LINK_EL = /<a(.*)href="(\S*)\/system\/documents\/(\S+)(.mp3)(\S*)"([^>]*)>/i
+  INTERNAL_AUDIO_LINK_EL = /<a(.*)href="(\S*)\/system\/audios\/(\S+)(.mp3)(\S*)"([^>]*)>/i
   ANY_IMAGE_EL = /<img(.*)src="(\S+)"([^>]*)>/i
   DMOTION_TAG = /\{dmotion\}(\S+)\{\/dmotion\}/i
-  DAILYMOTION_OLD = /<object(.*)>(.*)<embed(.*)src="(\S+)"([^>]*)>(.*)<\/object>/i
   IFRAME_EL = /<iframe(.*)src="(\S+)"([^>]*)>([^<]*)<\/iframe>/i
+  SCLOUD_EL = /<iframe(.*)src="(\S+soundcloud\S+)"([^>]*)>([^<]*)<\/iframe>/
   INLINE_REFERENCE_EL = /src=\"\/system\/([^\"]*)\"/i
 
   # Returns the content of the article with the reference of images or videos transformed with appropriate format.
@@ -1048,8 +1076,6 @@ private
     return extract.sub(ANY_IMAGE_EL, "<img src=\"\\2\" width=\"#{width}\" height=\"#{height}\">") if extract.present? 
     extract = source[DMOTION_TAG]
     return extract.sub(DMOTION_TAG, "<iframe src=\"http://www.dailymotion.com/embed/video/\\1?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>") if extract.present? 
-    extract = source[DAILYMOTION_OLD]
-    return extract.sub(DAILYMOTION_OLD, "<iframe src=\"\\4?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>") if extract.present? 
     extract = source[IFRAME_EL]
     return extract.sub(IFRAME_EL, "<iframe src=\"\\2?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>") if extract.present? 
     source
@@ -1067,7 +1093,8 @@ private
     source.present? ? 
       source.gsub(INTERNAL_IMAGE_EL, "<img\\1 src=\"/system/images/inline/\\4\\5\\6\"\\7>").
              gsub(INTERNAL_IMAGE_LINK_EL, "<a\\1 href=\"/system/images/\\3\/\\4\\5\\6\"\\7>").
-             gsub(INTERNAL_DOCUMENT_LINK_EL, "<a\\1 href=\"/system/documents/\\3\\4\\5\"\\6>") :
+             gsub(INTERNAL_DOCUMENT_LINK_EL, "<a\\1 href=\"/system/documents/\\3\\4\\5\"\\6>").
+             gsub(INTERNAL_AUDIO_LINK_EL, "<a\\1 href=\"/system/audios/\\3\\4\\5\"\\6>") :
     ""
   end
 
@@ -1081,20 +1108,29 @@ private
   def convert_content_with(source, target, width, height, videoheight=height)
     return "" if source.nil?
     converted = source.gsub(DMOTION_TAG, "<iframe src=\"http://www.dailymotion.com/embed/video/\\1?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{videoheight}\"></iframe>").
-                       gsub(DAILYMOTION_OLD, "<iframe src=\"\\4?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{videoheight}\"></iframe>").
-                       gsub(IFRAME_EL, "<iframe src=\"\\2?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{videoheight}\"></iframe>")
+                       gsub(IFRAME_EL, "<iframe src=\"\\2?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{videoheight}\"></iframe>").
+                       gsub(SCLOUD_EL,"<iframe src=\"\\2?logo=0&hideInfos=1\" width=\"#{width}\" height=\"166\"></iframe>
+                              <div style=\"position:absolute;z-index:10;width:220px;margin-left:390px;background:#F5F5F5;margin-top:-172px;\">
+                              <div style=\"width:100px;float:left;margin-top:-19px;\">&nbsp;<a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-url=\"#{/http(\S+)soundcloud.com\/radio-de-gauche\/([a-z-]+)/.match(source)}\" data-via=\"LePG\" data-lang=\"fr\" data-size=\"medium\" data-hashtags=\"radiodegauche\">Tweeter</a>
+                              <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script></div>
+                              <div style=\"width:100px;float:left;margin\">&nbsp;<a name=\"fb_share\" type=\"button_count\" share_url=\"#{/http(\S+)soundcloud.com\/radio-de-gauche\/([a-z-]+)/.match(source)}\"></a>
+                              <script src=\"http://static.ak.fbcdn.net/connect.php/js/FB.Share\" type=\"text/javascript\"></script></div>
+                              </div>"
+                              )
     converted = converted.gsub(INTERNAL_IMAGE_EL, "<img src=\"\\2/system/images/#{target}/\\4\\5\">") if target != "inline"
     converted = converted.gsub(INTERNAL_AUDIO_LINK_EL,
           "<br/>" +
-          "<object type=\"application/x-shockwave-flash\" data=\"/swf/dewplayer.swf\" width=\"300\" height=\"20\" class=\"player-fallback\">" +
+          "<audio controls>" +
+          "<source src=\"\\2/system/audios/\\3\\4\" type=\"audio/mpeg; codecs=mp3\">" +
+          "<source src=\"\\2/system/audios/\\3.ogg\" type=\"audio/ogg; codecs=vorbis\">" +
+          "<object type=\"application/x-shockwave-flash\" data=\"/swf/dewplayer.swf\" width=\"300\" height=\"20\">" +
           "<param name=\"movie\" value=\"/swf/dewplayer.swf\" />" +
-          "<param name=\"flashvars\" value=\"mp3=\\2/system/documents/\\3\\4\" />" +
+          "<param name=\"flashvars\" value=\"mp3=\\2/system/audios/\\3\\4\" />" +
           "<param name=\"wmode\" value=\"transparent\" />" +
           "</object>" +
-          "<audio controls=\"controls\" src=\"\\2/system/documents/\\3\\4\" type=\"audio/mp3\">" +
           "</audio>" +
           "<br/>" +
-          "<a\\1href=\"\\2/system/documents/\\3\\4\\5\"\\6>") if target == "inline"
+          "<a\\1href=\"\\2/system/audios/\\3\\4\\5\"\\6>") if target == "inline"
     converted
   end
 
@@ -1183,6 +1219,7 @@ private
   # - source: selects articles with a given source_id.
   # - id: selects articles with a given id.
   # - video: selects articles with a 'video' category.
+  # - militer: selects articles with a 'militer' category.
   # - searchable: selects articles with a 'searchable' category.
   # - feedable: selects articles without a 'unfeedable' category.
   # - access_level_reserved: selects articles with the 'reserved' access level.
@@ -1211,6 +1248,7 @@ private
       (options[:exclude_zoom].present? ? " and (zoom is null or zoom != 't')" : "") +
       (options[:exclude_zoom_video].present? ? " and (zoom_video is null or zoom_video != 't')" : "") +
       (options[:video].present? ? " and category in (#{categories_with(:video)})" : "") +
+      (options[:militer].present? ? " and category in (#{categories_with(:militer)})" : "") +
       (options[:searchable].present? ? " and category in (#{categories_with(:searchable)})" : "") +
       (options[:feedable].present? ? " and category in (#{categories_without(:unfeedable)})" : "") +
       (options[:access_level_reserved].present? ? " and category in (#{access_level_reserved_categories})" : "") +

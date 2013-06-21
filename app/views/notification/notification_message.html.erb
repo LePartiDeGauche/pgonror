@@ -17,6 +17,9 @@
       <% unless @city.blank? %>
         <br/><strong><%= t('activerecord.attributes.request.city') %></strong> : <%= @city %>
       <% end %>
+      <% unless @country.blank? %>
+        <br/><strong><%= t('activerecord.attributes.request.country') %></strong> : <%= @country %>
+      <% end %>
       <% unless @phone.blank? %>
         <br/><strong><%= t('activerecord.attributes.request.phone') %></strong> : <%= @phone %>
       <% end %>

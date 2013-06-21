@@ -1,3 +1,38 @@
+<section id="lateledegauche-videoagitprop">
+  <section id="lateledegauche-videoagitprop-content" class="content-bloc">
+    <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @videosagitprop, :title => :zoom_no_heading } %>
+  </section>
+</section>
+<section id="lateledegauche-videoeduc">
+  <section id="lateledegauche-videoeduc-content" class="content-bloc">
+    <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @videoseduc, :title => :zoom_no_heading } %>
+  </section>
+</section>
+<section id="lateledegauche-media">
+  <section id="lateledegauche-media-content" class="content-bloc">
+    <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @medias, :title => :zoom_no_heading } %>
+  </section>
+</section>
+<section id="lateledegauche-conference">
+  <section id="lateledegauche-conference-content" class="content-bloc highlighted-bloc">
+    <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @conferences, :title => :zoom_no_heading } %>
+  </section>
+</section>
+<section id="lateledegauche-videoweb">
+  <section id="lateledegauche-videoweb-content" class="content-bloc">
+    <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @videosfdg, :title => :zoom_no_heading } %>
+  </section>
+</section>
+<section id="lateledegauche-encampagne">
+  <section id="lateledegauche-encampagne-content" class="content-bloc highlighted-bloc">
+    <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @encampagne, :title => :zoom_no_heading } %>
+  </section>
+</section>
+<section id="lateledegauche-videoevenement">
+  <section id="lateledegauche-videoevenement-content" class="content-bloc">
+    <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @videosevenement, :title => :zoom_no_heading } %>
+  </section>
+</section>
 <section id="lateledegauche-presentation">
   <section id="lateledegauche-presentation-content" class="content-bloc">
     <article class="article">
@@ -5,150 +40,60 @@
       <table>
         <tr>
           <td>
-            <%= link_to "mailto:" + t('identity.teledegauche_email') do %>
-              <img src="<%= asset_path 'logo-tele-de-gauche.png' %>" alt="<%= t('identity.teledegauche') %>" width="32" height="32">
-            <% end %>
+            <table>
+              <tr>
+                <td>
+                  <%= link_to "mailto:" + t('identity.teledegauche_email') do %>
+                    <img src="<%= asset_path 'logo-tele-de-gauche.png' %>" alt="<%= t('identity.teledegauche') %>" width="32" height="32">
+                  <% end %>
+                </td>
+                <td>
+                  <%= link_to t('identity.reserved_contact'), "mailto:" + t('identity.teledegauche_email') %>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <%= link_to t('identity.follow_dm_link') do %>
+                    <img src="<%= asset_path 'DM.png' %>" alt="<%= t('identity.follow_dm') %>" width="32" height="32">
+                  <% end %>
+                </td>
+                <td>
+                  <%= link_to t('identity.follow_dm_link') do %>
+                    <%= t('identity.follow_dm') %>
+                  <% end %>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <%= link_to t('identity.follow_tele_fb_link'), :target => "_blank" do %>
+                    <img src="<%= asset_path 'f_logo.png' %>" alt="<%= t 'identity.follow_tele_fb' %>" width="32" height="32">
+                  <% end %>
+                </td>
+                <td>
+                  <%= link_to t('identity.follow_tele_fb_link'), :target => "_blank" do %>
+                    <%= t 'identity.follow_tele_fb' %>
+                  <% end %>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <%= link_to t('identity.follow_tele_tw_link'), :target => "_blank" do %>
+                    <img src="<%= asset_path 'twitter-bird-light-bgs.png' %>" alt="<%= t 'identity.follow_tele_tw' %>" width="32" height="32">
+                  <% end %>
+                </td>
+                <td>
+                  <%= link_to t('identity.follow_tele_tw_link'), :target => "_blank" do %>
+                    @<%= t 'identity.follow_tele_tw' %>
+                  <% end %>
+                </td>
+              </tr>
+            </table>
           </td>
           <td>
-            <%= link_to t('identity.reserved_contact'), "mailto:" + t('identity.teledegauche_email') %>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <%= link_to t('identity.follow_dm_link') do %>
-              <img src="<%= asset_path 'DM.png' %>" alt="<%= t('identity.follow_dm') %>" width="32" height="32">
-            <% end %>
-          </td>
-          <td>
-            <%= link_to t('identity.follow_dm_link') do %>
-              <%= t('identity.follow_dm') %>
-            <% end %>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <%= link_to t('identity.follow_tele_fb_link'), :target => "_blank" do %>
-              <img src="<%= asset_path 'f_logo.png' %>" alt="<%= t 'identity.follow_tele_fb' %>" width="32" height="32">
-            <% end %>
-          </td>
-          <td>
-            <%= link_to t('identity.follow_tele_fb_link'), :target => "_blank" do %>
-              <%= t 'identity.follow_tele_fb' %>
-            <% end %>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <%= link_to t('identity.follow_tele_tw_link'), :target => "_blank" do %>
-              <img src="<%= asset_path 'twitter-bird-light-bgs.png' %>" alt="<%= t 'identity.follow_tele_tw' %>" width="32" height="32">
-            <% end %>
-          </td>
-          <td>
-            <%= link_to t('identity.follow_tele_tw_link'), :target => "_blank" do %>
-              @<%= t 'identity.follow_tele_tw' %>
-            <% end %>
+            <iframe width="380" height="180" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.fr/maps/ms?ie=UTF8&amp;hl=fr&amp;oe=UTF8&amp;msa=0&amp;msid=201183676361607908548.0004d8ff323c3d97a6baf&amp;t=m&amp;ll=47.15984,-1.582031&amp;spn=9.563625,33.398438&amp;z=4&amp;output=embed"></iframe><br /><small>Afficher <a href="https://maps.google.fr/maps/ms?ie=UTF8&amp;hl=fr&amp;oe=UTF8&amp;msa=0&amp;msid=201183676361607908548.0004d8ff323c3d97a6baf&amp;t=m&amp;ll=47.15984,-1.582031&amp;spn=9.563625,33.398438&amp;z=4&amp;source=embed" style="color:#0000FF;text-align:left">Télé de Gauche locales</a> sur une carte plus grande</small>
           </td>
         </tr>
       </table>
     </article>
   </section>
 </section>
-<section id="lateledegauche-zoom">
-  <section id="zoom" class="content-bloc zoom">
-    <%= render :partial => 'layouts/zoom_article', :locals => { :articles => @zoom, :category => :zoom } %>
-  </section>
-</section>
-<section id="lateledegauche-medias">
-  <section id="lateledegauche-media-content" class="content-bloc">
-    <%= render :partial => 'layouts/articles_simplified', :locals => { :articles => @medias } %>
-  </section>
-</section>
-<section id="lateledegauche-conferences">
-  <section id="lateledegauche-conference">
-    <section id="lateledegauche-conference-content" class="content-bloc bloc-bottom-margin">
-      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @conferences, :title => :zoom_no_heading } %>
-    </section>
-  </section>
-  <section id="lateledegauche-encampagne">
-    <section id="lateledegauche-encampagne-content" class="content-bloc highlighted-bloc">
-      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @encampagne, :title => :zoom_no_heading } %>
-    </section>
-  </section>
-</section>
-<section id="lateledegauche-agitprop">
-  <section id="lateledegauche-videoagitprop">
-    <section id="lateledegauche-videoagitprop-content" class="content-bloc highlighted-bloc bloc-bottom-margin">
-      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @videosagitprop, :title => :zoom_no_heading } %>
-    </section>
-  </section>
-  <section id="lateledegauche-videoevenement">
-    <section id="lateledegauche-videoevenement-content" class="content-bloc">
-      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @videosevenement, :title => :zoom_no_heading } %>
-    </section>
-  </section>
-</section>
-<section id="lateledegauche-videoseduc">
-  <section id="lateledegauche-videoeduc">
-    <section id="lateledegauche-videoeduc-content" class="content-bloc bloc-bottom-margin">
-      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @videoseduc, :title => :zoom_no_heading } %>
-    </section>
-  </section>
-  <section id="lateledegauche-videoweb">
-    <section id="lateledegauche-videoweb-content" class="content-bloc">
-      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @videosfdg, :title => :zoom_no_heading } %>
-    </section>
-  </section>
-</section>
-<script>
-  function nextVideo() {
-    $('#zoom li:last').after($('#zoom li:first'));
-    showOnlyFirstVideo();
-  };
-  function showOnlyFirstVideo() {
-    $('#zoom li').hide();
-    $('#zoom li:first').show(300);
-    var top = -34-$('#zoom li:first section').height();
-    $('#zoom li:first section').css({top:top}).show(300);
-  };
-  var runVideo = setInterval('nextVideo()', 6000);
-  showOnlyFirstVideo();
-  $('.zoom-button1').click(function() {
-    $('#zoom li#zoom-article2').insertAfter($('#zoom li#zoom-article1'));
-    $('#zoom li#zoom-article3').insertAfter($('#zoom li#zoom-article2'));
-    $('#zoom li#zoom-article4').insertAfter($('#zoom li#zoom-article3'));
-    $('#zoom li#zoom-article5').insertAfter($('#zoom li#zoom-article4'));
-    showOnlyFirstVideo();
-  });
-  $('.zoom-button2').click(function() {
-    $('#zoom li#zoom-article3').insertAfter($('#zoom li#zoom-article2'));
-    $('#zoom li#zoom-article4').insertAfter($('#zoom li#zoom-article3'));
-    $('#zoom li#zoom-article5').insertAfter($('#zoom li#zoom-article4'));
-    $('#zoom li#zoom-article1').insertAfter($('#zoom li#zoom-article5'));
-    showOnlyFirstVideo();
-  });
-  $('.zoom-button3').click(function() {
-    $('#zoom li#zoom-article4').insertAfter($('#zoom li#zoom-article3'));
-    $('#zoom li#zoom-article5').insertAfter($('#zoom li#zoom-article4'));
-    $('#zoom li#zoom-article1').insertAfter($('#zoom li#zoom-article5'));
-    $('#zoom li#zoom-article2').insertAfter($('#zoom li#zoom-article1'));
-    showOnlyFirstVideo();
-  });
-  $('.zoom-button4').click(function() {
-    $('#zoom li#zoom-article5').insertAfter($('#zoom li#zoom-article4'));
-    $('#zoom li#zoom-article1').insertAfter($('#zoom li#zoom-article5'));
-    $('#zoom li#zoom-article2').insertAfter($('#zoom li#zoom-article1'));
-    $('#zoom li#zoom-article3').insertAfter($('#zoom li#zoom-article2'));
-    showOnlyFirstVideo();
-  });
-  $('.zoom-button5').click(function() {
-    $('#zoom li#zoom-article1').insertAfter($('#zoom li#zoom-article5'));
-    $('#zoom li#zoom-article2').insertAfter($('#zoom li#zoom-article1'));
-    $('#zoom li#zoom-article3').insertAfter($('#zoom li#zoom-article2'));
-    $('#zoom li#zoom-article4').insertAfter($('#zoom li#zoom-article3'));
-    showOnlyFirstVideo();
-  });
-  $('#zoom').hover(
-    function() { clearInterval(runVideo); },
-    function() { runVideo = setInterval('nextVideo()', 6000); }
-  ); 
-</script>

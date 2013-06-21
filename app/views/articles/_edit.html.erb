@@ -27,13 +27,13 @@
       <tr>
         <td></td>
         <td>
-          <%= f.file_field :document, :accept => 'audio/mpeg' %>
-          <% if @article.document_file_name.present? %>
+          <%= f.file_field :audio, :accept => 'audio/mpeg' %>
+          <% if @article.audio_file_name.present? %>
             <br/>
             <%= @article.title_display %> 
-            (<%= @article.document_content_type %>)&nbsp;&bull;
+            (<%= @article.audio_content_type %>)&nbsp;&bull;
             <%= t("activerecord.attributes.article.file_size") %>&nbsp;:
-            <%= number_to_human_size @article.document_file_size %><br/>
+            <%= number_to_human_size @article.audio_file_size %><br/>
           <% end %>
         </td>
       </tr>
@@ -84,23 +84,9 @@
         <td><%= f.text_field :email, :size => "80x1" %></td>
       </tr>
     <% end %>
-    <% if not(@article.category_option?(:image)) and not(@article.category_option?(:document)) %>
-      <tr>
-        <td><%= f.label :options %></td>
-        <td>
-          <%= f.check_box :show_heading %> <%= f.label :show_heading %><br/>
-          <%= f.check_box :zoom %> <%= f.label :zoom %><br/>
-          <% if @article.category_option?(:video) %>
-            <%= f.check_box :zoom_video %> <%= f.label :zoom_video %><br/>
-            <%= f.check_box :home_video %> <%= f.label :home_video %><br/>
-          <% end %>
-          <%= f.label :zoom_sequence %> <%= f.select :zoom_sequence, ["1", "2", "3", "4", "5"] %>
-        </td>
-      </tr>
-    <% end %>
     <tr>
       <td><%= f.label :source_id %></td>
-      <td><%= f.select :source_id, @sources, {:include_blank => true}, :style => 'width: 512px;' %></td>
+      <td><%= f.select :source_id, @sources, {:include_blank => true}, :style => 'width: 419px;' %></td>
     </tr>
     <% if @article.category_option?(:parent) or @article.category_option?(:source) %>
       <tr>
@@ -121,6 +107,19 @@
         <%= text_field_tag :expired_at, @article.expired_at.nil? ? "" : I18n.l(@article.expired_at), :size => "8x1", :class => "datepicker" %>
       </td>
     </tr>
+    <% if not(@article.category_option?(:image)) and not(@article.category_option?(:document)) %>
+      <tr>
+        <td><%= f.label :options %></td>
+        <td>
+          <%= f.check_box :show_heading %> <%= f.label :show_heading %><br/>
+          <%= f.check_box :zoom %> <%= f.label :zoom %><br/>
+          <% if @article.category_option?(:video) %>
+            <%= f.check_box :home_video %> <%= f.label :home_video %><br/>
+          <% end %>
+          <%= f.label :zoom_sequence %> <%= f.select :zoom_sequence, ["1", "2", "3", "4", "5"] %>
+        </td>
+      </tr>
+    <% end %>
   </table>
   <%= f.text_area :content, :size => "80x40" %>
 </div>

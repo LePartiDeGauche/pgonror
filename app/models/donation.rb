@@ -39,6 +39,7 @@ class Donation < Payment
                   :address,
                   :zip_code,
                   :city,
+                  :country,
                   :phone,
                   :comment
 
@@ -87,21 +88,22 @@ class Donation < Payment
   def email_notification
     recipients = User.notification_recipients "notification_donation"
     if not recipients.empty?
-      Notification.notification_donation(self.email, 
+      Notification.notification_donation(self.email,
                                          recipients.join(', '),
                                          I18n.t('mailer.notification_donation_subject'),
                                          self.first_name,
-                                         self.last_name, 
-                                         self.email, 
-                                         self.address, 
+                                         self.last_name,
+                                         self.email,
+                                         self.address,
                                          self.zip_code,
-                                         self.city, 
+                                         self.city,
+                                         self.country,
                                          self.phone,
                                          self.comment,
                                          self.amount,
                                          self.payment_identifier).deliver
     end
-    Receipt.receipt_donation(Devise.mailer_sender, 
+    Receipt.receipt_donation(Devise.mailer_sender,
                              self.email,
                              I18n.t('mailer.receipt_donation_subject'),
                              self.first_name,
@@ -125,6 +127,7 @@ class Donation < Payment
     "Adresse;" +
     "CodePostal;" +
     "Ville;" +
+    "Pays;" +
     "Telephone;" +
     "Email;" +
     "Montant;" +
@@ -139,6 +142,7 @@ class Donation < Payment
     "#{escape_csv address};" +
     "#{escape_csv zip_code};" +
     "#{escape_csv city};" +
+    "#{escape_csv country};" +
     "#{phone_format phone};" +
     "#{escape_csv email};" +
     "#{number_with_precision(amount, :precision => 2, :separator => '.')};" +

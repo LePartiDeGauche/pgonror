@@ -51,6 +51,14 @@
               <td><%= t 'activerecord.attributes.membership.city' %></td>
               <td><%= @membership.city %></td>
             </tr>
+            <% unless @membership.country.blank? %>
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td><%= t 'activerecord.attributes.membership.country' %></td>
+                <td><%= @membership.country %></td>
+              </tr>
+            <% end %>
             <tr>
               <td><%= t 'activerecord.attributes.membership.email' %></td>
               <td><%= @membership.email %></td>

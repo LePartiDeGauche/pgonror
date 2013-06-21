@@ -125,6 +125,7 @@ class Membership < Payment
                   "Martinique (972)",
                   "Guyane (973)",
                   "La Réunion (974)",
+                  "Saint-Pierre et Miquelon (975)",
                   "Mayotte (976)",
                   "Étranger"]
 
@@ -156,6 +157,7 @@ class Membership < Payment
                   :address,
                   :zip_code,
                   :city,
+                  :country,
                   :phone,
                   :department,
                   :committee,
@@ -260,6 +262,7 @@ class Membership < Payment
     "Adresse;" +
     "CodePostal;" +
     "Ville;" +
+    "Pays;" +
     "ComiteLocal;" +
     "Departement;" +
     "TelephoneFixe;" +
@@ -286,6 +289,7 @@ class Membership < Payment
     "#{escape_csv address};" +
     "#{escape_csv zip_code};" +
     "#{escape_csv city};" +
+    "#{escape_csv country};" +
     "#{escape_csv committee};" +
     "#{escape_csv department};" +
     "#{phone_format phone};" +
@@ -319,6 +323,7 @@ class Membership < Payment
                                            self.address,
                                            self.zip_code,
                                            self.city,
+                                           self.country,
                                            self.phone,
                                            self.mobile,
                                            self.renew,

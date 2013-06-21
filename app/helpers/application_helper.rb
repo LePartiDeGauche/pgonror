@@ -21,6 +21,11 @@ module ApplicationHelper
     t('general.title') + (@page_title.present? ? " » " + @page_title.to_s : "")
   end
 
+  # Returns a title for the social networks.  
+  def current_page_title_sn
+    @page_title.present? ? @page_title.to_s : ""
+  end
+
   # Returns a description for the web site based on the article being displayed.  
   def current_page_description
     @page_description.present? ? @page_description : "" 

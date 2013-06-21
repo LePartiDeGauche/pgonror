@@ -18,6 +18,8 @@ PartiDeGauche::Application.routes.draw do
 
   devise_for :users
 
+  get "files/download"
+
   match '/search' => 'accueil#search', :as => 'global_search'
   match '/legal' => 'accueil#legal', :as => 'legal'
   match '/adhesion' => 'memberships#adhesion', :as => 'adhesion'
@@ -221,6 +223,7 @@ PartiDeGauche::Application.routes.draw do
   match '/editos/actualites/695', :to => redirect("/don")
   match '/editos/1735', :to => redirect("/accueil")
   match '/component/content/frontpage', :to => redirect("/accueil")
+  match '/files/download/:type/:name' => 'files#download'
 
   match '*id', :to => 'accueil#default', :as => 'default'
 end

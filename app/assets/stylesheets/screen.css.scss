@@ -18,12 +18,12 @@
 
 @mixin pg-shadow { @include single-box-shadow(silver, 2px, 2px, 2px); }
 
-@mixin pg-text-shadow {	@include single-text-shadow(silver, 2px, 2px, 2px); }
+@mixin pg-text-shadow { @include single-text-shadow(silver, 2px, 2px, 2px); }
 
 @mixin pg-transition {
   @include transition-property(all);
   @include transition-duration($pg-transition-duration);
-  @include transition-timing-function(ease-in);	
+  @include transition-timing-function(ease-in); 
 }
 
 @mixin undecored-link {
@@ -90,6 +90,9 @@ body {
       @include hover-link;
     }
   }
+  .picture-title {
+    padding-bottom:$pg-padding;
+  }
   .zoom-title {
     background-color:$pg-lightgreen;
     position:relative;
@@ -112,8 +115,8 @@ body {
   }
   .signature {
     color:black;
-    font-size:90%;
     font-style:italic;
+    margin-bottom:$pg-padding;
   }
   .information {
     color:gray;
@@ -197,7 +200,8 @@ body {
   .article {
     .date {
       display:inline;
-      font-size:85%;
+      font-size:80%;
+      font-style:normal;
       background-color:$pg-green;
       color:white;
       @include pg-shadow;
@@ -735,7 +739,14 @@ body {
     margin-left:6*$pg-padding;
   }
   .don {
-    margin-left:4*$pg-padding;
+    margin-left:2*$pg-padding;
+  }
+  .gaucheparlexemple {
+    margin-left:2*$pg-padding;
+  }
+  #dons {
+    display:inline-block;
+    width:126px;
   }
 }
 
@@ -774,12 +785,13 @@ body {
   } 
 }
 
-$top-height:480px;
-$zoom-height:225px;
+$top-height:550px;
+$zoom-width:628px;
+$zoom-height:309px;
 
-@include three-columns-1quarter-1half-1quarter("#editos", "#recent", "#actualites");
+@include two-columns-2third-1third("#recent", "#actualites");
 
-#editos-content, #actualites-content {
+#actualites-content {
   height:$top-height;
   .inner-list {
     height:$top-height - 10;
@@ -801,13 +813,13 @@ $zoom-height:225px;
     top:-246px;
     left:4px;
     padding:2px;
-    width:360px;
+    width:524px;
     opacity:0.85;
     filter:alpha(opacity=85);
   }
   img {
-    height:225px;
-    width:468px;
+    height:$zoom-height;
+    width:$zoom-width;
   }
   .inner-zoom {
     padding-top:$pg-padding;
@@ -820,7 +832,7 @@ $zoom-height:225px;
   #zoom-navigator {
     position:relative;
     top:-30px;
-    left:380px;
+    left:538px;
     padding:2px;
     width:80px;
     cursor:pointer;
@@ -828,28 +840,28 @@ $zoom-height:225px;
 }
 
 #communique {
-  @include column(6);
+  @include column(8);
   @include clearfix;
 }
 
-#inter {
-  @include column(6, true);
+#dossier {
+  @include column(8, true);
   @include clearfix;
 }
 
-#communique-content, #inter-content {
-  height:$top-height - $zoom-height - 12px;
+#communique-content, #dossier-content {
+  height:$picture-height;
   .inner-list {
-    height:$top-height - $zoom-height - 22px;
+    height:$picture-height - 10px;
     overflow:hidden;
   }
 }
 
 @include two-columns-2third-1third("#campagne", "#videos");
 #campagne-content, #videos-content {
-  height:240px;
+  height:$picture-height;
   .inner-list {
-    height:230px;
+    height:$picture-height - 10px;
     overflow:hidden;
   }
 }
@@ -857,17 +869,17 @@ $zoom-height:225px;
 @include three-columns("#vdg-photos", "#arguments-blogs", "#agenda");
 
 #ailleurs-content, #blogs-content, #vdg-content, #arguments-content, #diapos-content, #librairie-content, #tracts-content {
-  height:240px;
+  height:$picture-height;
   .inner-list {
-    height:230px;
+    height:$picture-height - 10px;
     overflow:hidden;
   }
 }
 
 #agenda-content {
-  height:495px;
+  height:475px;
   .inner-list {
-    height:485px;
+    height:465px;
     overflow:hidden;
   }
 }
@@ -877,29 +889,30 @@ $zoom-height:225px;
 }
 
 #connect {
-  @include column(5);
+  @include column(6);
   @include clearfix;
   table {
     margin-top:$pg-padding;
     margin-bottom:$pg-padding;
-    width:auto;
+    width:100%;
     td {
       padding-left:$pg-padding/2;
       padding-right:$pg-padding/2;
       padding-top:0;
       padding-bottom:0;
       vertical-align:middle;
+      text-align:center;
     }
   }
 }
 
 #network {
-  @include column(7);
+  @include column(6);
   @include clearfix;
   table {
     text-align:center;
     margin-top:$pg-padding;
-    width:auto;
+    width:100%;
     td {
       padding-left:$pg-padding/2;
       padding-right:$pg-padding/2;
@@ -916,13 +929,14 @@ $zoom-height:225px;
   table {
     margin-top:$pg-padding;
     margin-bottom:$pg-padding;
-    width:auto;
+    width:100%;
     td {
       padding-left:$pg-padding/2;
       padding-right:$pg-padding/2;
       padding-top:0;
       padding-bottom:0;
       vertical-align:middle;
+      text-align:center;
     }
   }
 }
@@ -933,7 +947,7 @@ $zoom-height:225px;
   table {
     margin-top:$pg-padding;
     margin-bottom:$pg-padding;
-    width:auto;
+    width:100%;
     td {
       padding-left:$pg-padding/2;
       padding-right:$pg-padding/2;
@@ -982,22 +996,28 @@ $zoom-height:225px;
 }
 
 #militer-campagne-content, #militer-agenda-content {
-  height:240px;
+  height:$picture-height;
   .inner-list {
-    height:230px;
+    height:$picture-height - 10px;
     overflow:hidden;
   }
 }
 
 #militer-kits-content, #militer-affiches-content, #militer-tracts-content {
-  height:240px;
+  height:$picture-height;
 }
 
-@include three-columns-1quarter-1half-1quarter("#lateledegauche-presentation", "#lateledegauche-zoom", "#lateledegauche-medias");
+@include three-columns("#lateledegauche-videoagitprop", "#lateledegauche-videoeduc", "#lateledegauche-media");
+@include three-columns("#lateledegauche-conference", "#lateledegauche-videoweb", "#lateledegauche-encampagne");
 
-$lateledegauche-zoom-height:220px;
+#lateledegauche-conference-content, #lateledegauche-videoagitprop-content, #lateledegauche-videoevenement-content, #lateledegauche-videoweb-content, #lateledegauche-videoeduc-content, #lateledegauche-media-content, #lateledegauche-encampagne-content {
+  height:$picture-height;
+}
+
+@include two-columns-1third-2third("#lateledegauche-videoevenement", "#lateledegauche-presentation");
+
 #lateledegauche-presentation-content {
-  height:$lateledegauche-zoom-height;
+  height:$picture-height;
   table {
     margin-top:$pg-padding;
     width:auto;
@@ -1010,20 +1030,7 @@ $lateledegauche-zoom-height:220px;
     }
   }
 }
-#lateledegauche-zoom {
-  .zoom {
-    height:$lateledegauche-zoom-height + $pg-padding/2;
-  }
-}
-#lateledegauche-media-content {
-  height:$lateledegauche-zoom-height;
-  .inner-list {
-    height:$lateledegauche-zoom-height - 10px;
-    overflow:hidden;
-  }
-}
 
-@include three-columns("#lateledegauche-conferences", "#lateledegauche-agitprop", "#lateledegauche-videoseduc");
 @include two-columns-1third-2third("#quisommesnous-identite", "#quisommesnous-instance");
 @include two-columns-2third-1third("#quisommesnous-liste", "#quisommesnous-vignettes");
 @include two-columns-half("#contact-message", "#contact-comites");
@@ -1032,10 +1039,6 @@ $lateledegauche-zoom-height:220px;
 @include two-columns-half("#educpop-dates", "#educpop-revues");
 @include two-columns-2third-1third("#educpop-liste", "#educpop-vignettes");
 @include two-columns-2third-1third("#videos-liste", "#videos-vignettes");
-
-#lateledegauche-conference-content, #lateledegauche-videoagitprop-content, #lateledegauche-videoevenement-content, #lateledegauche-videoweb-content, #lateledegauche-videoeduc-content, #lateledegauche-encampagne-content {
-  height:240px;
-}
 
 table {
   thead {

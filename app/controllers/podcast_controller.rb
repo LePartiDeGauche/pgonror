@@ -48,6 +48,7 @@ class PodcastController < ApplicationController
   # RSS podcast output.
   def rss
     @root_path = url_for podcast_path(:only_path => false)
+    @rss_path = url_for podcast_feed_path(:only_path => false)
     @articles = Article.find_published('son', 1, 50)
     render :template => '/layouts/rss'
   end

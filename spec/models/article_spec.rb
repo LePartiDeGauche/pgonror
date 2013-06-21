@@ -125,12 +125,12 @@ describe Article do
 
     it "is valid with a sound" do
       file = File.open("#{Rails.root}/spec/datafiles/440Hz-5sec.mp3")
-      article = FactoryGirl.create(:article_son, :title => nil, :document => file)
-      article.document_file_name.should_not be_nil
-      article.document_content_type.should_not be_nil
-      article.document_file_size.should_not be == 0
-      article.document_updated_at.should_not be_nil
-      article.title.should be == article.document_file_name
+      article = FactoryGirl.create(:article_son, :title => nil, :audio => file)
+      article.audio_file_name.should_not be_nil
+      article.audio_content_type.should_not be_nil
+      article.audio_file_size.should_not be == 0
+      article.audio_updated_at.should_not be_nil
+      article.title.should be == article.audio_file_name
       article.mp3_duration.should_not be == ""
     end
 

@@ -11,6 +11,9 @@
       <br/><strong><%= t('activerecord.attributes.donation.address') %></strong> : <%= @address %>
       <br/><strong><%= t('activerecord.attributes.donation.zip_code') %></strong> : <%= @zip_code %>
       <br/><strong><%= t('activerecord.attributes.donation.city') %></strong> : <%= @city %>
+      <% unless @country.blank? %>
+        <br/><strong><%= t('activerecord.attributes.donation.country') %></strong> : <%= @country %>
+      <% end %>
       <% unless @phone.blank? %>
         <br/><strong><%= t('activerecord.attributes.donation.phone') %></strong> : <%= @phone %>
       <% end %>

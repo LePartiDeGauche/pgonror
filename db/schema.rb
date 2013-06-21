@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130123031756) do
+ActiveRecord::Schema.define(:version => 20130506111338) do
 
   create_table "articles", :force => true do |t|
     t.string   "title"
@@ -59,6 +59,10 @@ ActiveRecord::Schema.define(:version => 20130123031756) do
     t.string   "gravity"
     t.float    "longitude"
     t.float    "latitude"
+    t.string   "audio_file_name"
+    t.string   "audio_content_type"
+    t.integer  "audio_file_size"
+    t.datetime "audio_updated_at"
   end
 
   add_index "articles", ["agenda"], :name => "index_articles_on_agenda"
@@ -104,6 +108,7 @@ ActiveRecord::Schema.define(:version => 20130123031756) do
     t.datetime "updated_at",                                                                         :null => false
     t.string   "payment_error"
     t.string   "payment_authorization"
+    t.string   "country"
   end
 
   add_index "donations", ["updated_at"], :name => "index_donations_on_updated_at"
@@ -136,6 +141,7 @@ ActiveRecord::Schema.define(:version => 20130123031756) do
     t.string   "payment_error"
     t.string   "payment_authorization"
     t.string   "gender"
+    t.string   "country"
   end
 
   add_index "memberships", ["updated_at"], :name => "index_memberships_on_updated_at"
@@ -168,6 +174,7 @@ ActiveRecord::Schema.define(:version => 20130123031756) do
     t.datetime "created_at",                                  :null => false
     t.datetime "updated_at",                                  :null => false
     t.string   "recipient"
+    t.string   "country"
   end
 
   add_index "requests", ["updated_at"], :name => "index_requests_on_updated_at"

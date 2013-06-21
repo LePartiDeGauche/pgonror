@@ -29,6 +29,14 @@
               <td><%= t 'activerecord.attributes.donation.city' %></td>
               <td><%= @donation.city %></td>
             </tr>
+            <% unless @donation.country.blank? %>
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td><%= t 'activerecord.attributes.donation.country' %></td>
+                <td><%= @donation.country %></td>
+              </tr>
+            <% end %>
             <tr>
               <td><%= t 'activerecord.attributes.donation.email' %></td>
               <td><%= @donation.email %></td>

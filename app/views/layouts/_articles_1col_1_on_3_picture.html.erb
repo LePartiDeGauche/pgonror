@@ -1,21 +1,26 @@
 <div class="inner-list">
   <% unless articles.nil? or articles[0].nil? %>
+    <div class="picture-title">
     <hgroup>
-      <h3 class="category"><%= defined?(category_title) ? category_title : articles[0].category_option(:category_title) %></h3>&nbsp;&bull;<br/>
+      <h3 class="main-title">
       <% if articles[0].category_option?(:link_all_title) %>
-        <h2 class="main-title">
-          <% if defined?(link_all_title) and defined?(controller) and defined?(action_all) %>
-            <%= link_to link_all_title, 
-                        :controller => controller, 
-                        :action => action_all %>
-          <% else %>
-            <%= link_to articles[0].category_option(:link_all_title), 
-                        :controller => articles[0].category_option(:controller), 
-                        :action => articles[0].category_option(:action_all) %>
-          <% end %>
-        </h2>
+        <% if defined?(link_all_title) and defined?(controller) and defined?(action_all) %>
+          <%= link_to defined?(category_title) ? category_title : articles[0].category_option(:category_title), 
+                      { :controller => controller, 
+                      :action => action_all },
+                      :title => link_all_title %>
+        <% else %>
+        <%= link_to defined?(category_title) ? category_title : articles[0].category_option(:category_title), 
+                    { :controller => articles[0].category_option(:controller), 
+                    :action => articles[0].category_option(:action_all) },
+                    :title => articles[0].category_option(:link_all_title) %>
+        <% end %>
+      <% else %>
+      <%= defined?(category_title) ? category_title : articles[0].category_option(:category_title) %>
       <% end %>
+      </h3>&nbsp;&bull;
     </hgroup>
+    </div>
     <ol>
       <% for article in articles %>
         <li>

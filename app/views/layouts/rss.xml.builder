@@ -1,9 +1,13 @@
 coder = HTMLEntities.new
 xml.instruct!
-xml.rss("xmlns:itunes" => "http://www.itunes.com/dtds/podcast-1.0.dtd", "version" => "2.0") do
+xml.rss("xmlns:itunes" => "http://www.itunes.com/dtds/podcast-1.0.dtd",
+        "xmlns:dc" => "http://purl.org/dc/elements/1.1/",
+        "xmlns:atom" => "http://www.w3.org/2005/Atom",
+        "version" => "2.0") do
   xml.channel do
     xml.title coder.decode(current_page_title) + (session[:search].present? ? (" (" + session[:search] + ")") : "")
     xml.link @root_path
+    xml.tag! "atom:link", :href => @rss_path, :rel => "self", :type => "application/rss+xml"
     xml.description coder.decode(current_page_description)
     xml.lastBuildDate Time.now.to_s(:rfc822)
     xml.language "fr-FR"
@@ -15,11 +19,10 @@ xml.rss("xmlns:itunes" => "http://www.itunes.com/dtds/podcast-1.0.dtd", "version
       xml.link root_url
     end
     xml.tag! "itunes:author", t('general.title')
-    xml.tag! "itunes:category", :text => "News &amp; Politics"
+    xml.tag! "itunes:category", :text => "News & Politics"
     xml.tag! "itunes:explicit", "clean"
-    xml.tag! "itunes:isClosedCaptioned", "no"
     xml.tag! "itunes:summary", coder.decode(current_page_description)
-    xml.tag! "itunes:image", root_url + "assets/PG500x500.jpg"
+    xml.tag! "itunes:image", :href => root_url + "assets/PG500x500.jpg"
     xml.tag! "itunes:owner" do
       xml.tag! "itunes:name", t('general.copyright')
       xml.tag! "itunes:email", coder.decode(Devise.mailer_sender)
@@ -31,14 +34,9 @@ xml.rss("xmlns:itunes" => "http://www.itunes.com/dtds/podcast-1.0.dtd", "version
           xml.title coder.decode(((article.category_option?(:start_end_dates) and article.start_datetime.present?) ? l(article.start_datetime, :format => :short) + " > " : "") +
                                  (article.heading.present? ? article.heading + " • " : "") + 
                                  article.title)
-          xml.guid url_for(:controller => :accueil, 
-                           :action => :default,
-                           :id => article.id,
-                           :only_path => false)
+          xml.guid article.id, :isPermaLink => "false"
           if article.category_option?(:signature) and not article.signature.blank?
-            xml.author do
-              xml.name coder.decode(article.signature)
-            end
+            xml.tag! "dc:creator", coder.decode(article.signature)
           end
           xml.link article.category_option?(:action) ?
                     url_for(:controller => article.category_option(:controller),

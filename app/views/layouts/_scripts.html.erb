@@ -1,11 +1,5 @@
 <script>
   $(document).ready(function() {
-    if(!document.createElement('audio').canPlayType || !document.createElement('audio').canPlayType("audio/mpeg")) {
-      $(".player-fallback").show(); $("audio").hide();
-    }
-    else {
-      $("audio").show(); $(".player-fallback").hide();
-    }
     $( ".zoom-title" ).each(function() {
       var top = $(this).closest('.content-bloc').height()-$(this).closest('.article').height()-52;
       $(this).css({top:top});
