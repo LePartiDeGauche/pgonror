@@ -24,8 +24,7 @@ class AccueilController < ApplicationController
   # Content of the home page
   def index
     @zooms = Article.find_published_zoom 1, 5
-    @communiques = Article.find_published_exclude_zoom('com', 1, 4) +
-                   Article.find_published_exclude_zoom('inter', 1, 4)
+    @communiques = Article.find_published_exclude_zoom("('com','inter')", 1, 5)
     @dossier = Article.find_published_exclude_zoom 'dossier', 1, 1
     @actus = Article.find_published_exclude_zoom 'actu', 1, 2
     @vdg = Article.find_published_exclude_zoom 'articlevdg', 1, 1

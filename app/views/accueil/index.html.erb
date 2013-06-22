@@ -3,7 +3,7 @@
     <%= render :partial => 'layouts/zoom_article', :locals => { :articles => @zooms, :category => :zoom } %>
   </section>
   <section id="communique">
-    <section id="communique-content" class="content-bloc">
+    <section id="communique-content" class="content-bloc highlighted-bloc">
       <%= render :partial => 'layouts/articles_simplified', :locals => { :articles => @communiques,
                                                                          :category_title => t('identity.comm_title'),
                                                                          :link_all_title => t('identity.comm_tout'),
@@ -144,14 +144,6 @@
     function() { clearInterval(runActualite); },
     function() { runActualite = setInterval('nextActualite()', 6000); }
   ); 
-  function nextCommunique() {
-    $('#communique li:first').before($('#communique li:last'));
-  };
-  var runCommunique = setInterval('nextCommunique()', 8000);
-  $('#communique').hover(
-    function() { clearInterval(runCommunique); },
-    function() { runCommunique = setInterval('nextCommunique()', 8000); }
-  );
   function nextLivre() {
     $('#librairie li:first').before($('#librairie li:last'));
     $('#librairie li').hide();

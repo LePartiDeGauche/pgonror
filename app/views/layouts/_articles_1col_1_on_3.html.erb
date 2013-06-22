@@ -13,25 +13,25 @@
       </h3>&nbsp;&bull;
     </hgroup>
     <ol>
-      <% first_row = true %>
+      <% row = 1 %>
       <% for article in articles %>
         <li>
-          <article class="article">
+          <article class="article <%= row == 2 ? 'article-separator' : '' %>">
             <header>
               <% unless article.heading.blank? %>
                 <h4><%= article.heading_display.html_safe %></h4>&nbsp;&bull;
               <% end %>
               <h1><%= link_to article.title_display.html_safe, article.path %></h1>
             </header>
-            <% if first_row %>
+            <% if row == 1 %>
               <div class="one-third-column">
                 <%= truncate_html(article.content_with_medium,
                                   :omission => link_to(article.category_option?(:video) ? t('titre.voir_video').html_safe : t('titre.lire_suite').html_safe, article.path)) %>
               </div>
-              <% first_row = false %>
             <% end %>
           </article>
         </li>
+        <% row = row + 1 %>
       <% end %>
     </ol>
   <% end %>

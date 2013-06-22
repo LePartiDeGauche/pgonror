@@ -1238,7 +1238,7 @@ private
       ((options[:status].present? and options[:status] == NEW) ? " and (status is null or status = '#{options[:status]}')" : "") +
       ((options[:status].present? and options[:status] != NEW and options[:status] != 'all') ? " and status = '#{options[:status]}'" : "") +
       (options[:exclude_status].present? ? " and (status is null or status != '#{options[:exclude_status]}')" : "") +
-      (options[:category].present? ? " and category = '#{options[:category]}'" : "") +
+      (options[:category].present? ? (options[:category][0] == '(' ? " and category in #{options[:category]}" : " and category = '#{options[:category]}'") : "") +
       (options[:parent].present? ? " and parent_id = #{options[:parent]}" : "") +
       (options[:source].present? ? " and source_id = #{options[:source]}" : "") +
       (options[:id].present? ? " and id = #{options[:id]}" : "") +
