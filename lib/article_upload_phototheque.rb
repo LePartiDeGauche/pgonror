@@ -20,7 +20,7 @@ class ArticleUploadPhototheque < Article
   
   @@count = 0
   @@count_folders = 0
-  COUNT_MAX = 100
+  COUNT_MAX = 50
   
   def self.init
     config = YAML::load(File.open('config/cmis.yml'))["phototheque"]
@@ -86,6 +86,7 @@ class ArticleUploadPhototheque < Article
           article.status = ONLINE
           article.save!
           article.create_audit! article.status, article.updated_by
+          sleep 10
         end
       rescue Exception => invalid
         puts "Invalid=#{invalid.inspect}"

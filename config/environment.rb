@@ -14,12 +14,16 @@
 # 
 # See doc/COPYRIGHT.rdoc for more details.
 
-# Load the rails application
+# Load the rails application.
 require File.expand_path('../application', __FILE__)
 require File.expand_path('../menus', __FILE__)
 require File.expand_path('../categories', __FILE__)
 
-# Initializes the rails application
+# Forces encoding.
+Encoding.default_external = Encoding::UTF_8
+Encoding.default_internal = Encoding::UTF_8
+
+# Initializes the rails application.
 PartiDeGauche::Application.initialize!
 
 # Turns off auto TLS for e-mail.

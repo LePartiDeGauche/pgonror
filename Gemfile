@@ -28,10 +28,12 @@ gem 'htmlentities'
 gem 'dalli'
 gem 'ruby-mp3info'
 gem 'geocoder'
+gem 'capistrano-unicorn'
 
 platforms :ruby do
   gem 'libv8' # necessary to be installed on Ubuntu
   gem 'therubyracer', '>=0.11.3'
+  gem 'unicorn'
 end
 
 # Used only for assets and not required in production environments by default.

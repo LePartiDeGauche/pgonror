@@ -68,10 +68,17 @@ class Tag < ActiveRecord::Base
                      order by a.tag"
   end
 
+  # Creates search attribute from tag name.
+  def create_search
+    self.search = Article.create_search self.tag
+  end
+
 private
 
   # Updates the tag with lowercase.
   def update_tag
-    self.tag.downcase! unless self.tag.nil?
+    self.tag = self.tag.strip unless self.tag.nil?
+    self.tag = self.tag.downcase unless self.tag.nil?
+    self.search = Article.create_search self.tag unless self.tag.nil?
   end
 end

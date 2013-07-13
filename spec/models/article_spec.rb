@@ -759,7 +759,7 @@ describe Article do
     it "#update_tags creates tags based on title and default tags" do
       Article.create_default_tag("test", "spec@lepartidegauche.fr")
       Article.create_default_tag("tag", "spec@lepartidegauche.fr")
-      article = FactoryGirl.create(:article, :title => "test avec un tag")
+      article = FactoryGirl.create(:article, :title => "Test avec un tag", :content => "<p>Ceci est un test avec un tag.</p>")
       article.status = Article::ONLINE
       article.save!
       article.tags.length.should be == 2

@@ -5,7 +5,7 @@
       <%= @search %>
     </hgroup>
     <br/>
-    <% unless @articles.nil? or @articles.empty? %>
+    <% unless @pages == 0 %>
       <%= render :partial => 'layouts/articles_1col_2_on_3_search',
                  :locals => { :articles => @articles } %>
     <% else %>
@@ -14,16 +14,11 @@
   </section>
 </section>
 <section id="search-vignettes">
-  <section class="content-bloc">
-    <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @editos } %>
-  </section>
-  <section class="content-bloc">
-    <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @actus } %>
-  </section>
-  <section class="content-bloc">
-    <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @communiques } %>
-  </section>
-  <section class="content-bloc">
-    <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @tout_international } %>
-  </section>
+  <% unless @side_articles.nil? or @side_articles.empty? %>
+    <% for articles in @side_articles %>
+      <section class="content-bloc bloc-bottom-margin">
+        <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => articles } %>
+      </section>
+    <% end %>
+  <% end %>
 </section>

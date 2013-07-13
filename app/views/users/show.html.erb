@@ -63,7 +63,7 @@
                                 :controller => :permissions, 
                                 :action => :edit, 
                                 :user_id => @user.id, 
-                                :id => permission.id %>
+                                :id => permission.id %>&nbsp;&bull;
               <%= link_to t('action.delete'),
                                 {:controller => :permissions, :user_id => @user.id, :id => permission.id, :action => "destroy"},
                                 :data => {:confirm => t("action.confirm")},

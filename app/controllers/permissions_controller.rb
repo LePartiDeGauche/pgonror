@@ -18,17 +18,17 @@ class PermissionsController < ApplicationController
   before_filter :authenticate_administrator!
 
   def index
-    @user = User.find(params[:user_id])
+    @user = User.find_by_id(params[:user_id])
     redirect_to(@user, :only_path => true) if @user.present?
   end
 
   def new
-    @user = User.find(params[:user_id])
+    @user = User.find_by_id(params[:user_id])
     @permission = @user.permissions.new if @user.present?
   end
 
   def create
-    @user = User.find(params[:user_id])
+    @user = User.find_by_id(params[:user_id])
     if @user.present?
       @permission = @user.permissions.new(params[:permission])
       @permission.created_by = current_user.email
@@ -43,14 +43,14 @@ class PermissionsController < ApplicationController
   end
 
   def edit
-    @permission = Permission.find(params[:id])
+    @permission = Permission.find_by_id(params[:id])
     if @permission.present?
       @user = @permission.user
     end 
   end
 
   def update
-    @permission = Permission.find(params[:id])
+    @permission = Permission.find_by_id(params[:id])
     if @permission.present?
       @user = @permission.user
       @permission.updated_by = current_user.email
@@ -64,7 +64,7 @@ class PermissionsController < ApplicationController
   end
 
   def destroy
-    @permission = Permission.find(params[:id])
+    @permission = Permission.find_by_id(params[:id])
     if @permission.present?
       @user = @permission.user
       @permission.destroy

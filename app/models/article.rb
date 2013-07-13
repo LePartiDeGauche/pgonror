@@ -24,8 +24,9 @@
 # and they are visible into the web site using various controllers.
 # Controllers, but also appropriate actions, are defined as options in the <tt>CATEGORIES</tt> setup.  
 class Article < ActiveRecord::Base
-  # Data updates before validation.
-  before_validation :update_title, :update_uri, :update_content, :update_tags
+  # Data updates.
+  before_validation :update_title, :update_uri, :update_content, :update_signature
+  after_create :update_tags
 
   # Basic controls: mandatory attributes, uniqueness and formats.
   validates_presence_of :title, :category, :published_at, :expired_at, :updated_by
@@ -328,7 +329,7 @@ class Article < ActiveRecord::Base
   def self.activated_categories(user, source = nil)
     activated = []
     return activated if user.nil? or not user.publisher
-    for permission in user.permissions.where("(source_id is null or source_id = ?) and authorization is not null and authorization  != ''", source)
+    for permission in user.permissions.where("(source_id is null or source_id = ?) and authorization is not null and authorization != ''", source)
       activated << [category_display(permission.category), permission.category] if permission.present?  
     end
     activated.sort { |a,b| 
@@ -343,7 +344,7 @@ class Article < ActiveRecord::Base
         where(self.id.present? ? 
                   "not exists (select 1 from tags tags2 where article_id = #{self.id} and tags2.tag = tags.tag)" : 
                   "").
-        order('tag')    
+        order('tag')
   end
 
   # Updates article content: fixes typos and updates image and videos references for content.
@@ -909,6 +910,18 @@ class Article < ActiveRecord::Base
     limit(25)
   end
 
+  # Creates search string from a string.
+  def self.create_search(s)
+    s.downcase.strip.gsub(/[àâäÀÂÄ]/,"a").
+                     gsub(/[éèêëÉÈÊË]/,"e").
+                     gsub(/[ìîïÌÎÏ]/,"i").
+                     gsub(/[òôöÒÔÖ]/,"o").
+                     gsub(/[ùûüÙÛÜ]/,"u").
+                     gsub(/[çÇ]/,"c").
+                     gsub(/[œŒ]/,"oe").
+                     gsub(/[-]/," ")
+  end
+
 private
 
   # Returns a clean URI given as parameter.
@@ -936,7 +949,7 @@ private
   # Corrects typos in a given piece of text according the French practices (quotes, unbreakable spaces).
   def self.correct_french_typos(text)
     text.gsub("&laquo; ","&laquo;&nbsp;").gsub(" &raquo;","&nbsp;&raquo;").
-         gsub("« ", "«&nbsp;").gsub(" »", "&nbsp;»").
+         gsub("« ", "«&nbsp;").gsub(" »", "&nbsp;»").gsub(/\.\.\./, "…").
          gsub(" :","&nbsp;:").gsub(" !","&nbsp;!").gsub(" ?","&nbsp;?").gsub("'","&rsquo;")
   end
 
@@ -951,7 +964,11 @@ private
     elsif self.audio_file_name.present? and self.title.blank?
       self.title = self.audio_file_name
     end
+    self.title = self.title.gsub(/\.\.\./, "…") unless self.title.nil?
+    self.title = self.title.strip unless self.title.nil?
     self.heading = self.folder_display if self.heading.blank? and self.parent_id.present?
+    self.heading = self.heading.gsub(/\.\.\./, "…") unless self.heading.nil?
+    self.heading = self.heading.strip unless self.heading.nil?
   end
 
   # Updates article URI: makes the concatenation of parent or source title, if any, and the article title.
@@ -983,14 +1000,15 @@ private
   def update_tags
     return if self.id.nil? or not(self.tags.empty?)
     for tag in unused_tags
-      esc_tag = @@coder.encode(tag.tag, :named).downcase
-      if (self.content.present? and self.content.downcase.include?(esc_tag)) or
-         (self.title.present? and self.title.downcase.include?(tag.tag))
+      esc_tag = @@coder.encode(tag.tag, :named)
+      search_tag = /(\s|,|\.|-|>|^)(#{tag.tag}|#{esc_tag})(s|x)?(\s|,|\.|\?|!|-|<|$)/i
+      if (self.content.present? and self.content.index(search_tag)) or
+         (self.title.present? and self.title.index(search_tag)) or
+         (self.heading.present? and self.heading.index(search_tag))
         if self.tags.where("tag = ?", tag.tag).first.nil?
           new_tag = self.tags.new
           new_tag.tag = tag.tag
-          new_tag.created_by = self.updated_by
-          new_tag.updated_by = self.updated_by
+          new_tag.created_by = new_tag.updated_by = self.updated_by
           new_tag.save!
         end
       end
@@ -1006,6 +1024,11 @@ private
       new_tag.updated_by = user_email
       new_tag.save!
     end
+  end
+
+  # Sets the article signature.
+  def update_signature
+    self.signature = self.signature.strip unless self.signature.nil?
   end
 
   # Returns the definition (title, code and options) of a given article category.
@@ -1053,7 +1076,7 @@ private
   ANY_IMAGE_EL = /<img(.*)src="(\S+)"([^>]*)>/i
   DMOTION_TAG = /\{dmotion\}(\S+)\{\/dmotion\}/i
   IFRAME_EL = /<iframe(.*)src="(\S+)"([^>]*)>([^<]*)<\/iframe>/i
-  SCLOUD_EL = /<iframe(.*)src="(\S+soundcloud\S+)"([^>]*)>([^<]*)<\/iframe>/
+  SCLOUD_EL = /<iframe(.*)src="(\S+soundcloud\S+)"([^>]*)>([^<]*)<\/iframe>/i
   INLINE_REFERENCE_EL = /src=\"\/system\/([^\"]*)\"/i
 
   # Returns the content of the article with the reference of images or videos transformed with appropriate format.
@@ -1091,7 +1114,8 @@ private
   # Returns the content of the given source of text with the reference of images and documents transformed for storage.
   def normalize_links(source)
     source.present? ? 
-      source.gsub(INTERNAL_IMAGE_EL, "<img\\1 src=\"/system/images/inline/\\4\\5\\6\"\\7>").
+      source.gsub(/\"system/i, "\"/system").
+             gsub(INTERNAL_IMAGE_EL, "<img\\1 src=\"/system/images/inline/\\4\\5\\6\"\\7>").
              gsub(INTERNAL_IMAGE_LINK_EL, "<a\\1 href=\"/system/images/\\3\/\\4\\5\\6\"\\7>").
              gsub(INTERNAL_DOCUMENT_LINK_EL, "<a\\1 href=\"/system/documents/\\3\\4\\5\"\\6>").
              gsub(INTERNAL_AUDIO_LINK_EL, "<a\\1 href=\"/system/audios/\\3\\4\\5\"\\6>") :
@@ -1256,13 +1280,13 @@ private
       (options[:parent_search].present? ?
         " and parent_id in (" +
         "select id from articles where " +
-        "(lower(title) like #{quote('%' + options[:parent_search].downcase.strip + '%')} " +
-        "or lower(heading) like #{quote('%' + options[:parent_search].downcase.strip + '%')}))" : "") +
+        "(lower(heading) like #{quote('%' + options[:parent_search].downcase.strip + '%')}" +
+        " or lower(title) like #{quote('%' + options[:parent_search].downcase.strip + '%')}))" : "") +
       (options[:search].present? ?
-        (" and (lower(title) like #{quote('%' + options[:search].downcase.strip + '%')}" + 
-         " or lower(heading) like #{quote('%' + options[:search].downcase.strip + '%')}" +
-         " or exists (select 1 from tags where article_id = articles.id and tag like #{quote('%' + options[:search].downcase.strip + '%')})" + 
-         " or lower(address) like #{quote('%' + options[:search].downcase.strip + '%')}" + 
-         " or lower(signature) like #{quote('%' + options[:search].downcase.strip + '%')})") : "")
+        (" and (lower(heading) like #{quote('%' + options[:search].downcase.strip + '%')}" +
+         " or lower(title) like #{quote('%' + options[:search].downcase.strip + '%')}" +
+         " or lower(signature) like #{quote('%' + options[:search].downcase.strip + '%')}" +
+         " or lower(address) like #{quote('%' + options[:search].downcase.strip + '%')}" +
+         " or exists (select 1 from tags where article_id = articles.id and search like #{quote('%' + create_search(options[:search]) + '%')}))") : "")
   end
 end

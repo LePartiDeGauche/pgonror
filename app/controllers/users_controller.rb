@@ -26,16 +26,16 @@ class UsersController < ApplicationController
   end
 
   def show
-    @user = User.find(params[:id])
+    @user = User.find_by_id(params[:id])
   end
 
   def edit
-    @user = User.find(params[:id])
+    @user = User.find_by_id(params[:id])
   end
 
   def update
     saved = false
-    @user = User.find(params[:id])
+    @user = User.find_by_id(params[:id])
     unless @user.nil?
       begin
         @user.transaction do
@@ -55,7 +55,7 @@ class UsersController < ApplicationController
 
   def destroy
     saved = false
-    @user = User.find(params[:id])
+    @user = User.find_by_id(params[:id])
     unless @user.nil?
       begin
         @user.transaction do

@@ -18,7 +18,7 @@ class TagsController < ApplicationController
   before_filter :authenticate_publisher!
 
   def new
-    @article = Article.find(params[:article_id])
+    @article = Article.find_by_id(params[:article_id])
     unless @article.nil?
       @tag = @article.tags.new
       @unused_tags = @article.unused_tags
@@ -28,7 +28,7 @@ class TagsController < ApplicationController
   def index
     @modifier = params[:modifier]
     if "add" == @modifier
-      @article = Article.find(params[:article_id])
+      @article = Article.find_by_id(params[:article_id])
       unless @article.nil?
         @tag = @article.tags.new
         @tag.tag = params[:tag]
@@ -52,7 +52,7 @@ class TagsController < ApplicationController
   def create
     saved = false
     begin
-      @article = Article.find(params[:article_id])
+      @article = Article.find_by_id(params[:article_id])
       unless @article.nil?
         @tag = @article.tags.new(params[:tag])
         @tag.created_by = current_user.email
@@ -75,7 +75,7 @@ class TagsController < ApplicationController
   end
 
   def destroy
-    @tag = Tag.find(params[:id])
+    @tag = Tag.find_by_id(params[:id])
     if @tag.present?
       @article = @tag.article
       @tag.delete_all_references if @article.nil?

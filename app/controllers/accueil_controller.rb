@@ -47,10 +47,13 @@ class AccueilController < ApplicationController
       render :partial => 'layouts/articles_1col_2_on_3_search', :locals => { :articles => @articles, :partial => true }
       return
     end
-    @editos = Article.find_published 'edito', 1, 1
-    @communiques = Article.find_published 'com', 1, 1
-    @actus = Article.find_published 'actu', 1, 1
-    @tout_international = Article.find_published 'inter', 1, 1
+    @side_articles = [
+      Article.find_published('actu', 1, 1),
+      Article.find_published('edito', 1, 1),
+      Article.find_published('dossier', 1, 1),
+      Article.find_published('com', 1, 1),
+      Article.find_published('inter', 1, 1)
+    ]
   end
 
   # Legal information page.
