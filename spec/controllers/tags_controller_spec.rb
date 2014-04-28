@@ -69,6 +69,14 @@ describe TagsController do
       response.should redirect_to(article)
     end
 
+    it "index (creationmode with error)" do
+      article = FactoryGirl.create(:article)
+      get :index, :modifier => "add", :article_id => article.id
+      tag = Tag.where('article_id = ?', article.id).first
+      tag.should be_nil
+      response.should render_template('new')
+    end
+
     it "new" do
       article = FactoryGirl.create(:article)
       get :new, :article_id => article.id
@@ -76,7 +84,8 @@ describe TagsController do
     end
 
     it "create with no data (no access)" do
-      lambda { post :create }.should raise_exception
+      post :create
+      response.should render_template('error')
     end
 
     it "create with missing data" do
@@ -110,6 +119,16 @@ describe TagsController do
       response.should redirect_to(article)
       flash[:notice].should_not be_nil
       tag = Tag.where('article_id = ?', article.id).first
+      tag.should be_nil
+    end
+
+    it "destroy predefined tag" do
+      Article.create_default_tag("parti de gauche", "spec@lepartidegauche.fr")
+      tag = Tag.where('tag = ?', "parti de gauche").first
+      id = tag.id
+      delete :destroy, :id => id
+      response.should render_template('index')
+      tag = Tag.where('tag = ?', "parti de gauche").first
       tag.should be_nil
     end
   end

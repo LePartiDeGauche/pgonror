@@ -27,13 +27,6 @@ class Permission < ActiveRecord::Base
   # Basic controls.
   validates_presence_of :category, :authorization, :updated_by
 
-  # Setup accessible (or protected) attributes for the model.
-  attr_accessible :user_id,
-                  :source_id,
-                  :category,
-                  :authorization,
-                  :notification_level
-
   # Managed authorizations.
   EDITOR = 'editor'
   REVIEWER = 'reviewer'

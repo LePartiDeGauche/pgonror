@@ -23,13 +23,14 @@ module Paperclip
       @attachment = attachment
       @filename = File.basename(@attachment.instance.audio_file_name, File.extname(@attachment.instance.audio_file_name))
       @extension = options[:extension]
+      @audio_path = @attachment.instance.category_option(:storage)
     end
 
     def make
-      target = File.dirname(@attachment.path) + "/ogg/" + @filename + @extension
-      FileUtils.mkdir_p(File.dirname(@attachment.path) + "/ogg/")
+      target = File.join(File.dirname(@attachment.path), @audio_path, (@filename + @extension))
+      FileUtils.mkdir_p(File.dirname(@attachment.path))
       Paperclip.run('avconv', "-y -i #{File.expand_path(@file.path)} -acodec libvorbis #{target}")
-      dst = File.open @file
+      dst = File.open @file.path
     end
   end
 end

@@ -1,25 +1,27 @@
-<section id="contact-liste">
-  <section class="content-bloc">
-    <%= render :partial => 'layouts/article_simplified', :locals => { :article => @article } %>
-    <footer>
-      <hr/>
-      <%= render :partial => 'layouts/share_article' %>
-    </footer>
-  </section>
-  <% unless @attached_articles.nil? or @attached_articles.empty? %>
+<% cache_if can_cache?, @url do %>
+  <section id="contact-liste">
     <section class="content-bloc">
-      <h1><%= t("action.article.attached") %>&nbsp;&bull;</h1>
-      <%= render :partial => 'layouts/articles_1col_2_on_3_search', 
-                 :locals => { :articles => @attached_articles } %>
+      <%= render :partial => 'layouts/article_simplified', :locals => { :article => @article } %>
+      <footer>
+        <hr/>
+        <%= render :partial => 'layouts/share_article' %>
+      </footer>
     </section>
-  <% end %>
-</section>
-<section id="contact-vignettes">
-  <section class="content-bloc">
-    <%= render :partial => 'departements', 
-               :locals => { 
-                 :articles => @departements, 
-                 :category => 'departement', 
-                 :multi_columns => false } %>
+    <% unless @attached_articles.nil? or @attached_articles.empty? %>
+      <section class="content-bloc">
+        <h1><%= t("action.article.attached") %>&nbsp;&bull;</h1>
+        <%= render :partial => 'layouts/articles_1col_2_on_3_search', 
+                   :locals => { :articles => @attached_articles } %>
+      </section>
+    <% end %>
   </section>
-</section>
+  <section id="contact-vignettes">
+    <section class="content-bloc">
+      <%= render :partial => 'departements', 
+                 :locals => { 
+                   :articles => @departements, 
+                   :category => 'departement', 
+                   :multi_columns => false } %>
+    </section>
+  </section>
+<% end %>

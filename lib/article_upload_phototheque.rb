@@ -101,7 +101,8 @@ class ArticleUploadPhototheque < Article
     if folder.is_a?(ActiveCMIS::Folder)
       parent = upload_parent parent_folder, folder.attributes["cmis:objectId"], folder.name
       for node in folder.items
-        if node.is_a?(ActiveCMIS::Document) and node.cmis.contentStreamLength < 4.megabyte
+        lastModified = node.attributes["cmis:lastModificationDate"]
+        if node.is_a?(ActiveCMIS::Document) and node.cmis.contentStreamLength < 4.megabyte and lastModified > DateTime.now - 2.month
           objectId = node.attributes["cmis:objectId"]
           article = find_by_external_id(objectId)
           if article.nil?
@@ -144,16 +145,19 @@ class ArticleUploadPhototheque < Article
       @@count_folders = @@count_folders + 1
       for node in folder.items
         if node.is_a?(ActiveCMIS::Document) and node.cmis.contentStreamLength
-          @@count = @@count + 1
-          puts "#{@@count}: #{node.name} - " +
-               "cmis:objectId=#{node.attributes["cmis:objectId"]} " +
-               "cmis:createdBy=#{node.attributes["cmis:createdBy"]} " +
-               "cmis:contentStreamMimeType=#{node.attributes["cmis:contentStreamMimeType"]} " +
-               "cmis:path=#{folder.attributes["cmis:path"]} " +
-               "cmis:contentStreamFileName=#{node.attributes["cmis:contentStreamFileName"]} " +
-               "cmis:contentStreamLength=#{node.attributes["cmis:contentStreamLength"]} " +
-               "cmis:lastModificationDate=#{node.attributes["cmis:lastModificationDate"]}"
-          puts "#{node.attributes.inspect}"
+          lastModified = node.attributes["cmis:lastModificationDate"]
+          if lastModified > DateTime.now - 2.month
+            @@count = @@count + 1
+            puts "#{@@count}: #{node.name} - " +
+                 "cmis:objectId=#{node.attributes["cmis:objectId"]} " +
+                 "cmis:createdBy=#{node.attributes["cmis:createdBy"]} " +
+                 "cmis:contentStreamMimeType=#{node.attributes["cmis:contentStreamMimeType"]} " +
+                 "cmis:path=#{folder.attributes["cmis:path"]} " +
+                 "cmis:contentStreamFileName=#{node.attributes["cmis:contentStreamFileName"]} " +
+                 "cmis:contentStreamLength=#{node.attributes["cmis:contentStreamLength"]} " +
+                 "cmis:lastModificationDate=#{node.attributes["cmis:lastModificationDate"]}"
+            puts "#{node.attributes.inspect}"
+          end
         end
         select(node, false) if node.is_a?(ActiveCMIS::Folder)
       end

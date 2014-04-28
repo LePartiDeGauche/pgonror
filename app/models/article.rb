@@ -25,17 +25,37 @@
 # Controllers, but also appropriate actions, are defined as options in the <tt>CATEGORIES</tt> setup.  
 class Article < ActiveRecord::Base
   # Data updates.
-  before_validation :update_title, :update_uri, :update_content, :update_signature
+  before_validation :update_title,
+                    :update_uri,
+                    :update_content,
+                    :update_signature
   after_create :update_tags
+  after_save :clear_cache
 
-  # Basic controls: mandatory attributes, uniqueness and formats.
-  validates_presence_of :title, :category, :published_at, :expired_at, :updated_by
+  # Basic controls on mandatory attributes and uniqueness.
+  validates :title, :presence => true
+  validates :category, :presence => true
+  validates :published_at, :presence => true
+  validates :expired_at, :presence => true
+  validates :updated_by, :presence => true
   validates :uri, :uniqueness => true
-  validates :title, :format => {:with => /.*[^\.:-]$/}, :if => "title.present?"
-  validates :heading, :format => {:with => /.*[^\.:-]$/}, :if => "heading.present?"
-  validates :image_file_name, :format => {:with => /^([a-zA-Z0-9_-]+)\.(\w+)$/}, :if => "image_file_name.present?"
-  validates :document_file_name, :format => {:with => /^([a-zA-Z0-9_-]+)\.(\w+)$/}, :if => "document_file_name.present?"
-  validates :audio_file_name, :format => {:with => /^([a-zA-Z0-9_-]+)\.(\w+)+$/}, :if => "audio_file_name.present?"
+
+  # Basic controls on formats.
+  validates :title,
+            :format => {:with => /.*[^\.:-]\z/},
+            :if => "title.present?"
+  validates :heading, 
+        :format => {:with => /.*[^\.:-]\z/},
+        :if => "heading.present?"
+  validates :image_file_name,
+        :format => {:with => /\A([a-zA-Z0-9_-]+)\.(\w+)\z/},
+        :if => "image_file_name.present?"
+  validates :document_file_name,
+        :format => {:with => /\A([a-zA-Z0-9_-]+)\.(\w+)\z/},
+        :if => "document_file_name.present?"
+  validates :audio_file_name,
+        :format => {:with => /\A([a-zA-Z0-9_-]+)\.(\w+)+\z/},
+        :if => "audio_file_name.present?"
 
   # Associated articles using the 'parent' relationship.
   # This relationship is used in order to manage folders or repertories or articles,
@@ -48,49 +68,20 @@ class Article < ActiveRecord::Base
   belongs_to :source, :class_name => 'Article', :foreign_key => :source_id
 
   # Tags attached to the article.
-  has_many :tags, :foreign_key => :article_id, :order => 'tag', :dependent => :destroy
+  has_many :tags, -> { order('tag') },
+           :foreign_key => :article_id,
+           :dependent => :destroy
 
   # Audit table.
-  has_many :audits, :foreign_key => :article_id, :order => 'updated_at desc'
+  has_many :audits, -> { order('updated_at desc') },
+           :foreign_key => :article_id
 
-  # Setup accessible (or protected) attributes for the model.
-  attr_accessible :category,
-                  :uri,
-                  :published_at,
-                  :expired_at,
-                  :status, 
-                  :draft,
-                  :parent_id,
-                  :source_id,
-                  :heading,
-                  :show_heading,
-                  :title,
-                  :signature, 
-                  :content,
-                  :start_datetime,
-                  :end_datetime,
-                  :no_endtime,
-                  :all_day,
-                  :address,
-                  :email,
-                  :external_id,
-                  :original_url,
-                  :zoom,
-                  :zoom_video,
-                  :home_video,
-                  :zoom_sequence,
-                  :gravity,
-                  :agenda,
-                  :legacy,
-                  :image_remote_url_input,
-                  :image,
-                  :document,
-                  :audio,
-                  :created_by,
-                  :updated_by
-
-  ## HTML coder used to tranform HTML special characters.
+  # HTML coder used to tranform HTML special characters.
   @@coder = HTMLEntities.new
+  
+  ## Boolean constants initialized depending on the underlying database.
+  @@sql_true = (ActiveRecord::Base.connection.adapter_name.downcase.starts_with? 'mysql') ? 1 : "'t'"
+  @@sql_false = (ActiveRecord::Base.connection.adapter_name.downcase.starts_with? 'mysql') ? 0 : "'f'"
 
   # Sets geographical data based on the address.
   geocoded_by :address
@@ -109,6 +100,9 @@ class Article < ActiveRecord::Base
   SMALL_WIDTH = 212 ; SMALL_HEIGHT = 53
   MINI_WIDTH = 196 ; MINI_HEIGHT = 49
   ZOOM_WIDTH = 628 ; ZOOM_HEIGHT = 309
+
+  # Cache expiration time.
+  CACHE_EXPIRATION = 24.hours
 
   # Attached images (using PaperClip).
   # The style 'inline' is considered as the default style used for the display
@@ -154,7 +148,7 @@ class Article < ActiveRecord::Base
   # if the original width is greater than this maximum.
   def reduce(max_width)
     unless image.nil?
-      file = image.to_file(:original)
+      file = image.queued_for_write[:original]
       unless file.nil?
         geo = Paperclip::Geometry.from_file(file)
         geo.width > max_width ? "#{max_width}" : "#{geo.width}"
@@ -167,7 +161,7 @@ class Article < ActiveRecord::Base
   # Portrait pictures are reduced to a maximum width and height, pictures are centered.
   def crop(max_width, max_height)
     unless image.nil?
-      file = image.to_file(:original)
+      file = image.queued_for_write[:original]
       unless file.nil?
         geo = Paperclip::Geometry.from_file(file)
         geo.width > geo.height ? "#{max_width}x#{max_height}#" : "#{max_width}x#{max_height}>"
@@ -181,15 +175,15 @@ class Article < ActiveRecord::Base
       "#{Rails.root}/public/phototheque.png" : ""
   end
 
-  # Controls on images: types and sizes.                       
+  # Controls on images: types and sizes.
   validates_attachment_content_type :image, :content_type=>['image/jpeg', 'image/png', 'image/gif']
   validates_attachment_size :image, options = {:less_than => 4.megabyte}
 
   # Attached audio (using PaperClip).
   has_attached_file :audio,
                     :styles => { :ogg => { :extension =>'.ogg' } },
-                    :path => ":rails_root/public/system/:attachment/:style/:uri",
-                    :url => "/system/:attachment/:style/:uri",
+                    :path => ":rails_root/public/system/:attachment/:uri",
+                    :url => "/system/:attachment/:uri",
                     :processors => [:Ogg]
 
   # Controls on audio documents sizes.
@@ -314,7 +308,7 @@ class Article < ActiveRecord::Base
   def defaults(category = nil, parent = nil, source = nil)
     self.status = NEW
     self.published_at = Date.current
-    self.expired_at = Date.current + 99.year
+    self.expired_at = self.published_at + 99.year
     self.category = category if category.present?
     self.parent_id = parent if parent.present?
     self.source_id = source if source.present?
@@ -398,7 +392,7 @@ class Article < ActiveRecord::Base
   # Return a concatenated list of tags  
   def tags_display
     tags = ""
-    self.tags.each{|tag| tags << (tags.blank? ? "" : ",") + tag.tag}
+    self.find_tags.each{|tag| tags << (tags.blank? ? "" : ",") + tag.tag}
     tags
   end
 
@@ -415,7 +409,7 @@ class Article < ActiveRecord::Base
   def description
     description = content_to_txt
     description = (description[0..150] + "…") if description.size > 150
-    description << " [" + self.tags_display + "]" if not self.tags.empty?
+    description << " [" + self.tags_display + "]" if not self.find_tags.empty?
     description.gsub(/\"/,"").strip
   end
 
@@ -500,6 +494,25 @@ class Article < ActiveRecord::Base
        return self.class.mp3_duration(self.audio.path)
     end
     ""
+  end
+
+  # Build social network buttons for soundcloud.
+  def add_soundcloud_sharing_tools(s)
+    bloc = s.nil? ?
+      "<div class=\"buttons_only\">#{ I18n.t('audio.share') }
+        <a style=\"float:right;margin-right:1em;\" href=\"https://plus.google.com/share?url=#{uri_encode(original_url)}%3Futm_source%3Dsoundcloud%26utm_campaign%3Dshare%26utm_medium%3Dgoogleplus\" target=\"_blank\"><img width=\"20\" src=\"/assets/googleplus-20x20.png\" alt=\"googleplus\" /></a>
+        <a style=\"float:right;margin-right:1em;\" href=\"https://twitter.com/intent/tweet?original_referer=#{uri_encode(original_url)}&related=soundcloud%2CLaRadiodeGauche&text=#{uri_encode(title)}+by+%40LaRadiodeGauche+on+%23SoundCloud%3F&url=#{uri_encode(original_url)}%3Futm_source%3Dsoundcloud%26utm_campaign%3Dshare%26utm_medium%3Dtwitter\" target=\"_blank\"><img width=\"20\" src=\"/assets/twitter-20x20.png\" alt=\"twitter\" /></a>&nbsp;
+        <a style=\"float:right;margin-right:1em;\" href=\"https://www.facebook.com/dialog/feed?app_id=19507961798&display=page&redirect_uri=https%3A//soundcloud.com/fb_popup_callback.html&link=#{uri_encode(original_url)}%3Futm_source%3Dsoundcloud%26utm_campaign%3Dshare%26utm_medium%3Dfacebook\" target=\"_blank\"><img width=\"20\" src=\"/assets/f_logo-20x20.png\" alt=\"facebook\" /></a>&nbsp;
+      </div>" :
+      "<div class=\"soundcloud\">&nbsp;</div>"
+    return original_url? ?
+      "<div class=\"audio\">#{bloc}</div>"
+      : ''
+  end
+
+  # Url encoding for parameters.
+  def uri_encode(s)
+    return s.nil? ? '' : CGI::escape(s)
   end
 
   # Default display of articles.
@@ -596,11 +609,10 @@ class Article < ActiveRecord::Base
   end
 
   # Returns the filename of the attachment.
-  def download_path(type, folder, format)
+  def download_path(type, format)
     {:controller => :files,
      :action => :download,
      :type => type,
-     :folder => folder,
      :name => self.uri.gsub(/[a-z0-9]{3,4}$/, format)}
   end
 
@@ -620,30 +632,40 @@ class Article < ActiveRecord::Base
 
   # Selects published article based on uri.  
   def self.find_published_by_uri(uri)
-    where('uri = ? and status = ?', uri, ONLINE).first
+    Rails.cache.fetch("find_published_by_uri-#{uri}", expires_in: CACHE_EXPIRATION) do
+      where('uri = ? and status = ?', uri, ONLINE).first
+    end
   end
 
   # Selects published article based on id.  
   def self.find_published_by_id(id)
-    where('id = ? and status = ?', id, ONLINE).first
+    Rails.cache.fetch("find_published_by_id-#{id}", expires_in: CACHE_EXPIRATION) do
+      where('id = ? and status = ?', id, ONLINE).first
+    end
   end
 
   # Selects articles based on various criteria.
   # See comments on method <tt>criteria</tt> for the details of the search options.  
   def self.find_by_criteria(options, page = 1, limit = ARTICLES_PER_PAGE)
-    where(criteria(options)).
-    offset((ARTICLES_PER_PAGE*(page-1)).to_i).
-    limit(limit).
-    order('published_at DESC, zoom_sequence ASC, updated_at DESC')
+    Rails.cache.fetch("find_by_criteria-#{options}-#{page}-#{limit}", expires_in: CACHE_EXPIRATION) do
+      where(criteria(options)).
+      offset(calc_offset(page)).
+      limit(limit).
+      order('published_at DESC, zoom_sequence ASC, updated_at DESC').
+      load
+    end
   end
 
   # Selects articles based on various criteria, order by updated date.
   # See comments on method <tt>criteria</tt> for the details of the search options.  
   def self.find_by_criteria_log(options, page = 1, limit = ARTICLES_PER_PAGE)
-    where(criteria(options)).
-    offset((ARTICLES_PER_PAGE*(page-1)).to_i).
-    limit(limit).
-    order('updated_at DESC')
+    Rails.cache.fetch("find_by_criteria_log-#{options}-#{page}-#{limit}", expires_in: CACHE_EXPIRATION) do
+      where(criteria(options)).
+      offset(calc_offset(page)).
+      limit(limit).
+      order('updated_at DESC').
+      load
+    end
   end
 
   def find_articles_by_parent(page = 1, limit = ARTICLES_PER_PAGE)
@@ -672,10 +694,12 @@ class Article < ActiveRecord::Base
 
   # Selects randomly one published article associated to the parent article.  
   def find_published_by_folder_random(category)
-    count = self.class.count_by_criteria({:status => ONLINE, :parent => self.id, :category => category})
-    count > 0 ? 
-      self.class.find_by_criteria({:status => ONLINE, :parent => self.id, :category => category}).
-        offset(rand(count).to_i).limit(1)[0] : nil
+    Rails.cache.fetch("find_published_by_folder_random-#{category}-#{self.id}", expires_in: CACHE_EXPIRATION) do
+      count = self.class.count_by_criteria({:status => ONLINE, :parent => self.id, :category => category})
+      count > 0 ? 
+        self.class.find_by_criteria({:status => ONLINE, :parent => self.id, :category => category}).
+          offset(rand(count).to_i).limit(1)[0] : nil
+    end
   end
 
   # Returns the previous articles from the list of published articles.  
@@ -700,12 +724,15 @@ class Article < ActiveRecord::Base
 
   # Selects published articles for a given category grouped by heading.  
   def self.find_published_group_by_heading(category)
-    select('heading').
-    where(criteria({:status => ONLINE, :category => category})).
-    where('heading is not null').
-    where('show_heading = ?', true).
-    group('heading').
-    order('heading')
+    Rails.cache.fetch("find_published_group_by_heading-#{category}", expires_in: CACHE_EXPIRATION) do
+      select('heading').
+      where(criteria({:status => ONLINE, :category => category})).
+      where('heading is not null').
+      where('show_heading = ?', true).
+      group('heading').
+      order('heading').
+      load
+    end
   end
 
   # Selects published articles associated to a source of information.  
@@ -788,17 +815,25 @@ class Article < ActiveRecord::Base
 
   # Selects published articles for a given category.  
   def self.find_published_order_by_title(category, page = 1, limit = ARTICLES_PER_PAGE)
-    where(criteria({:status => ONLINE, :category => category})).
-    offset((ARTICLES_PER_PAGE*(page-1)).to_i).
-    limit(limit).order('title')
+    Rails.cache.fetch("find_published_order_by_title-#{category}-#{page}-#{limit}", expires_in: CACHE_EXPIRATION) do
+      where(criteria({:status => ONLINE, :category => category})).
+      offset(calc_offset(page)).
+      limit(limit).
+      order('title').
+      load
+    end
   end
 
   # Selects published articles for a given category.  
   def self.find_published_order_by_start_datetime(category, page = 1, limit = ARTICLES_PER_PAGE)
-    where(criteria({:status => ONLINE, :category => category}) + ' or agenda = ?', true).
-    where('start_datetime >= ?', Time.now - 4.hour).
-    offset((ARTICLES_PER_PAGE*(page-1)).to_i).
-    limit(limit).order('start_datetime')
+    Rails.cache.fetch("find_published_order_by_start_datetime-#{category}-#{page}-#{limit}", expires_in: CACHE_EXPIRATION) do
+      where(criteria({:status => ONLINE, :category => category}) + ' or agenda = ?', true).
+      where('start_datetime >= ?', Time.now - 4.hour).
+      offset(calc_offset(page)).
+      limit(limit).
+      order('start_datetime').
+      load
+    end
   end
 
   # Returns the number of pages to be displayed for published articles of a given category.
@@ -882,32 +917,41 @@ class Article < ActiveRecord::Base
 
   # Selects all the available headings defined in articles.
   def self.all_headings(search)
-    select('heading').
-    where('heading is not null').
-    where('lower(heading) like ?', search.nil? ? "%" : "%" + search.downcase.strip + "%").
-    group('heading').
-    order('heading').
-    limit(25)
+    Rails.cache.fetch("all_headings-#{search}", expires_in: CACHE_EXPIRATION) do
+      select('heading').
+      where('heading is not null').
+      where('lower(heading) like ?', search.nil? ? "%" : "%" + search.downcase.strip + "%").
+      group('heading').
+      order('heading').
+      limit(25).
+      load
+    end
   end
 
   # Selects all the available signatures defined in articles.
   def self.all_signatures(search)
-    select('signature').
-    where('signature is not null').
-    where('lower(signature) like ?', search.nil? ? "%" : "%" + search.downcase.strip + "%").
-    group('signature').
-    order('signature').
-    limit(25)
+    Rails.cache.fetch("all_signatures-#{search}", expires_in: CACHE_EXPIRATION) do
+      select('signature').
+      where('signature is not null').
+      where('lower(signature) like ?', search.nil? ? "%" : "%" + search.downcase.strip + "%").
+      group('signature').
+      order('signature').
+      limit(25).
+      load
+    end
   end
 
   # Selects all the available directories defined.
   def self.all_directories(search)
-    select('title').
-    where("category in #{where_clause_by_categories(:parent)}").
-    where('lower(title) like ?', search.nil? ? "%" : "%" + search.downcase.strip + "%").
-    group('title').
-    order('title').
-    limit(25)
+    Rails.cache.fetch("all_directories-#{search}", expires_in: CACHE_EXPIRATION) do
+      select('title').
+      where("category in #{where_clause_by_categories(:parent)}").
+      where('lower(title) like ?', search.nil? ? "%" : "%" + search.downcase.strip + "%").
+      group('title').
+      order('title').
+      limit(25).
+      load
+    end
   end
 
   # Creates search string from a string.
@@ -922,7 +966,22 @@ class Article < ActiveRecord::Base
                      gsub(/[-]/," ")
   end
 
+  # Returns tags associated to the article.
+  def find_tags
+    Rails.cache.fetch("find_tags-#{self.id}", expires_in: CACHE_EXPIRATION) do
+      Tag.select("tag").
+          where("article_id = ?", self.id).
+          order('tag').
+          load
+    end
+  end
+
 private
+
+  # Expires all caches once an article is updated.
+  def clear_cache
+    Rails.cache.clear
+  end
 
   # Returns a clean URI given as parameter.
   def self.clean_uri(uri)
@@ -1075,6 +1134,7 @@ private
   INTERNAL_AUDIO_LINK_EL = /<a(.*)href="(\S*)\/system\/audios\/(\S+)(.mp3)(\S*)"([^>]*)>/i
   ANY_IMAGE_EL = /<img(.*)src="(\S+)"([^>]*)>/i
   DMOTION_TAG = /\{dmotion\}(\S+)\{\/dmotion\}/i
+  EMBED_EL = /<object(.*)\/object>/i
   IFRAME_EL = /<iframe(.*)src="(\S+)"([^>]*)>([^<]*)<\/iframe>/i
   SCLOUD_EL = /<iframe(.*)src="(\S+soundcloud\S+)"([^>]*)>([^<]*)<\/iframe>/i
   INLINE_REFERENCE_EL = /src=\"\/system\/([^\"]*)\"/i
@@ -1101,6 +1161,8 @@ private
     return extract.sub(DMOTION_TAG, "<iframe src=\"http://www.dailymotion.com/embed/video/\\1?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>") if extract.present? 
     extract = source[IFRAME_EL]
     return extract.sub(IFRAME_EL, "<iframe src=\"\\2?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{height}\"></iframe>") if extract.present? 
+    extract = source[EMBED_EL]
+    return extract.sub(/height="(\d+)"/, "height=\"#{height}\"").sub(/width="(\d+)"/, "width=\"#{width}\"") if extract.present? 
     source
   end
 
@@ -1133,15 +1195,9 @@ private
     return "" if source.nil?
     converted = source.gsub(DMOTION_TAG, "<iframe src=\"http://www.dailymotion.com/embed/video/\\1?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{videoheight}\"></iframe>").
                        gsub(IFRAME_EL, "<iframe src=\"\\2?logo=0&hideInfos=1\" width=\"#{width}\" height=\"#{videoheight}\"></iframe>").
-                       gsub(SCLOUD_EL,"<iframe src=\"\\2?logo=0&hideInfos=1\" width=\"#{width}\" height=\"166\"></iframe>
-                              <div style=\"position:absolute;z-index:10;width:220px;margin-left:390px;background:#F5F5F5;margin-top:-172px;\">
-                              <div style=\"width:100px;float:left;margin-top:-19px;\">&nbsp;<a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-url=\"#{/http(\S+)soundcloud.com\/radio-de-gauche\/([a-z-]+)/.match(source)}\" data-via=\"LePG\" data-lang=\"fr\" data-size=\"medium\" data-hashtags=\"radiodegauche\">Tweeter</a>
-                              <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script></div>
-                              <div style=\"width:100px;float:left;margin\">&nbsp;<a name=\"fb_share\" type=\"button_count\" share_url=\"#{/http(\S+)soundcloud.com\/radio-de-gauche\/([a-z-]+)/.match(source)}\"></a>
-                              <script src=\"http://static.ak.fbcdn.net/connect.php/js/FB.Share\" type=\"text/javascript\"></script></div>
-                              </div>"
+                       gsub(SCLOUD_EL, "<iframe src=\"\\2?logo=0&hideInfos=1\" width=\"#{width}\" height=\"166\"></iframe>#{add_soundcloud_sharing_tools(source)}"
                               )
-    converted = converted.gsub(INTERNAL_IMAGE_EL, "<img src=\"\\2/system/images/#{target}/\\4\\5\">") if target != "inline"
+    converted = converted.gsub(INTERNAL_IMAGE_EL, "<img src=\"\\2/system/images/#{target}/\\4\\5\\6\">") if target != "inline"
     converted = converted.gsub(INTERNAL_AUDIO_LINK_EL,
           "<br/>" +
           "<audio controls>" +
@@ -1215,6 +1271,11 @@ private
     searchable
   end
 
+  # Calculates an SQL offset based on number of pages.
+  def self.calc_offset(page)
+    page >= 1 ? (ARTICLES_PER_PAGE*(page-1)).to_i : 0
+  end
+
   # Calculates the number of pages to be displayed based on a number of articles.
   def self.calc_count_pages(count)
     (count / ARTICLES_PER_PAGE).ceil
@@ -1223,15 +1284,19 @@ private
   # Counts articles based on various criteria.  
   # See comments on method <tt>criteria</tt> for the details of the search options.  
   def self.count_by_criteria(options)
-    where(criteria(options)).count
+    Rails.cache.fetch("count_by_criteria-#{options}", expires_in: CACHE_EXPIRATION) do
+      where(criteria(options)).count
+    end
   end
 
   # Counts articles based on various criteria.  
   # See comments on method <tt>criteria</tt> for the details of the search options.  
   def self.count_by_criteria_by_start_datetime(options)
-    where(criteria(options) + ' or agenda = ?', true).
-    where('start_datetime >= ?', Time.now - 4.hour).
-    count
+    Rails.cache.fetch("count_by_criteria_by_start_datetime-#{options}", expires_in: CACHE_EXPIRATION) do
+      where(criteria(options) + ' or agenda = ?', true).
+      where('start_datetime >= ?', Time.now - 4.hour).
+      count
+    end
   end
 
   # Defines the SQL where clause for selecting articles based on various criteria.
@@ -1266,11 +1331,11 @@ private
       (options[:parent].present? ? " and parent_id = #{options[:parent]}" : "") +
       (options[:source].present? ? " and source_id = #{options[:source]}" : "") +
       (options[:id].present? ? " and id = #{options[:id]}" : "") +
-      (options[:zoom].present? ? " and zoom = 't'" : "") +
-      (options[:zoom_video].present? ? " and zoom_video = 't'" : "") +
-      (options[:home_video].present? ? " and home_video = 't'" : "") +
-      (options[:exclude_zoom].present? ? " and (zoom is null or zoom != 't')" : "") +
-      (options[:exclude_zoom_video].present? ? " and (zoom_video is null or zoom_video != 't')" : "") +
+      (options[:zoom].present? ? " and zoom = #{@@sql_true}" : "") +
+      (options[:zoom_video].present? ? " and zoom_video = #{@@sql_true}" : "") +
+      (options[:home_video].present? ? " and home_video = #{@@sql_true}" : "") +
+      (options[:exclude_zoom].present? ? " and (zoom is null or zoom = #{@@sql_false})" : "") +
+      (options[:exclude_zoom_video].present? ? " and (zoom_video is null or zoom_video = #{@@sql_false})" : "") +
       (options[:video].present? ? " and category in (#{categories_with(:video)})" : "") +
       (options[:militer].present? ? " and category in (#{categories_with(:militer)})" : "") +
       (options[:searchable].present? ? " and category in (#{categories_with(:searchable)})" : "") +

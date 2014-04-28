@@ -56,7 +56,7 @@ describe ContactController do
       flash[:notice].should be_nil
     end
 
-    it "valider_adhesion with data" do
+    it "envoyer_message with short message " do
       FactoryGirl.create(:user, :notification_message => true)
       article = FactoryGirl.create(:article_email)
       article.status = Article::ONLINE
@@ -64,6 +64,58 @@ describe ContactController do
       post :envoyer_message, :request => {
         :recipient => article.uri,
         :first_name => "Prénom",
+        :last_name => "Nom",
+        :email => "me@nowhere.com",
+        :comment => "Merci."
+      }
+      response.should render_template('index')
+      flash[:notice].should be_nil
+    end
+
+    it "envoyer_message with bare minimum data" do
+      FactoryGirl.create(:user, :notification_message => true)
+      article = FactoryGirl.create(:article_email)
+      article.status = Article::ONLINE
+      article.save!
+      post :envoyer_message, :request => {
+        :recipient => article.uri,
+        :first_name => "Prénom",
+        :last_name => "Nom",
+        :email => "me@nowhere.com",
+        :comment => "Merci de me faire parvenir des informations immédiatement tout de suite maintenant."
+      }
+      response.should render_template('index')
+      flash[:notice].should_not be_nil
+    end
+
+    it "envoyer_message with data" do
+      FactoryGirl.create(:user, :notification_message => true)
+      article = FactoryGirl.create(:article_email)
+      article.status = Article::ONLINE
+      article.save!
+      post :envoyer_message, :request => {
+        :recipient => article.uri,
+        :first_name => "Prénom",
+        :last_name => "Nom",
+        :email => "me@nowhere.com",
+        :address => "Avenue de la République",
+        :zip_code => "75000",
+        :city => "Paris",
+        :phone => "0102030405",
+        :comment => "Merci de me faire parvenir des informations immédiatement tout de suite maintenant."
+      }
+      response.should render_template('index')
+      flash[:notice].should_not be_nil
+    end
+
+    it "envoyer_message with data to be converted" do
+      FactoryGirl.create(:user, :notification_message => true)
+      article = FactoryGirl.create(:article_email)
+      article.status = Article::ONLINE
+      article.save!
+      post :envoyer_message, :request => {
+        :recipient => article.uri,
+        :first_name => "Nœel",
         :last_name => "Nom",
         :email => "me@nowhere.com",
         :address => "Avenue de la République",

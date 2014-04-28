@@ -20,7 +20,7 @@
 # Only references to the payment is tracked in the system.
 class Donation < Payment
   include ActionView::Helpers::NumberHelper
-  
+
   validates :first_name, :length => {:minimum => 3, :maximum => 30}
   validates :last_name, :length => {:minimum => 3, :maximum => 30}
   validates :address, :presence => true, :length => {:maximum => 80}
@@ -32,17 +32,6 @@ class Donation < Payment
   validate :amount_range
   validates :comment, :length => {:maximum => 1000}
 
-  # Setup accessible (or protected) attributes for the model.
-  attr_accessible :last_name,
-                  :first_name,
-                  :email,
-                  :address,
-                  :zip_code,
-                  :city,
-                  :country,
-                  :phone,
-                  :comment
-
   # Defines the minimum amount for a donation.  
   MIN_AMOUNT = 10.0
 
@@ -52,14 +41,14 @@ class Donation < Payment
   # Valides the amount is entered and is greater or equal to the minimum.  
   def amount_range_mini
     if self.amount.present? and self.amount < MIN_AMOUNT
-      errors.add(:amount, I18n.t('activerecord.attributes.membership.amount_error', :min => number_to_currency(MIN_AMOUNT)))
+      errors.add(:amount, I18n.t('activerecord.attributes.donation.amount_error_min', :min => number_to_currency(MIN_AMOUNT)))
     end
   end
 
   # Valides the amount is entered and is less than the maximum.  
   def amount_range
     if self.amount.present? and self.amount > MAX_AMOUNT
-      errors.add(:amount, I18n.t('activerecord.attributes.donation.amount_error', :max => number_to_currency(MAX_AMOUNT)))
+      errors.add(:amount, I18n.t('activerecord.attributes.donation.amount_error_max', :max => number_to_currency(MAX_AMOUNT)))
     end
   end
 
@@ -151,8 +140,8 @@ class Donation < Payment
   end
 
   # For logs in Administration panel.
-  scope :logs, order('created_at DESC')
-  scope :paid_logs, Donation::find_paid.order('created_at DESC')
-  scope :unpaid_logs, Donation::find_unpaid.order('created_at DESC')
+  scope :logs, -> { order('created_at DESC') }
+  scope :paid_logs, -> { Donation::find_paid.order('created_at DESC') }
+  scope :unpaid_logs, -> { Donation::find_unpaid.order('created_at DESC') }
   scope :filtered_by, lambda { |search| where('lower(first_name) LIKE ? OR lower(last_name) LIKE ? OR lower(email) LIKE ?', "%#{search.downcase.strip}%", "%#{search.downcase.strip}%", "%#{search.downcase.strip}%") }
 end

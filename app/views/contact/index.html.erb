@@ -1,15 +1,17 @@
-<section id="contact-message">
-  <section id="contact-message-content" class="content-bloc bloc-bottom-margin">
-    <%= render :partial => 'envoyer_message' %>
+<% cache_if can_cache?, @url do %>
+  <section id="contact-message">
+    <section id="contact-message-content" class="content-bloc bloc-bottom-margin">
+      <%= render :partial => 'envoyer_message' %>
+    </section>
+    <section id="contact-contact-content" class="content-bloc">
+      <% unless @contact.nil? %>
+        <%= render :partial => 'layouts/article_simplified', :locals => { :article => @contact } %>
+      <% end %>
+    </section>
   </section>
-  <section id="contact-contact-content" class="content-bloc">
-    <% unless @contact.nil? %>
-      <%= render :partial => 'layouts/article_simplified', :locals => { :article => @contact } %>
-    <% end %>
+  <section id="contact-comites">
+    <section id="contact-departement-content" class="content-bloc">
+      <%= render :partial => 'departements', :locals => { :articles => @departements, :multi_columns => true } %>
+    </section>
   </section>
-</section>
-<section id="contact-comites">
-  <section id="contact-departement-content" class="content-bloc">
-    <%= render :partial => 'departements', :locals => { :articles => @departements, :multi_columns => true } %>
-  </section>
-</section>
+<% end %>

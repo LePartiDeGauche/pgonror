@@ -4,7 +4,7 @@
       <aside class="actions">
 				<%= t('action.permission.update') %>&nbsp;&bull;
 				<%= link_to t('action.cancel'), @user %>&nbsp;&bull;
-				<%= f.submit t('action.ok'), :disable_with => t('action.wait') %>
+				<%= f.submit t('action.ok'), :data => { disable_with: t('action.wait') } %>
 			</aside>
       <header>
         <h3 class="category">

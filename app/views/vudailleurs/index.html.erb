@@ -1,13 +1,15 @@
-<section id="vudailleurs-liste">
-  <section id="vudailleurs-web-content" class="content-bloc">
-    <%= render :partial => 'layouts/articles_3cols_2_on_3', :locals => { :articles => @articlesweb } %>
+<% cache_if can_cache?, @url do %>
+  <section id="vudailleurs-liste">
+    <section id="vudailleurs-web-content" class="content-bloc">
+      <%= render :partial => 'layouts/articles_3cols_2_on_3', :locals => { :articles => @articlesweb } %>
+    </section>
   </section>
-</section>
-<section id="vudailleurs-vignettes">
-  <section id="vudailleurs-blogs-content" class="content-bloc">
-    <%= render :partial => 'blogs' %>
+  <section id="vudailleurs-vignettes">
+    <section id="vudailleurs-blogs-content" class="content-bloc">
+      <%= render :partial => 'blogs' %>
+    </section>
+    <section id="vudailleurs-directblog-content" class="content-bloc">
+      <%= render :partial => 'layouts/articles_1col_1_on_3', :locals => { :articles => @articlesblog } %>
+    </section>
   </section>
-  <section id="vudailleurs-directblog-content" class="content-bloc">
-    <%= render :partial => 'layouts/articles_1col_1_on_3', :locals => { :articles => @articlesblog } %>
-  </section>
-</section>
+<% end %>

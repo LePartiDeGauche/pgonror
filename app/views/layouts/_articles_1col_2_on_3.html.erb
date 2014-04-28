@@ -12,28 +12,28 @@
       <% end %>
       </h3>&nbsp;&bull;
     </hgroup>
-    <br/>
     <ol id="liste-articles">
   <% end %>
     <% for article in articles %>
       <li>
-        <br/>
-        <article class="article article-separator">
-          <header>
-            <% unless article.heading.blank? %><h4><%= article.heading_display.html_safe %></h4>&nbsp;&bull;<% end %>
-            <h1><%= link_to article.title_display.html_safe, article.path %></h1>
-            <% unless article.source_id.nil? %>
-              <br/>
-              <h2 class="main-title"><%= link_to article.source_display.html_safe, article.source.path %></h2>
-            <% end %>
-            <div class="signature">
-              <div class="date"><%= l article.published_at, :format => :long_ordinal %></div>&nbsp;
-              <%= article.signature if article.category_option?(:signature) %>
-            </div>
-          </header>
-          <%= truncate_html(article.content_with_large,
-                            :omission => link_to(article.category_option?(:video) ? t('titre.voir_video').html_safe : t('titre.lire_suite').html_safe, article.path)) %>
-        </article>
+        <% cache_if can_cache?, article do %>
+          <article class="article article-separator">
+            <header>
+              <% unless article.heading.blank? %><h4><%= article.heading_display.html_safe %></h4>&nbsp;&bull;<% end %>
+              <h1><%= link_to article.title_display.html_safe, article.path %></h1>
+              <% unless article.source_id.nil? %>
+                <br/>
+                <h2 class="main-title"><%= link_to article.source_display.html_safe, article.source.path %></h2>
+              <% end %>
+              <div class="signature">
+                <div class="date"><%= l article.published_at, :format => :long_ordinal %></div>&nbsp;
+                <%= article.signature if article.category_option?(:signature) %>
+              </div>
+            </header>
+            <%= truncate_html(article.content_with_large,
+                              :omission => link_to(article.category_option?(:video) ? t('titre.voir_video').html_safe : t('titre.lire_suite').html_safe, article.path)) %>
+          </article>
+        <% end %>
       </li>
     <% end %>
     <% if @pages > 1 and @page < @pages %>

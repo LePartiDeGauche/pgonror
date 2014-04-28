@@ -41,6 +41,17 @@ describe Request do
       request = FactoryGirl.create(:request, :recipient => article.uri)
       request.recipient_display.should include(article.title)
     end
+
+    it "#header_to_csv returns description of the record in .csv" do
+      Request.header_to_csv.length.should be >= 1
+    end
+
+    it "#to_csv returns a description of the donation in .csv" do
+      request = FactoryGirl.create(:request)
+      identifier = request.to_csv
+      identifier.should include("Prenom")
+      identifier.should include("Nom")
+    end
   end
 
   context "Behavior" do

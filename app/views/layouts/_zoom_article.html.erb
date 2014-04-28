@@ -4,7 +4,10 @@
       <li id=<%= "zoom-article" + index.to_s %> "<%= index == 1 ? "" : "display:none;" %>">
         <article class="article">
           <% if content[0..7] == "<img src" or content[0..10] == "<iframe src" -%>
-            <aside><%= content %></aside>
+            <aside><%= link_to content,
+                                :controller => article.category_option(:controller),
+                                :action => article.category_option(:action),
+                                :uri => article.uri %></aside>
           <% else %>
             <div class="inner-zoom"><%= content %></div>
           <% end %>

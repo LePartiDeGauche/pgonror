@@ -14,7 +14,7 @@
 # 
 # See doc/COPYRIGHT.rdoc for more details.
 class VideosController < ApplicationController
-  before_filter :find_article, :only => [:video,
+  before_action :find_article, :only => [:video,
                                          :conference,
                                          :presdechezvous,
                                          :media,
@@ -22,23 +22,6 @@ class VideosController < ApplicationController
                                          :educpop,
                                          :encampagne,
                                          :web]
-  caches_action :index, :if => Proc.new { can_cache? }
-  caches_action :lateledegauche, :if => Proc.new { can_cache? }
-  caches_action :conferences, :if => Proc.new { can_cache? } 
-  caches_action :conference, :if => Proc.new { can_cache? } 
-  caches_action :videospresdechezvous, :if => Proc.new { can_cache? }
-  caches_action :presdechezvous, :if => Proc.new { can_cache? }
-  caches_action :medias, :if => Proc.new { can_cache? }
-  caches_action :media, :if => Proc.new { can_cache? }
-  caches_action :videosagitprop, :if => Proc.new { can_cache? }
-  caches_action :agitprop, :if => Proc.new { can_cache? }
-  caches_action :touteducpop, :if => Proc.new { can_cache? }
-  caches_action :educpop, :if => Proc.new { can_cache? }
-  caches_action :videosencampagne, :if => Proc.new { can_cache? }
-  caches_action :encampagne, :if => Proc.new { can_cache? }
-  caches_action :toutweb, :if => Proc.new { can_cache? }
-  caches_action :web, :if => Proc.new { can_cache? }
-  caches_action :rss, :expires_in => 1.hour, :if => Proc.new { can_cache? }
 
   def index
     find_list_articles_by_category 'video'
@@ -59,7 +42,9 @@ class VideosController < ApplicationController
     @root_path = url_for lateledegauche_path(:only_path => false)
     @rss_path = url_for lateledegauche_rss_feed_path(:only_path => false)
     @articles = Article.find_published_video 1, 50
-    render :template => 'layouts/rss'
+    if stale?(:etag => "videos/rss", :last_modified => @articles[0].nil? ? nil : @articles[0].updated_at, :public => true)
+      render :template => 'layouts/rss'
+    end
   end
   
   def video

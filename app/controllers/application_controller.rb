@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   layout "application"
   around_filter :report_exceptions
-  before_filter :page_number, :page_title
+  before_action :page_number, :page_title
 
 protected
 
@@ -30,14 +30,14 @@ protected
       log_warning "MissingTemplate", invalid
       render :template => '/layouts/not_found', :formats => :html, :status => '404'
       return 
-    rescue ArgumentError, EncodingError => invalid
+    rescue ArgumentError, EncodingError, ActionController::BadRequest => invalid
       log_warning "ArgumentError", invalid
       @search = @page_heading = @category = @status = @parent = @source = ""
       @page =  @pages = 1
       render :template => '/layouts/not_found', :formats => :html, :status => '404'
       return 
     rescue Exception => invalid
-      if Rails.env.production? or Rails.env.beta?
+      if Rails.env.production? or Rails.env.beta? or Rails.env.test?
         log_error invalid.to_s, invalid
         render :template => '/layouts/error', :formats => :html, :status => '500'
         return 
@@ -49,45 +49,55 @@ protected
 
   # Sets variables used for pagination based on request parameters.
   def page_number
-    @page = params[:page].present? ? params[:page].to_i : 1
+    begin
+      @page = params[:page].present? ? params[:page].to_i : 1
+    rescue Exception
+      @page = 1
+    end
     @pages = 1
-    @page_heading = params[:heading].encode('utf-8', undef: :replace) unless params[:heading].nil?
-    @search = params[:search].encode('utf-8', undef: :replace) unless params[:search].nil?
-    @category = params[:category].encode('utf-8', undef: :replace) unless params[:category].nil?
-    @status = params[:status].encode('utf-8', undef: :replace) unless params[:status].nil?
+    begin
+      @page_heading = params[:heading].encode('utf-8', undef: :replace) unless params[:heading].nil?
+    rescue Exception
+      @page_heading = nil
+    end
+    begin
+      @search = params[:search].encode('utf-8', undef: :replace) unless params[:search].nil?
+    rescue Exception
+      @search = nil
+    end
+    begin
+      @category = params[:category].encode('utf-8', undef: :replace) unless params[:category].nil?
+    rescue Exception
+      @category = nil
+    end
+    begin
+      @status = params[:status].encode('utf-8', undef: :replace) unless params[:status].nil?
+    rescue Exception
+      @status = nil
+    end
     @parent = params[:parent]
     @source = params[:source]
     @partial = params[:partial]
-    @uri = params[:uri].encode('utf-8', undef: :replace) unless params[:uri].nil?
-  end
-
-  # Returns true when the cache mechanism can be activated.
-  def can_cache?
-    not(user_signed_in?) and
-    params[:search].nil? and
-    params[:category].nil? and
-    params[:status].nil? and
-    params[:page].nil? and
-    params[:source].nil? and
-    params[:parent].nil? and
-    params[:heading].nil? and
-    flash[:alert].nil? and
-    flash[:notice].nil?
+    begin
+      @uri = params[:uri].encode('utf-8', undef: :replace) unless params[:uri].nil?
+    rescue Exception
+      @uri = nil
+    end
   end
 
   # Sets a page title based on menus definition and article categories.
   def page_title
     @og_type = "website"
     @hide_main_menu = false
-    @identity_layout = "layouts/identity"
+    @identity_layout = "default"
     @identity_icon = "PG-FDG.png";
     @root_path = url_for root_path(:only_path => false)
     @rss_path = url_for rss_feed_path(:only_path => false)
     menu = MENU.find {|meaning, options| options.present? and
                                          options[:controller].present? and
                                          options[:action].present? and 
-                                         options[:controller].to_s == params[:controller] and
-                                         options[:action].to_s == params[:action] 
+                                         options[:controller].to_s == '/' + params[:controller].to_s and
+                                         options[:action].to_s == params[:action]
     }
     if menu.present?
       @page_title = menu[1][:home].blank? ? menu[0] : ""
@@ -102,7 +112,7 @@ protected
                                     options[:controller].present? and
                                     options[:action_all].present? and 
                                     options[:category_title].present? and 
-                                    options[:controller].to_s == params[:controller] and
+                                    options[:controller].to_s == '/' + params[:controller].to_s and
                                     options[:action_all].to_s == params[:action] 
       }
       @page_title = category[2][:category_title] if category.present?
@@ -110,7 +120,7 @@ protected
       @url = url_for(:controller => category[2][:controller], :action => category[2][:action_all]) if category.present?
       header_menu = MENU.find {|meaning, options| options.present? and
                                                   options[:controller].present? and
-                                                  options[:controller].to_s == params[:controller]
+                                                  options[:controller].to_s == '/' + params[:controller].to_s
       }
       if header_menu.present?
         @header_name = header_menu[0]
@@ -184,32 +194,30 @@ protected
           log_warning "find_article: no access"
           render :template => '/layouts/not_found', :formats => :html, :status => '404'
         else
-          if not(can_cache?) or stale?(:etag => @article, :last_modified => @article.updated_at, :public => true)
-            @page_title = ((@article.heading.present? ? @article.heading + " • " : "") + @article.title).gsub(/\"/, "").strip
-            @page_description = @article.description
-            @source = @article.source if @article.present? and not @article.source_id.nil?
-            @last_published = @article.find_last_published if not @article.category_option?(:hide_category_name)
-            @same_heading = @article.find_published_by_heading if not @article.heading.blank?
-            @tags = @article.tags
-            @url = url_for(:controller => controller, :action => action, :uri => @article.uri)
-            @original_url = @article.original_url
-            @created_at = @article.created_at.to_s(:rfc822)
-            @updated_at = @article.updated_at.to_s(:rfc822)
-            @og_type = "article"
-            @og_type = "video.movie" if @article.category_option?(:video)
-            @og_type = "music.song" if @article.category_option?(:audio)
-            content = @article.extract_image_content
-            @identity_icon = content unless content.nil?
-            header_menu = MENU.find {|meaning, options| options.present? and
-                                                      options[:controller].present? and
-                                                      options[:controller].to_s == params[:controller]
-            }
-            if header_menu.present?
-              @header_name = header_menu[0]
-              @header_link = url_for(:controller => header_menu[1][:controller], :action => header_menu[1][:action])
-              @hide_main_menu = header_menu[1][:hide_main_menu] == true if header_menu[1][:hide_main_menu].present?
-              @identity_layout = header_menu[1][:identity_layout] if header_menu[1][:identity_layout].present?
-            end
+          @page_title = ((@article.heading.present? ? @article.heading + " • " : "") + @article.title).gsub(/\"/, "").strip
+          @page_description = @article.description
+          @source = @article.source if @article.present? and not @article.source_id.nil?
+          @last_published = @article.find_last_published if not @article.category_option?(:hide_category_name)
+          @same_heading = @article.find_published_by_heading if not @article.heading.blank?
+          @tags = @article.find_tags
+          @url = url_for(:controller => controller, :action => action, :uri => @article.uri)
+          @original_url = @article.original_url
+          @created_at = @article.created_at.to_s(:rfc822)
+          @updated_at = @article.updated_at.to_s(:rfc822)
+          @og_type = "article"
+          @og_type = "video.movie" if @article.category_option?(:video)
+          @og_type = "music.song" if @article.category_option?(:audio)
+          content = @article.extract_image_content
+          @identity_icon = content unless content.nil?
+          header_menu = MENU.find {|meaning, options| options.present? and
+                                                    options[:controller].present? and
+                                                    options[:controller].to_s == '/' + params[:controller].to_s
+          }
+          if header_menu.present?
+            @header_name = header_menu[0]
+            @header_link = url_for(:controller => header_menu[1][:controller], :action => header_menu[1][:action])
+            @hide_main_menu = header_menu[1][:hide_main_menu] == true if header_menu[1][:hide_main_menu].present?
+            @identity_layout = header_menu[1][:identity_layout] if header_menu[1][:identity_layout].present?
           end
         end
       end
@@ -218,21 +226,13 @@ protected
 
   # Logs a warning message.
   def log_warning(message, invalid = nil)
-    begin
-      logger.warn "[#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}] WARNING #{message} #{invalid.present? ? invalid.message : ''} [#{request.url}] from #{request.remote_ip} : #{params.inspect}".encode('utf-8', undef: :replace)
-    rescue Exception => invalid
-      logger.warn "[#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}] WARNING #{message}".encode('utf-8', undef: :replace)
-    end
+    logger.warn "[#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}] WARNING #{message} #{invalid.present? ? invalid.message : ''} [#{request.url}] from #{request.remote_ip} : #{params.inspect}".encode('utf-8', undef: :replace)
   end
 
   # Logs an error message.
   def log_error(message, invalid = nil)
-    begin
-      logger.error "[#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}] ERROR #{message} #{invalid.present? ? invalid.message : ''} [#{request.url}]  from #{request.remote_ip} : #{params.inspect}".encode('utf-8', undef: :replace)
-      alert_admins(message, invalid)
-    rescue Exception => invalid
-      logger.error "[#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}] ERROR #{message}".encode('utf-8', undef: :replace)
-    end
+    logger.error "[#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}] ERROR #{message} #{invalid.present? ? invalid.message : ''} [#{request.url}]  from #{request.remote_ip} : #{params.inspect}".encode('utf-8', undef: :replace)
+    alert_admins(message, invalid)
   end
 
   # Sens a notification to administrators.
@@ -244,6 +244,8 @@ protected
                               message + (invalid.present? ? " - " + invalid.message : ""),
                               request.url,
                               request.remote_ip,
+                              request.referer,
+                              user_signed_in? ? current_user.email : "",
                               params.inspect,
                               invalid.present? ? invalid.backtrace : nil).deliver unless recipients.empty?
   end

@@ -14,13 +14,13 @@
           </h3>
           <aside class="actions">
             <%= link_to t('action.cancel'), :back %>&nbsp;&bull;
-            <%= f.submit t('action.ok'), :disable_with => t('action.wait') %>
+            <%= f.submit t('action.ok'), :data => { disable_with: t('action.wait') } %>
           </aside>
           <%= render :partial => 'layouts/error_messages', :locals => { :item => @article } %>
           <%= render :partial => 'edit', :locals => {:f => f } %>
           <aside class="actions">
             <%= link_to t('action.cancel'), :back %>&nbsp;&bull;
-            <%= f.submit t('action.ok'), :disable_with => t('action.wait') %>
+            <%= f.submit t('action.ok'), :data => { disable_with: t('action.wait') } %>
           </aside>
         </header>
       </article>

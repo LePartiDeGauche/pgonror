@@ -1,159 +1,163 @@
-<section id="recent">
-  <section id="zoom" class="content-bloc zoom">
-    <%= render :partial => 'layouts/zoom_article', :locals => { :articles => @zooms, :category => :zoom } %>
-  </section>
-  <section id="communique">
-    <section id="communique-content" class="content-bloc highlighted-bloc">
-      <%= render :partial => 'layouts/articles_simplified', :locals => { :articles => @communiques,
-                                                                         :category_title => t('identity.comm_title'),
-                                                                         :link_all_title => t('identity.comm_tout'),
-                                                                         :controller => :actualites,
-                                                                         :action_all => :index } %>
+<% cache_if can_cache?, @url do %>
+  <section id="recent">
+    <section id="zoom" class="content-bloc zoom">
+      <%= render :partial => 'layouts/zoom_article', :locals => { :articles => @zooms, :category => :zoom } %>
+    </section>
+    <section id="communique">
+      <section id="communique-content" class="content-bloc highlighted-bloc">
+        <%= render :partial => 'layouts/articles_simplified', :locals => { :articles => @communiques,
+                                                                           :category_title => t('identity.comm_title'),
+                                                                           :link_all_title => t('identity.comm_tout'),
+                                                                           :controller => :actualites,
+                                                                           :action_all => :index } %>
+      </section>
+    </section>
+    <section id="dossier">
+      <section id="dossier-content" class="content-bloc">
+        <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @dossier, :title => :zoom } %>
+      </section>
     </section>
   </section>
-  <section id="dossier">
-    <section id="dossier-content" class="content-bloc">
-      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @dossier, :title => :zoom } %>
+  <section id="actualites">
+    <section id="actualites-content" class="content-bloc">
+      <%= render :partial => 'layouts/articles_1col_1_on_3', :locals => { :articles => @actus } %>
     </section>
   </section>
-</section>
-<section id="actualites">
-  <section id="actualites-content" class="content-bloc">
-    <%= render :partial => 'layouts/articles_1col_1_on_3', :locals => { :articles => @actus } %>
-  </section>
-</section>
-<section id="campagne">
-  <section id="campagne-content" class="content-bloc">
-    <%= render :partial => 'layouts/article_simplified', :locals => { :article => @campagne } %>
-  </section>
-</section>
-<section id="videos">
-  <section id="videos-content" class="content-bloc highlighted-bloc">
-    <% unless @videos.nil? %>
-      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => {:articles => @videos, 
-                                                                                 :title => :zoom,
-                                                                                 :category_title => t('identity.teledegauche'),
-                                                                                 :link_all_title => t('identity.teledegauche_tout'),
-                                                                                 :controller => :videos,
-                                                                                 :action_all => :lateledegauche} %>
-    <% end %>
-  </section>
-</section>
-<section id="vdg-photos">
-  <section id="ailleurs-content" class="content-bloc bloc-bottom-margin">
-    <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @ailleurs, :title => :zoom } %>
-  </section>
-  <section id="vdg">
-    <section id="vdg-content" class="content-bloc highlighted-bloc bloc-bottom-margin">
-      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @vdg, :title => :zoom } %>
+  <section id="campagne">
+    <section id="campagne-content" class="content-bloc">
+      <%= render :partial => 'layouts/article_simplified', :locals => { :article => @campagne } %>
     </section>
   </section>
-  <section id="diapos">
-    <section id="diapos-content" class="content-bloc">
-      <% unless @diapos.nil? %>
-        <%= render :partial => 'layouts/articles_1col_1_on_3_diaporama', :locals => { :articles => @diapos } %>
+  <section id="videos">
+    <section id="videos-content" class="content-bloc highlighted-bloc">
+      <% unless @videos.nil? %>
+        <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => {:articles => @videos, 
+                                                                                   :title => :zoom,
+                                                                                   :category_title => t('identity.teledegauche'),
+                                                                                   :link_all_title => t('identity.teledegauche_tout'),
+                                                                                   :controller => :videos,
+                                                                                   :action_all => :lateledegauche} %>
       <% end %>
     </section>
   </section>
-</section>
-<section id="arguments-blogs">
-  <section id="arguments">
-    <section id="arguments-content" class="content-bloc highlighted-bloc bloc-bottom-margin">
-      <%= render :partial => 'layouts/articles_simplified', :locals => { :articles => @arguments } %>
+  <section id="vdg-photos">
+    <section id="ailleurs-content" class="content-bloc bloc-bottom-margin">
+      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @ailleurs, :title => :zoom } %>
+    </section>
+    <section id="vdg">
+      <section id="vdg-content" class="content-bloc highlighted-bloc bloc-bottom-margin">
+        <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @vdg, :title => :zoom } %>
+      </section>
+    </section>
+    <section id="diapos">
+      <section id="diapos-content" class="content-bloc">
+        <% unless @diapos.nil? %>
+          <%= render :partial => 'layouts/articles_1col_1_on_3_diaporama', :locals => { :articles => @diapos } %>
+        <% end %>
+      </section>
     </section>
   </section>
-  <section id="blogs">
-    <section id="blogs-content" class="content-bloc bloc-bottom-margin">
-      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @directblogs, :title => :zoom } %>
+  <section id="arguments-blogs">
+    <section id="arguments">
+      <section id="arguments-content" class="content-bloc highlighted-bloc bloc-bottom-margin">
+        <%= render :partial => 'layouts/articles_simplified', :locals => { :articles => @arguments } %>
+      </section>
+    </section>
+    <section id="blogs">
+      <section id="blogs-content" class="content-bloc bloc-bottom-margin">
+        <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @directblogs, :title => :zoom } %>
+      </section>
+    </section>
+    <section id="librairie">
+      <section id="librairie-content" class="content-bloc">
+        <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @livres, :title => :hide } %>
+      </section>
     </section>
   </section>
-  <section id="librairie">
-    <section id="librairie-content" class="content-bloc">
-      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @livres, :title => :hide } %>
+  <section id="agenda">
+    <section id="agenda-content" class="content-bloc bloc-bottom-margin">
+      <% unless @evenements.nil? %>
+        <div class="rss"><%= link_to icon_medium('rss.png'), militer_rss_feed_path, :target => "_blank" %></div>
+        <%= render :partial => 'layouts/articles_1col_1_on_3_agenda', :locals => { :articles => @evenements } %>
+      <% end %>
+    </section>
+    <section id="tracts">
+      <section id="tracts-content" class="content-bloc highlighted-bloc">
+        <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @tracts,
+                                                                                    :title => :hide,
+                                                                                    :category_title => t('identity.materiel_title'),
+                                                                                    :link_all_title => t('identity.materiel_tout'),
+                                                                                    :controller => :militer,
+                                                                                    :action_all => :index} %>
+      </section>
     </section>
   </section>
-</section>
-<section id="agenda">
-  <section id="agenda-content" class="content-bloc bloc-bottom-margin">
-    <% unless @evenements.nil? %>
-      <div class="rss"><%= link_to icon_medium('rss.png'), militer_rss_feed_path, :target => "_blank" %></div>
-      <%= render :partial => 'layouts/articles_1col_1_on_3_agenda', :locals => { :articles => @evenements } %>
-    <% end %>
-  </section>
-  <section id="tracts">
-    <section id="tracts-content" class="content-bloc highlighted-bloc">
-      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @tracts,
-                                                                                  :title => :hide,
-                                                                                  :category_title => t('identity.materiel_title'),
-                                                                                  :link_all_title => t('identity.materiel_tout'),
-                                                                                  :controller => :militer,
-                                                                                  :action_all => :index} %>
-    </section>
-  </section>
-</section>
-<%= render :partial => 'layouts/footer' %>
-<script>
-  function nextActualite() {
-    $('#zoom li:last').after($('#zoom li:first'));
-    showOnlyFirstActualite();
-  };
-  function showOnlyFirstActualite() {
-    $('#zoom li').hide();
-    $('#zoom li:first').show(300);
-    var top = -34-$('#zoom li:first section').height();
-    $('#zoom li:first section').css({top:top}).show(300);
-  };
-  var runActualite = setInterval('nextActualite()', 6000);
-  showOnlyFirstActualite();
-  $('.zoom-button1').click(function() {
-    $('#zoom li#zoom-article2').insertAfter($('#zoom li#zoom-article1'));
-    $('#zoom li#zoom-article3').insertAfter($('#zoom li#zoom-article2'));
-    $('#zoom li#zoom-article4').insertAfter($('#zoom li#zoom-article3'));
-    $('#zoom li#zoom-article5').insertAfter($('#zoom li#zoom-article4'));
-    showOnlyFirstActualite();
-  });
-  $('.zoom-button2').click(function() {
-    $('#zoom li#zoom-article3').insertAfter($('#zoom li#zoom-article2'));
-    $('#zoom li#zoom-article4').insertAfter($('#zoom li#zoom-article3'));
-    $('#zoom li#zoom-article5').insertAfter($('#zoom li#zoom-article4'));
-    $('#zoom li#zoom-article1').insertAfter($('#zoom li#zoom-article5'));
-    showOnlyFirstActualite();
-  });
-  $('.zoom-button3').click(function() {
-    $('#zoom li#zoom-article4').insertAfter($('#zoom li#zoom-article3'));
-    $('#zoom li#zoom-article5').insertAfter($('#zoom li#zoom-article4'));
-    $('#zoom li#zoom-article1').insertAfter($('#zoom li#zoom-article5'));
-    $('#zoom li#zoom-article2').insertAfter($('#zoom li#zoom-article1'));
-    showOnlyFirstActualite();
-  });
-  $('.zoom-button4').click(function() {
-    $('#zoom li#zoom-article5').insertAfter($('#zoom li#zoom-article4'));
-    $('#zoom li#zoom-article1').insertAfter($('#zoom li#zoom-article5'));
-    $('#zoom li#zoom-article2').insertAfter($('#zoom li#zoom-article1'));
-    $('#zoom li#zoom-article3').insertAfter($('#zoom li#zoom-article2'));
-    showOnlyFirstActualite();
-  });
-  $('.zoom-button5').click(function() {
-    $('#zoom li#zoom-article1').insertAfter($('#zoom li#zoom-article5'));
-    $('#zoom li#zoom-article2').insertAfter($('#zoom li#zoom-article1'));
-    $('#zoom li#zoom-article3').insertAfter($('#zoom li#zoom-article2'));
-    $('#zoom li#zoom-article4').insertAfter($('#zoom li#zoom-article3'));
-    showOnlyFirstActualite();
-  });
-  $('#zoom').hover(
-    function() { clearInterval(runActualite); },
-    function() { runActualite = setInterval('nextActualite()', 6000); }
-  ); 
-  function nextLivre() {
-    $('#librairie li:first').before($('#librairie li:last'));
-    $('#librairie li').hide();
-    $('#librairie li:first').show(300);
-  };
-  var runLivre = setInterval('nextLivre()', 3000);
-  $('#librairie').hover(
-    function() { clearInterval(runLivre); },
-    function() { runLivre = setInterval('nextLivre()', 3000); }
-  );
-  $('#librairie li').hide();
-  $('#librairie li:first').show();
-</script>
+  <%= render :partial => 'layouts/footer' %>
+  <% cache 'accueil/script' do %>
+    <script>
+      function nextActualite() {
+        $('#zoom li:last').after($('#zoom li:first'));
+        showOnlyFirstActualite();
+      };
+      function showOnlyFirstActualite() {
+        $('#zoom li').hide();
+        $('#zoom li:first').show(300);
+        var top = -34-$('#zoom li:first section').height();
+        $('#zoom li:first section').css({top:top}).show(300);
+      };
+      var runActualite = setInterval('nextActualite()', 6000);
+      showOnlyFirstActualite();
+      $('.zoom-button1').click(function() {
+        $('#zoom li#zoom-article2').insertAfter($('#zoom li#zoom-article1'));
+        $('#zoom li#zoom-article3').insertAfter($('#zoom li#zoom-article2'));
+        $('#zoom li#zoom-article4').insertAfter($('#zoom li#zoom-article3'));
+        $('#zoom li#zoom-article5').insertAfter($('#zoom li#zoom-article4'));
+        showOnlyFirstActualite();
+      });
+      $('.zoom-button2').click(function() {
+        $('#zoom li#zoom-article3').insertAfter($('#zoom li#zoom-article2'));
+        $('#zoom li#zoom-article4').insertAfter($('#zoom li#zoom-article3'));
+        $('#zoom li#zoom-article5').insertAfter($('#zoom li#zoom-article4'));
+        $('#zoom li#zoom-article1').insertAfter($('#zoom li#zoom-article5'));
+        showOnlyFirstActualite();
+      });
+      $('.zoom-button3').click(function() {
+        $('#zoom li#zoom-article4').insertAfter($('#zoom li#zoom-article3'));
+        $('#zoom li#zoom-article5').insertAfter($('#zoom li#zoom-article4'));
+        $('#zoom li#zoom-article1').insertAfter($('#zoom li#zoom-article5'));
+        $('#zoom li#zoom-article2').insertAfter($('#zoom li#zoom-article1'));
+        showOnlyFirstActualite();
+      });
+      $('.zoom-button4').click(function() {
+        $('#zoom li#zoom-article5').insertAfter($('#zoom li#zoom-article4'));
+        $('#zoom li#zoom-article1').insertAfter($('#zoom li#zoom-article5'));
+        $('#zoom li#zoom-article2').insertAfter($('#zoom li#zoom-article1'));
+        $('#zoom li#zoom-article3').insertAfter($('#zoom li#zoom-article2'));
+        showOnlyFirstActualite();
+      });
+      $('.zoom-button5').click(function() {
+        $('#zoom li#zoom-article1').insertAfter($('#zoom li#zoom-article5'));
+        $('#zoom li#zoom-article2').insertAfter($('#zoom li#zoom-article1'));
+        $('#zoom li#zoom-article3').insertAfter($('#zoom li#zoom-article2'));
+        $('#zoom li#zoom-article4').insertAfter($('#zoom li#zoom-article3'));
+        showOnlyFirstActualite();
+      });
+      $('#zoom').hover(
+        function() { clearInterval(runActualite); },
+        function() { runActualite = setInterval('nextActualite()', 6000); }
+      ); 
+      function nextLivre() {
+        $('#librairie li:first').before($('#librairie li:last'));
+        $('#librairie li').hide();
+        $('#librairie li:first').show(300);
+      };
+      var runLivre = setInterval('nextLivre()', 3000);
+      $('#librairie').hover(
+        function() { clearInterval(runLivre); },
+        function() { runLivre = setInterval('nextLivre()', 3000); }
+      );
+      $('#librairie li').hide();
+      $('#librairie li:first').show();
+    </script>
+  <% end %>
+<% end %>

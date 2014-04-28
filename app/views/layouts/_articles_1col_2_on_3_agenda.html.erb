@@ -14,17 +14,19 @@
         </td>
         <td class="article-inter-column"></td>
         <td>
-          <article class="article">
-            <header>
-              <h1><%= link_to article.title_display.html_safe, article.path %></h1>
-              <% unless article.address.blank? %><br/><%= article.address %><% end %>
-            </header>
-            <% if article.content.present? and article.content.length > 0 %>
-              <%= truncate_html(article.content_with_mini,
-                                :length => 200,
-                                :omission => link_to(article.category_option?(:video) ? t('titre.voir_video').html_safe : t('titre.lire_suite').html_safe, article.path)) %>
-            <% end %>
-          </article>
+          <% cache_if can_cache?, article do %>
+            <article class="article">
+              <header>
+                <h1><%= link_to article.title_display.html_safe, article.path %></h1>
+                <% unless article.address.blank? %><br/><%= article.address %><% end %>
+              </header>
+              <% if article.content.present? and article.content.length > 0 %>
+                <%= truncate_html(article.content_with_mini,
+                                  :length => 200,
+                                  :omission => link_to(article.category_option?(:video) ? t('titre.voir_video').html_safe : t('titre.lire_suite').html_safe, article.path)) %>
+              <% end %>
+            </article>
+          <% end %>
         </td>
       </tr>
     <% end %>

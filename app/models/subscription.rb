@@ -24,14 +24,6 @@ class Subscription < ActiveRecord::Base
   validates :phone, :length => {:maximum => 30}
   validates :email, :length => {:minimum => 3, :maximum => 50}, :email => true
   
-  # Setup accessible (or protected) attributes for the model.
-  attr_accessible :last_name,
-                  :first_name,
-                  :email,
-                  :address,
-                  :zip_code,
-                  :city,
-                  :phone
   # Returns the content as a string used for display.  
   def to_s
     "#{I18n.l(created_at)} : #{first_name} #{last_name} (#{email})"
@@ -60,6 +52,6 @@ class Subscription < ActiveRecord::Base
   end
   
   # For logs in Administration panel
-  scope :logs, order('created_at DESC')
+  scope :logs, -> { order('created_at DESC') }
   scope :filtered_by, lambda { |search| where('lower(first_name) LIKE ? OR lower(last_name) LIKE ? OR lower(email) LIKE ?', "%#{search.downcase.strip}%", "%#{search.downcase.strip}%", "%#{search.downcase.strip}%") }
 end

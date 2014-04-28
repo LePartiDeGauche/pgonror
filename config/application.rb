@@ -14,15 +14,9 @@
 # 
 # See doc/COPYRIGHT.rdoc for more details.
 require File.expand_path('../boot', __FILE__)
-
 require 'rails/all'
 
-if defined?(Bundler)
-  # If you precompile assets before deploying to production, use this line
-  Bundler.require(*Rails.groups(:assets => %w(development test)))
-  # If you want your assets lazily compiled in production, use this line
-  # Bundler.require(:default, :assets, Rails.env)
-end
+Bundler.require(:default, Rails.env)
 
 module PartiDeGauche
   class Application < Rails::Application
@@ -51,6 +45,12 @@ module PartiDeGauche
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = "utf-8"
 
+    # Turns off ip spoofing check.
+    config.action_dispatch.ip_spoofing_check = false
+    
+    # Skip validation of locales
+    I18n.enforce_available_locales = false
+
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:authenticity_token,
                                  :user,
@@ -58,14 +58,11 @@ module PartiDeGauche
                                  :user_password, 
                                  :user_password_confirmation]
 
-    # Enable the asset pipeline
-    config.assets.enabled = true
-
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
-    
+
     config.assets.precompile << /(^[^_]|\/[^_])[^\/]*/
-    
+
     # Log rotation
     config.logger = Logger.new("#{Rails.root}/log/#{Rails.env}.log", 20, 5*1024*1024) if ["stage","beta","production"].include? Rails.env
   end

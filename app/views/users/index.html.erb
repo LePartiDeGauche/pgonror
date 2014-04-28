@@ -10,8 +10,7 @@
                              @search,
                              :size => 50,
                              :placeholder => t('action.search') %>
-        <%= submit_tag t('action.search'), 
-                       :disable_with => t('action.wait') %>
+        <%= submit_tag t('action.search'), :data => { disable_with: t('action.wait') } %>
       </aside>
       <script>
         $(document).ready(function(){

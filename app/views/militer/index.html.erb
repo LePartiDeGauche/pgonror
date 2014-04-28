@@ -1,39 +1,41 @@
-<section id="agit-prop">
-  <section id="agit-prop-content" class="content-bloc">
-    <%= link_to t('identity.reserved_link'), t('identity.reserved_web'), :target => "_blank" %>&nbsp;&bull;
-    <%= t('identity.reserved_explain') %>&nbsp;&bull;
-    <%= t('identity.reserved_contact') %>
-    <%= link_to t('identity.reserved_email'), "mailto:" + t('identity.reserved_email') %>
+<% cache_if can_cache?, @url do %>
+  <section id="agit-prop">
+    <section id="agit-prop-content" class="content-bloc">
+      <%= link_to t('identity.reserved_link'), t('identity.reserved_web'), :target => "_blank" %>&nbsp;&bull;
+      <%= t('identity.reserved_explain') %>&nbsp;&bull;
+      <%= t('identity.reserved_contact') %>
+      <%= link_to t('identity.reserved_email'), "mailto:" + t('identity.reserved_email') %>
+    </section>
   </section>
-</section>
-<section id="militer-campagne">
-  <section id="militer-campagne-content" class="content-bloc">
-    <% unless @campagne.nil? %>
-      <%= render :partial => 'layouts/article_simplified', :locals => { :article => @campagne } %>
-    <% end %>
-  </section>
-  <section id="militer-tracts-affiches">
-    <section id="militer-tracts">
-      <section id="militer-tracts-content" class="content-bloc">
-        <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @tracts, :title => :hide } %>
+  <section id="militer-campagne">
+    <section id="militer-campagne-content" class="content-bloc">
+      <% unless @campagne.nil? %>
+        <%= render :partial => 'layouts/article_simplified', :locals => { :article => @campagne } %>
+      <% end %>
+    </section>
+    <section id="militer-tracts-affiches">
+      <section id="militer-tracts">
+        <section id="militer-tracts-content" class="content-bloc">
+          <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @tracts, :title => :hide } %>
+        </section>
+      </section>
+      <section id="militer-kits">
+        <section id="militer-kits-content" class="content-bloc">
+          <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @kits, :title => :zoom } %>
+        </section>
       </section>
     </section>
-    <section id="militer-kits">
-      <section id="militer-kits-content" class="content-bloc">
-        <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @kits, :title => :zoom } %>
+  </section>
+  <section id="militer-agenda">
+    <section id="militer-agenda-content" class="content-bloc">
+      <div class="rss"><%= link_to icon_medium('rss.png'), militer_rss_feed_path, :target => "_blank" %></div>
+      <%= render :partial => 'layouts/articles_1col_1_on_3_agenda', 
+            :locals => { :articles => @evenements } %>
+    </section>
+    <section id="militer-affiches">
+      <section id="militer-affiches-content" class="content-bloc">
+        <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @affiches, :title => :hide } %>
       </section>
     </section>
   </section>
-</section>
-<section id="militer-agenda">
-  <section id="militer-agenda-content" class="content-bloc">
-    <div class="rss"><%= link_to icon_medium('rss.png'), militer_rss_feed_path, :target => "_blank" %></div>
-    <%= render :partial => 'layouts/articles_1col_1_on_3_agenda', 
-          :locals => { :articles => @evenements } %>
-  </section>
-  <section id="militer-affiches">
-    <section id="militer-affiches-content" class="content-bloc">
-      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @affiches, :title => :hide } %>
-    </section>
-  </section>
-</section>
+<% end %>

@@ -172,7 +172,7 @@ describe "Menu home pages" do
     end
 
     it "/vudailleurs/envoyer_message" do
-      get("/vudailleurs/envoyer_message").should route_to("vudailleurs#envoyer_message")
+      post("/vudailleurs/envoyer_message").should route_to("vudailleurs#envoyer_message")
     end
   end
 end
@@ -298,7 +298,7 @@ describe "Input pages" do
     end
 
     it "/envoyer_message" do
-      get("/envoyer_message").should route_to("contact#envoyer_message")
+      post("/envoyer_message").should route_to("contact#envoyer_message")
     end
   end
 
@@ -308,7 +308,7 @@ describe "Input pages" do
     end
 
     it "/valider_adhesion" do
-      get("/valider_adhesion").should route_to("memberships#valider_adhesion")
+      post("/valider_adhesion").should route_to("memberships#valider_adhesion")
     end
 
     it "/retour_paiement_adhesion" do
@@ -330,7 +330,7 @@ describe "Input pages" do
     end
 
     it "/valider_don" do
-      get("/valider_don").should route_to("donations#valider_don")
+      post("/valider_don").should route_to("donations#valider_don")
     end
 
     it "/retour_paiement_don" do

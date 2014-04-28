@@ -126,6 +126,19 @@ describe MembershipsController do
       member.payment_error.should be == "00000"
     end
 
+    it "retour_paiement_adhesion (failure)" do
+      FactoryGirl.create(:user, :notification_membership => true)
+      member = FactoryGirl.create(:membership)
+      id = member.id
+      get :retour_paiement_adhesion, :erreur => "00000",
+                                     :transac => "12345",
+                                     :id => 25
+      response.should be_success
+      member = Membership.where('id = ?', id).first
+      member.should_not be_nil
+      member.payment_error.should_not be == "00000"
+    end
+
     it "adhesion_enregistree" do
       member = FactoryGirl.create(:membership)
       id = member.id

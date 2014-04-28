@@ -1,16 +1,18 @@
-<section id="educpop-dates">
-  <section id="educpop-date-content" class="content-bloc bloc-bottom-margin">
-    <%= render :partial => 'layouts/articles_1col_1_on_2', :locals => { :articles => @dates } %>
+<% cache_if can_cache?, @url do %>
+  <section id="educpop-dates">
+    <section id="educpop-date-content" class="content-bloc bloc-bottom-margin">
+      <%= render :partial => 'layouts/articles_1col_1_on_2', :locals => { :articles => @dates } %>
+    </section>
+    <section id="educpop-livres-content" class="content-bloc">
+      <%= render :partial => 'layouts/articles_1col_1_on_2', :locals => { :articles => @livres } %>
+    </section>
   </section>
-  <section id="educpop-livres-content" class="content-bloc">
-    <%= render :partial => 'layouts/articles_1col_1_on_2', :locals => { :articles => @livres } %>
+  <section id="educpop-revues">
+    <section id="educpop-revue-content" class="content-bloc bloc-bottom-margin">
+      <%= render :partial => 'layouts/articles_1col_1_on_2', :locals => { :articles => @revues } %>
+    </section>
+    <section id="educpop-lecture-content" class="content-bloc">
+      <%= render :partial => 'layouts/articles_1col_1_on_2', :locals => { :articles => @lectures } %>
+    </section>
   </section>
-</section>
-<section id="educpop-revues">
-  <section id="educpop-revue-content" class="content-bloc bloc-bottom-margin">
-    <%= render :partial => 'layouts/articles_1col_1_on_2', :locals => { :articles => @revues } %>
-  </section>
-  <section id="educpop-lecture-content" class="content-bloc">
-    <%= render :partial => 'layouts/articles_1col_1_on_2', :locals => { :articles => @lectures } %>
-  </section>
-</section>
+<% end %>

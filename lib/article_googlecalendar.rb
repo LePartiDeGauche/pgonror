@@ -63,8 +63,8 @@ class ArticleGooglecalendar < Article
                 value = CGI::unescapeHTML text.value.gsub(/(\r|\n)/, "");
                 if value.match(EVENT_TEMPLATE)
                   timezone = value.match(EVENT_TIMEZONE) ? value.gsub(EVENT_TIMEZONE, "\\1") : ""
-                  import_startdatetime = DateTime::parse(CGI::unescapeHTML (value.gsub(EVENT_TEMPLATE, "\\1") + " " + timezone))            
-                  import_endtime = Time::parse(CGI::unescapeHTML (value.gsub(EVENT_TEMPLATE, "\\2") + " " + timezone))
+                  import_startdatetime = DateTime::parse(CGI::unescapeHTML(value.gsub(EVENT_TEMPLATE, "\\1") + " " + timezone))            
+                  import_endtime = Time::parse(CGI::unescapeHTML(value.gsub(EVENT_TEMPLATE, "\\2") + " " + timezone))
                   import_endtime = DateTime.new(import_startdatetime.year,
                                                 import_startdatetime.month,
                                                 import_startdatetime.mday,
@@ -76,7 +76,7 @@ class ArticleGooglecalendar < Article
                 elsif value.match(EVENT_TEMPLATE_SIMPLE)
                   begin
                     timezone = value.match(EVENT_TIMEZONE) ? value.gsub(EVENT_TIMEZONE, "\\1") : ""
-                    import_startdatetime = DateTime::parse(CGI::unescapeHTML (value.gsub(EVENT_TEMPLATE_SIMPLE, "\\1") + " " + timezone))            
+                    import_startdatetime = DateTime::parse(CGI::unescapeHTML(value.gsub(EVENT_TEMPLATE_SIMPLE, "\\1") + " " + timezone))            
                     import_all_day = true if import_startdatetime.nil? or import_startdatetime.hour == 0 and import_startdatetime.min == 0
                     import_no_endtime = true
                   rescue ArgumentError => invalid

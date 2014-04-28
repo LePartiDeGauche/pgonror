@@ -1,0 +1,462 @@
+jQuery(function($) { // ‡ Start a jQuery script
+  var iTrack = 0, // Integer Track index
+    isPlaying = false, // Boolean is the media playing? true/false
+    cpa = 0, // Used for progress bar calculation
+    duration = 0, // Used for progress bar calculation
+    sp = 0, // Used for progress bar calculation
+    vl = (localStorage.getItem('volume')||1), // Used for volume bar calculation - volume level
+    tracks = [], // array to hold track (song) information
+    trackCount = 0, // count of how many items are in the tracks array
+    aS, // audio Support
+    $title,  // info panel title
+    $album,  // info panel album
+    $artist, // info panel artist
+    $image, // info panel image
+    $play, // play control
+    $paus, // pause control
+    $dura, // progress info - track duration
+    $prog, // progress bar
+    $time, // progress info - track current time
+    $vol,  // volume control
+    $mute, // mute control
+    $unmu, // un-mute control
+    audioSupport = function() { // function to determine if browser supports HTML5 audio
+      var elem = document.createElement('audio'), // create audio element to test
+	bool = false;  // Boolean
+      try {
+	if(bool = !!elem.canPlayType) { // test if the audio control can play a media type
+	  bool = new Boolean(bool); // new Boolean object
+	  bool.ogg = elem.canPlayType('audio/ogg; codecs="vorbis"'); // extends Boolean object and test if format is supported
+	  bool.mp3 = elem.canPlayType('audio/mpeg;'); // extends Boolean object and test if format is supported
+	  bool.wav = elem.canPlayType('audio/wav; codecs="1"'); // extends Boolean object and test if format is supported
+	  bool.m4a = (elem.canPlayType('audio/x-m4a;') || eleam.canPlayType('audio/aac;')); // extends Boolean object and test if format is supported
+	}
+      } catch(e) { }
+      return bool; // return the Boolean object
+    };
+  if(aS = audioSupport()) { // call the audioSupport function to check if the browser does support the HTML5 audio tag
+    var manualSeek = false, // progress bar support
+      audio = $('<audio/>').on({  // create the actual audio control and turn on the event handlers below
+	'play': function() { // Script to be run when the media is teady to start playing
+	  $paus.show();  // show the pause control
+	  $play.hide();  // hide the play control
+	},
+	'pause': function() { // Script to be run when the media is paused either by the user or programmatically
+	  isPlaying = false;
+	  showPlay();  // call showPlay function
+	},
+	'playing': function() { // Script to be run when the media actually has started playing
+	  isPlaying = true;
+	},
+	'ended': function() { // Script to be run when the media has reach the end
+	  showPlay();
+	  trackCount ? playNext('ended') : resetMedia(); // if trackCount is greater than zero call playNest passing 'ended' otherwise call resetMedia
+	},
+	'loadedmetadata': function() { // Script to be run when meta data (like dimensions and duration) are loaded
+	  if(isFinite(audio.duration)) {
+	    duration = audio.duration;
+	  }
+	  updateTimes(audio.duration, audio.currentTime);
+	  if($prog.slider('option', 'disabled')) { // check if jQuery UI slider is disabled
+	    $prog.slider('option', 'disabled', false); // enable the slider
+	  }
+	},
+	'timeupdate': function() { // Script to be run when the playing position has changed
+	  updateTimes(audio.duration, audio.currentTime);
+	  if(!manualSeek) {
+	    $prog.slider('value', cpa);
+	  }
+	}
+      }).get(0), // get the DOM node from the jQuery object
+      ext = aS.mp3 ? '.mp3' : aS.ogg ? '.ogg' : '', // determine what file extension to use from the audioSupport function
+      mp = $('#ap_container_1').append(
+	$('<div/>', { // start info panel
+	  'class': 'ap-info-panel ui-widget ui-widget-content ui-corner-all'
+	  }
+	).append(
+	  $title = $('<h3/>', { // add title element to info panel
+	    'class': 'ap-title'
+	    }
+	  )
+	).append(
+	  $album = $('<h4/>', { // add album element to info panel
+	    'class': 'ap-album'
+	    }
+	  )
+	).append(
+	  $artist = $('<h5/>', { // add artist element to info panel
+	    'class': 'ap-artist'
+	    }
+	  )
+	).append(
+	  $image = $('<div/>', { // add artist element to info panel
+	    'class': 'ap-image'
+	    }
+	  )
+	).append(
+	  $('<ul/>', { // add unordered list for player controls
+	    css: {
+	      'list-style': 'none',
+	      margin: 0,
+	      padding: 0
+	      },
+	    'class': 'ap-controls-content',
+	    click: function(e) { // click event handler for player controls set on unordered list so it tells us what item was clicked
+	      var t = e.target, $t = $(t), btn; // DOM target and jQuery target definitions
+	      if(t.nodeName.toLowerCase() === 'a') { // checks to see if the item clicked was an anchor tag within the list item
+		e.preventDefault(); // prevent default action of item clicked
+		btn = $t.parent().data('btn'); // retrieve data from the patent element of what was clicked
+		$t.blur(); // make sure clicked item no longer has focus
+		if(btn === 'prev') {playPrev();}        // previous control clicked
+		if(btn === 'play') {audio.play();}      // play control clicked
+		if(btn === 'paus') {audio.pause();}     // pause control clicked
+		if(btn === 'stop') {resetMedia();}     // pause control clicked
+		if(btn === 'next') {playNext('click');} // next control clicked
+		if(btn === 'mute') {checkVolumeStatus(0);}
+		if(btn === 'unmu') {checkVolumeStatus(vl);}
+	      }
+	    },
+	    dblclick: function(e) { // double click event hadler fot the unorderd list element
+	      var t = e.target, $t = $(t), btn;
+	      if(t.nodeName.toLowerCase() === 'a') {
+		e.preventDefault();
+		btn = $t.parent().data('btn');
+		$t.blur();
+		if(btn === 'prev') {__playPrev();} // previous control double clicked
+	      }
+	    }
+	  }
+/*
+	  ).append(
+	    $('<li/>', { // add list item for previous control
+	      'class': 'ap-controls ap-prev ui-state-default ui-corner-all'
+	      }
+	    ).data('btn', 'prev'
+	    ).append(
+	      $('<a/>', { // set data on the list item and add anchor element for previous control
+		'class': 'ap-button ui-icon ui-icon-seek-first',
+		title: 'prev',
+		href: '#',
+		text: 'Prev'
+		}
+	      )
+	    )
+*/
+	  ).append(
+	    $play = $('<li/>', { // add list item for play control and assign it to the $play variable for use elsewhere
+	      'class': 'ap-controls ap-play ui-corner-all'
+	      }
+	    ).data('btn', 'play'
+	    ).append(
+	      $('<a/>', { // set data on the list item and add anchor element for play control
+		'class': 'ap-button',
+		title: 'play',
+		href: '#',
+		text: ''
+		}
+	      )
+	    )
+	  ).append(
+	    $paus = $('<li/>', { // add list item for paus control and assign it to the $paus variable
+	      'class': 'ap-controls ap-pause ui-corner-all'
+	      }
+	    ).data('btn', 'paus'
+	    ).append(
+	      $('<a/>', { // set data on the list item and add anchor element for pause control
+		'class': 'ap-button',
+		title: 'pause',
+		href: '#',
+		text: ''
+    /*
+	  }))).append($('<li/>', { // add list item for next control
+	    'class': 'ap-controls ap-next ui-state-default ui-corner-all'
+	  }).data('btn', 'next').append($('<a/>', { // set data on liist item and add anchor element for next control
+	    'class': 'ap-button ui-icon ui-icon-seek-end',
+	    title: 'next',
+	    href: '#',
+	    text: 'Next'
+	  }))).append($mute = $('<li/>', { // add list item for mute control
+	    'class': 'ap-controls ap-mute ui-state-default ui-corner-all'
+	  }).data('btn', 'mute').append($('<a/>', { // set data on list item and and anchor element for mute control
+	    'class': 'ap-button ui-icon ui-icon-volume-on',
+	    title: 'mute',
+	    href: '#',
+	    text: 'mute'
+	  }))).append($unmu = $('<li/>', { // add list item for unmute control
+	    css: {
+	      display: 'none' // initiall hide the unmute control
+	    },
+	    'class': 'ap-controls ap-unmute ui-state-default ui-corner-all'
+	  }).data('btn', 'unmu').append($('<a/>', { // set data on the list item and add anchor element
+	    'class': 'ap-button ui-icon ui-icon-volume-off',
+	    title: 'unmute',
+	    href: '#',
+	    text: 'unmute'
+    */
+		}
+	      )
+	    )
+	  ).append($stop = $('<li/>', { // add list item for mute control
+	    'class': 'ap-controls ap-stop ui-corner-all'
+	    }
+	    ).data('btn', 'stop').append($('<a/>', { // set data on list item and and anchor element for mute control
+	      'class': 'ap-button ui-icon',
+	      title: 'stop',
+	      href: '#',
+	      text: 'stop'
+	      }
+	      )
+	    )
+	  ).append(
+	    $('<li/>', { // add div element to contain volume elements
+	      'class': 'ap-volume ap-controls'
+	      }
+	    ).append(
+	      $('<div/>', { // add div element to contain volume bar
+		css: {padding: '0 9px 0 7px'},
+		'class': 'ap-progress-content'
+		}
+	      ).append($vol = $('<div/>', { // add div element for volume bar
+		'class': 'ap-progress-slider'
+		}
+		).slider({ // create a jQuery UI slider widget control - see http://jqueryui.com for more info
+		    disabled: false,            // slider initially disabled
+		    max: 100,                  // slider max range
+		    value: vl*100,                  // slider value
+		    step: 0.01,                // slider step by
+		    orientation: 'horizontal', // slider orientation
+		    range: 'min',              // slider range
+		    animate: true,             // slider animate
+		    slide: function(e, ui) {   // slider control slide event handler
+		      vl = ui.value/100;
+		      audio.volume = vl;
+		      localStorage.setItem('volume', vl);
+		      checkVolumeStatus(vl);
+		    }
+		  }
+		)
+	      )
+	    )
+	  ).append($mute = $('<li/>', { // add list item for mute control
+	    'class': 'ap-controls ap-mute ui-corner-all'
+	    }
+	    ).data('btn', 'mute').append($('<a/>', { // set data on list item and and anchor element for mute control
+	      'class': 'ap-button ui-icon ui-icon-volume-on',
+	      title: 'mute',
+	      href: '#',
+	      text: 'mute'
+	      }
+	      )
+	    )
+	  ).append($unmu = $('<li/>', { // add list item for unmute control
+	    css: {
+	      display: 'none' // initiall hide the unmute control
+	      },
+	    'class': 'ap-controls ap-unmute ui-corner-all'
+	    }
+	    ).data('btn', 'unmu').append($('<a/>', { // set data on the list item and add anchor element
+	      'class': 'ap-button ui-icon ui-icon-volume-off',
+	      title: 'unmute',
+	      href: '#',
+	      text: 'unmute'
+	      }
+	      )
+	    )
+	  )
+	).append(
+	  $('<div/>', { // add div element to contain progress elements
+	    'class': 'ap-progress'
+	    }
+	  ).append(
+	    $('<div/>', { // add div element to contain time and duration elements
+	      css: {
+		position: 'relative',
+		'padding-bottom': '2px'
+		}
+	      }
+	    ).append(
+	      $time = $('<div/>', { // add div element for time display and assign it to the $time variable
+		'class': 'ap-time ap-current',
+		html: '0:00'
+		}
+	      )
+	    ).append(
+	      $dura = $('<div/>', { // add div element for duration display and assign it to the $dura variable
+		'class': 'ap-time ap-duration',
+		html: '0:00'
+	      }
+	      )
+	    )
+	  ).append(
+	    $('<div/>', { // add div element to contain progress bar
+	      css: {padding: '0 9px 0 7px'},
+	      'class': 'ap-progress-content'
+	      }
+	    ).append(
+	      $prog = $('<div/>', { // add div element for progress bar
+		'class': 'ap-progress-slider'
+		}
+	      ).slider({ // create a jQuery UI slider widget control - see http://jqueryui.com for more info
+		  disabled: true,            // slider initially disabled
+		  max: 100,                  // slider max range
+		  value: 0,                  // slider value
+		  step: 0.01,                // slider step by
+		  orientation: 'horizontal', // slider orientation
+		  range: 'min',              // slider range
+		  animate: true,             // slider animate
+		  slide: function(e, ui) {   // slider control slide event handler
+		    manualSeek = true;
+		    if(sp > 0) {           // time to percent conversion calculations
+		      var percent = ui.value * (100 / sp);
+		      if((typeof audio.seekable === 'object') && (audio.seekable.length > 0)) {
+			audio.currentTime = percent * audio.seekable.end(audio.seekable.length-1) / 100;
+		      } else if(audio.duration > 0 && !isNaN(audio.duration)) {
+			audio.currentTime = percent * audio.duration / 100;
+		      }
+		    } else {
+		      resetMedia();
+		    }
+		  },
+		  stop: function(e, ui) {  // slider control stop event handler
+		    manualSeek = false;
+		  }
+		}
+	      )
+	    )
+	  )
+	)
+    ), // end of player interface control elements
+    showPlay = function() { // function to show the play control and hide the pause control
+      $play.show();
+      $paus.hide();
+    },
+    timeFormat = { // time format options for time and duration display
+      showHour: true,
+      showMin: true,
+      showSec: true,
+      padHour: false,
+      padMin: false,
+      padSec: true,
+      sepHour: ":",
+      sepMin: ":"
+    },
+    convertTime = function(s) {  // Convert seconds into a formated time string
+      var myTime = new Date(s * 1000),
+	hour = myTime.getUTCHours(),
+	min = myTime.getUTCMinutes(),
+	sec = myTime.getUTCSeconds(),
+	strHour = (timeFormat.padHour && hour < 10) ? "0" + hour : hour,
+	strMin = (hour > 0 || (timeFormat.padMin && min < 10)) ? "0" + min : min,
+	strSec = (timeFormat.padSec && sec < 10) ? "0" + sec : sec;
+      return ((timeFormat.showHour && hour > 0) ? strHour + timeFormat.sepHour : "") + ((timeFormat.showMin) ? strMin + timeFormat.sepMin : "") + ((timeFormat.showSec) ? strSec : "");
+    },
+    updateTimes = function(d, c) { // Update the duration "d" and current time "c", calculates the remaining time "r", current percent average "cpa" and the slider percent "sp"
+      var r = parseInt(d, 10) - parseInt(c, 10);
+      cpa = (duration > 0) ? 100 * c / duration : 0;
+      if((typeof audio.seekable === 'object') && (audio.seekable.length > 0)) {
+	sp = (duration > 0) ? 100 * audio.seekable.end(audio.seekable.length-1) / duration : 100;
+      }
+      r = (r < 0) ? -r : r; // if r is negative, negate to positive
+      $dura.text(convertTime(r)); // update the duration text
+      $time.text(convertTime(c)); // udate the current time text
+    },
+    mediaStart = function() {
+      audio.currentTime = 0; // set the current time of the loaded media to the beginning (0)
+    },
+    resetMedia = function() {
+      audio.pause(); // pause the current media if playing
+      setTimeout(function() { // set a temporary delay for the slider control. This allows the system to catch up
+	$prog.slider('value', 0);
+      }, 0);
+      mediaStart();
+    },
+    checkVolumeStatus = function(level) {
+      if(level) {
+	audio.muted = false;
+	$unmu.hide();
+	$mute.show();
+	return;
+      }
+      audio.muted = true;
+      $mute.hide();
+      $unmu.show();
+      return;
+    },
+    playPrev = function() {
+      isPlaying ? mediaStart() : _playPrev();
+    },
+    playNext = function(e) {
+      (e === 'ended') ? _playNextEnded() : _playNext();
+    },
+    _playPrev = function() {
+      --iTrack;
+      iTrack = (trackCount && iTrack > -1) ? iTrack : 0;
+      iTrack && isPlaying ? _playTrack(iTrack) : _loadTrack(iTrack);
+    },
+    __playPrev = function() {
+      if(trackCount) {
+	--iTrack;
+	iTrack >= 0 ? _playTrack(iTrack) : _loadFirstTrack();
+      } else {
+	_loadFirstTrack();
+      }
+    },
+    _playNextEnded = function() {
+      ++iTrack;
+      iTrack = (trackCount && iTrack < trackCount) ? iTrack : 0;
+      iTrack ? _playTrack(iTrack) : _loadFirstTrack();
+    },
+    _playNext = function() {
+      if(trackCount) {
+	++iTrack;
+	iTrack = isPlaying ? iTrack < trackCount ? iTrack : 0 : iTrack < trackCount ? iTrack : trackCount - 1;
+	isPlaying ? iTrack ? _playTrack(iTrack) : _loadFirstTrack() : _loadTrack(iTrack);
+      } else {
+	resetMedia();
+      }
+    },
+    _loadFirstTrack = function() {
+      isPlaying = false;
+      iTrack = 0;
+      showPlay();
+      _loadTrack(0);
+    },
+    _loadTrack = function(i) {
+      var title, album, artist, image;
+      title = tracks[i].title ? tracks[i].title : '&nbsp;';
+      album = tracks[i].album ? tracks[i].album : '&nbsp;';
+      artist = tracks[i].artist ? tracks[i].artist : '&nbsp;';
+      image = '<%= escape_javascript(@article.content_with_medium).html_safe unless @article.content.blank? %>';
+      $title.html(title);
+/*      
+      $album.html(album);
+      $artist.html(artist);
+      $image.html(image);
+*/
+      audio.src = tracks[i].file + ext;
+    },
+    _playTrack = function(i) {
+      _loadTrack(i);
+      audio.play();
+    },
+    getTracks = function(src) {
+      if($.isArray(src)) {
+	tracks = src;
+      } else {
+	tracks = [src];
+      }
+      trackCount = tracks.length > 1 ? tracks.length : 0;
+      _loadFirstTrack();
+    };
+/*
+    $('#ap_container_1 .ap-controls').hover(
+      function() { $(this).addClass('ui-state-hover'); },
+      function() { $(this).removeClass('ui-state-hover'); }
+    );
+*/
+    getTracks(  { "title":"<%= @article.title_display.html_safe %>", "file":"../<%= article.audio.url(:ogg, false).gsub(/\.mp3$/, "") %>" }  );
+    audio.volume = vl; //set last volume level
+  } else {
+    $('#ap_container_1').html('Your browser does not support the HTML5 audio tag.');
+  }
+});

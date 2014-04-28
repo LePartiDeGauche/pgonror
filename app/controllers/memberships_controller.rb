@@ -16,8 +16,6 @@
 
 # Controller for memberships.
 class MembershipsController < PaymentController
-  caches_action :adhesion, :if => Proc.new { can_cache? }
-
   # Membership form.
   def adhesion
     @membership = Membership.new
@@ -28,7 +26,7 @@ class MembershipsController < PaymentController
   def valider_adhesion
     saved = false
     begin
-      @membership = Membership.new(params[:membership])
+      @membership = Membership.new(membership_parameters)
       @membership.renew = params[:renew]
       predefined_amount = params[:membership][:predefined_amount] if params[:membership].present?
       @membership.amount = predefined_amount.to_i if predefined_amount.present? and predefined_amount != "0"
@@ -74,10 +72,40 @@ class MembershipsController < PaymentController
 
   # Payment of the membership is rejected.  
   def adhesion_rejetee
+    record = nil
     begin    
-      update_payment_record!
+      record = update_payment_record!
     end
-    flash[:notice] = t('action.membership.error')
+    flash[:notice] = t('action.membership.error') + (record.nil? ? "" : record.payment_error_message)
     redirect_to :root
+  end
+
+  # Returns the parameters that are allowed for mass-update.
+  def membership_parameters
+    return nil if params[:membership].nil?
+    params.require(:membership).permit(:renew,
+                                           :last_name,
+                                           :first_name,
+                                           :email,
+                                           :address,
+                                           :zip_code,
+                                           :city,
+                                           :country,
+                                           :phone,
+                                           :department,
+                                           :committee,
+                                           :birthdate,
+                                           :job,
+                                           :mandate,
+                                           :union,
+                                           :union_resp,
+                                           :assoc,
+                                           :assoc_resp,
+                                           :comment,
+                                           :mandate_place,
+                                           :mobile,
+                                           :gender,
+                                           :predefined_amount,
+                                           :amount)
   end
 end

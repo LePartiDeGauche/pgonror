@@ -29,6 +29,7 @@ FactoryGirl.define do
     
     trait :as_admin do
       administrator true
+      notification_alert true
     end
 
     factory :member, :traits => [:as_member]

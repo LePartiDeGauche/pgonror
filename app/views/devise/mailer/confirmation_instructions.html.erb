@@ -7,7 +7,7 @@
     <p><%= t('devise.mailer.hello', :email => @resource.email) %></p>
     <p></p>
     <p><%= t('devise.mailer.click_to_activate') %></p>
-    <p><%= link_to t('devise.mailer.confirm'), confirmation_url(@resource, :confirmation_token => @resource.confirmation_token) %></p>
+    <p><%= link_to t('devise.mailer.confirm'), confirmation_url(@resource, :confirmation_token => @token) %></p>
     <p></p>
     <p><%= t('general.title') %></p>
   </body>

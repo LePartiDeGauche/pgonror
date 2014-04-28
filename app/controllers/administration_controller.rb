@@ -14,45 +14,35 @@
 # 
 # See doc/COPYRIGHT.rdoc for more details.
 class AdministrationController < ApplicationController
-  before_filter :authenticate_user!
-  before_filter :authenticate_administrator!
-  
+  before_action :authenticate_user!
+  before_action :authenticate_administrator!
+
   def index
     @type = params[:type]
     logs = case @type
     when 'donations'
-      @label = t('action.donation.log')
       Donation.logs
     when 'dons_payes'
-      @label = t('action.donation.paid_log')
       Donation.paid_logs
     when 'dons_nonaboutis'
-      @label = t('action.donation.unpaid_log')
       Donation.unpaid_logs
     when 'ml_subscribers'
-      @label = t('action.subscription.log')
       Subscription.logs
     when 'adherents'
-      @label = t('action.membership.log')
       Membership.logs
     when 'adherents_paye'
-      @label = t('action.membership.paid_log')
       Membership.paid_logs
     when 'adherents_nonabouti'
-      @label = t('action.membership.unpaid_log')
       Membership.unpaid_logs
     when 'messages'
-      @label = t('action.request.log')
       Request.logs
     when 'audits'
-      @label = t('action.audit.log')
       Audit.logs
     end
     unless logs.nil?
-      logs = logs.filtered_by(@search) if @search
-      @logs = logs.empty? ? logs : logs.page(@page)
+      @logs = logs
+      @logs = logs.filtered_by(@search) if @search
     else
-      @label = t('general.administration')
       @logs = []
     end
   end

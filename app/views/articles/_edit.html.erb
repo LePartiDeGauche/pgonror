@@ -93,7 +93,7 @@
         <td><%= f.label :external_id %></td>
         <td><%= f.text_field :external_id, :size => "80x1" %></td>
       </tr>
-    <% elsif not(@article.category_option?(:image)) and not(@article.category_option?(:audio)) and not(@article.category_option?(:document)) %>
+    <% elsif not(@article.category_option?(:image)) and not(@article.category_option?(:document)) %>
       <tr>
         <td><%= f.label :original_url %></td>
         <td><%= f.text_field :original_url, :size => "80x1" %></td>

@@ -2,36 +2,37 @@
 <html lang="fr">
   <head>
     <meta charset="utf-8">
-    <title><%= current_page_title %></title>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <meta http-equiv="content-language" content="fr-FR" />
-    <meta http-equiv="cache-control" content="max-age=900" />
-    <% if @created_at.present? -%><meta http-equiv="date" content="<%= @created_at %>" /><% end %>
-    <% if @updated_at.present? -%><meta http-equiv="last-modified" content="<%= @updated_at %>" /><% end %>
-    <meta name="description" content="<%= current_page_description %>" />
-    <meta name="copyright" content="<%= t 'general.copyright' %>" />
-    <link rel="image_src" href="<%= asset_path @identity_icon %>" />
-    <link rel="canonical" content="<%= @url %>" />
-    <% if @original_url.present? -%><meta name="original-source" content="<%= @original_url %>" /><% end %>
-    <meta property="og:title" content="<%= current_page_title_sn %>" />
-    <meta property="og:type" content="<%= @og_type %>" />
-    <meta property="og:url" content="<%= @url %>" />
-    <meta property="og:description" content="<%= current_page_description %>" />
-    <meta property="og:site_name" content="<%= t 'general.title' %>" />
-    <meta property="og:image" content="<%= asset_path @identity_icon %>" />
-    <meta property="og:locale" content="fr_FR" />
-    <meta name="generator" content="Ruby on Rails 3" />
-    <% if @norobot.present? and @norobot -%><meta name="robots" content="noindex,nofollow" /><% end -%>
-    <%= stylesheet_link_tag 'screen', :media => 'screen, projection' %>
-    <%= stylesheet_link_tag 'print', :media => 'print' %>
-    <%= stylesheet_link_tag 'jquery-ui', :media => 'screen, projection' %>
-    <!--[if lt IE 8]><%= stylesheet_link_tag 'ie', :media => 'screen, projection' %><![endif]-->
-    <%= javascript_include_tag "application" %>
-    <!--[if lt IE 9]>
-    <%= javascript_include_tag "html5.js" %>
-    <![endif]-->
+    <% cache_if can_cache?, @url do %>
+      <title><%= current_page_title %></title>
+      <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+      <meta http-equiv="content-language" content="fr-FR" />
+      <meta http-equiv="cache-control" content="max-age=900" />
+      <% if @created_at.present? -%><meta http-equiv="date" content="<%= @created_at %>" /><% end %>
+      <% if @updated_at.present? -%><meta http-equiv="last-modified" content="<%= @updated_at %>" /><% end %>
+      <meta name="description" content="<%= current_page_description %>" />
+      <meta name="copyright" content="<%= t 'general.copyright' %>" />
+      <link rel="image_src" href="<%= asset_path @identity_icon %>" />
+      <link rel="canonical" content="<%= @url %>" />
+      <% if @original_url.present? -%><meta name="original-source" content="<%= @original_url %>" /><% end %>
+      <meta property="og:title" content="<%= current_page_title_sn %>" />
+      <meta property="og:type" content="<%= @og_type %>" />
+      <meta property="og:url" content="<%= @url %>" />
+      <meta property="og:description" content="<%= current_page_description %>" />
+      <meta property="og:site_name" content="<%= t 'general.title' %>" />
+      <meta property="og:image" content="<%= asset_path @identity_icon %>" />
+      <meta property="og:locale" content="fr_FR" />
+      <meta name="generator" content="Ruby on Rails 4" />
+      <% if @norobot.present? and @norobot -%><meta name="robots" content="noindex,nofollow" /><% end -%>
+      <%= stylesheet_link_tag 'screen', :media => 'screen, projection', :cache => true %>
+      <%= stylesheet_link_tag 'print', :media => 'print', :cache => true %>
+      <%= stylesheet_link_tag 'jquery-ui', :media => 'screen, projection', :cache => true %>
+      <%= stylesheet_link_tag 'audio-player', :media => 'screen, projection', :cache => true %>
+      <!--[if lt IE 8]><%= stylesheet_link_tag 'ie', :media => 'screen, projection' %><![endif]-->
+      <%= javascript_include_tag "application", :cache => true %>
+      <!--[if lt IE 9]><%= javascript_include_tag "html5.js" %><![endif]-->
+      <%= render :partial => 'layouts/scripts' %>
+    <% end %>
     <%= csrf_meta_tags %>
-    <%= render :partial => 'layouts/scripts' %>
   </head>
   <body>
     <div id="container">

@@ -9,6 +9,8 @@
       <br/><%= t('alert.request') %> : <%= @request %>
       <br/><%= t('alert.params') %> : <%= @params %>
       <br/><%= t('alert.remote_ip') %> : <%= @remote_ip %>
+      <% unless @referer.blank? %><br/><%= t('alert.referer') %> : <%= @referer %><% end %>
+      <% unless @user.blank? %><br/><%= t('alert.user') %> : <%= @user %><% end %>
       <% unless @invalid_backtrace.nil? %>
         <br/><%= @invalid_backtrace.join('<br/>').html_safe %>
       <% end %>

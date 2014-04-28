@@ -16,8 +16,6 @@
 
 # Controller for donations.
 class DonationsController < PaymentController
-  caches_action :don, :if => Proc.new { can_cache? }
-
   # Donation form.
   def don
     @donation = Donation.new
@@ -28,7 +26,7 @@ class DonationsController < PaymentController
   def valider_don
     saved = false
     begin
-      @donation = Donation.new(params[:donation])
+      @donation = Donation.new(donation_parameters)
       @donation.save!
       saved = true
     rescue ActiveRecord::RecordInvalid => invalid
@@ -71,10 +69,28 @@ class DonationsController < PaymentController
 
   # Payment of the membership is rejected.  
   def don_rejete
+    record = nil
     begin
-      update_payment_record!
+      record = update_payment_record!
     end
-    flash[:notice] = t('action.donation.error')
+    flash[:notice] = t('action.donation.error') + (record.nil? ? "" : record.payment_error_message)
     redirect_to :root
+  end
+
+private
+
+  # Returns the parameters that are allowed for mass-update.
+  def donation_parameters
+    return nil if params[:donation].nil?
+    params.require(:donation).permit(:last_name,
+                                         :first_name,
+                                         :email,
+                                         :address,
+                                         :zip_code,
+                                         :city,
+                                         :country,
+                                         :phone,
+                                         :comment,
+                                         :amount)
   end
 end

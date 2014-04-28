@@ -67,4 +67,9 @@ module ApplicationHelper
             :time => time_ago_in_words(time, :include_seconds => true),
             :by => (who.present?) ? who : t('general.unknown'))
   end
+
+  # Returns true when the cache mechanism can be activated.
+  def can_cache?
+    not(user_signed_in?) and flash[:alert].nil? and flash[:notice].nil?
+  end
 end

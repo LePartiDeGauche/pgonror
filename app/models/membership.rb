@@ -143,44 +143,34 @@ class Membership < Payment
   validates :phone, :presence => true, :unless => :mobile?
   validates :mobile, :presence => true, :unless => :phone?
   validates :phone, :length => {:maximum => 30}
+  validates :job, :length => {:maximum => 80}
+  validates :assoc, :length => {:maximum => 80}
+  validates :union, :length => {:maximum => 80}
+  validates :mandate, :length => {:maximum => 80}
   validates :mandate_place, :presence => true, :if => :mandate?
   validates :mobile, :length => {:maximum => 30}
   validates :email, :length => {:minimum => 3, :maximum => 50}, :email => true
+  validate :amount_range_mini
   validate :amount_range
-  validates :comment, :length => {:maximum => 1000}
+  validates :comment, :length => {:maximum => 3000}
 
-  # Setup accessible (or protected) attributes for the model.
-  attr_accessible :renew,
-                  :last_name,
-                  :first_name,
-                  :email,
-                  :address,
-                  :zip_code,
-                  :city,
-                  :country,
-                  :phone,
-                  :department,
-                  :committee,
-                  :birthdate,
-                  :job,
-                  :mandate,
-                  :union,
-                  :union_resp,
-                  :assoc,
-                  :assoc_resp,
-                  :comment,
-                  :mandate_place,
-                  :mobile,
-                  :gender,
-                  :predefined_amount
-
-  # Defines the miminum amount for the membership fee.  
+  # Defines the miminum amount for the membership fee.
   MIN_AMOUNT = 36.0
 
-  # Valides the amount (fee) is entered and is greater or equal to the mimimum.  
-  def amount_range
+  # Defines the maximum amount for the membership fee.
+  MAX_AMOUNT = 99999.99
+
+  # Valides the amount (fee) is entered and is greater or equal to the mimimum.
+  def amount_range_mini
     if self.amount.present? and self.amount < MIN_AMOUNT
-      errors.add(:amount, I18n.t('activerecord.attributes.membership.amount_error', :min => number_to_currency(MIN_AMOUNT)))
+      errors.add(:amount, I18n.t('activerecord.attributes.membership.amount_error_min', :min => number_to_currency(MIN_AMOUNT)))
+    end
+  end
+
+  # Valides the amount (fee) is entered and is less than the maximum.
+  def amount_range
+    if self.amount.present? and self.amount > MAX_AMOUNT
+      errors.add(:amount, I18n.t('activerecord.attributes.membership.amount_error_max', :max => number_to_currency(MAX_AMOUNT)))
     end
   end
 
@@ -349,8 +339,8 @@ class Membership < Payment
   end
 
   # For logs in Administration panel
-  scope :logs, order('created_at DESC')
-  scope :paid_logs, Membership::find_paid.order('created_at DESC')
-  scope :unpaid_logs, Membership::find_unpaid.order('created_at DESC')
+  scope :logs, -> { order('created_at DESC') }
+  scope :paid_logs, -> { Membership::find_paid.order('created_at DESC') }
+  scope :unpaid_logs, -> { Membership::find_unpaid.order('created_at DESC') }
   scope :filtered_by, lambda { |search| where('lower(first_name) LIKE ? OR lower(last_name) LIKE ? OR lower(email) LIKE ?', "%#{search.downcase.strip}%", "%#{search.downcase.strip}%", "%#{search.downcase.strip}%") }
 end

@@ -43,7 +43,7 @@
 body {
   background:{
     color:$pg-lightgreen;
-    image:url('BackPgTop.png');
+    image:image-url('BackPgTop.png');
     position:center top;
     repeat:no-repeat;
   }
@@ -91,7 +91,7 @@ body {
     }
   }
   .picture-title {
-    padding-bottom:$pg-padding;
+    padding-bottom:$pg-padding/2;
   }
   .zoom-title {
     background-color:$pg-lightgreen;
@@ -139,7 +139,7 @@ body {
       }
     }
   }
-   .add-link {
+  .add-link {
     font-weight:bolder;
     cursor:pointer;
     background-color:$pg-green; 
@@ -260,6 +260,24 @@ body {
         cursor:pointer;
       }
     }
+    .audio {
+      margin-bottom: 10px;
+      .buttons_only {
+        font-size: 10px;
+        font-style: italic;
+        text-align: right;
+        /*margin-top: -25px;*/
+      }
+      .soundcloud {
+        position:absolute;
+        z-index:10;
+        width:110px;
+        height:30px;
+        margin-left:500px;
+        background:#F5F5F5;
+        margin-top:-152px;
+      }
+    }
     .one-fourth-column {
       img {
         width:212px;
@@ -268,6 +286,9 @@ body {
     .one-third-column {
       img {
         width:292px;
+      }
+      object {
+        position:absolute;
       }
     }
   }
@@ -775,7 +796,7 @@ body {
     @include border-radius;
     background-color:$color-menu-bg-normal;
     padding:$pg-padding / 2;
-    margin:$pg-padding;
+    margin:$pg-padding / 2;
     @include pg-transition;
     &:hover {
       background-color:$color-menu-bg-hover; 
@@ -788,7 +809,7 @@ body {
   } 
 }
 
-$top-height:550px;
+$top-height:540px;
 $zoom-width:628px;
 $zoom-height:309px;
 
@@ -880,7 +901,7 @@ $zoom-height:309px;
 }
 
 #agenda-content {
-  height:475px;
+  height:455px;
   .inner-list {
     height:465px;
     overflow:hidden;

@@ -22,16 +22,11 @@
     <ol>
       <% for article in articles %>
         <li>
-          <article class="article article-separator">
-            <h1>
-              <%= link_to article.path do %>
-                <% unless article.heading.blank? %>
-                  <%= article.heading_display.html_safe %>&nbsp;&bull;
-                <% end %>
-                <%= article.title_display.html_safe %>
-              <% end %>
-            </h1>
-          </article>
+          <% cache_if can_cache?, article do %>
+            <article class="article article-separator">
+              <h1><%= link_to ((article.heading.blank? ? '' : article.heading_display + '&nbsp;&bull; ') + article.title_display).html_safe, article.path %></h1>
+            </article>
+          <% end %>
         </li>
       <% end %>
     </ol>

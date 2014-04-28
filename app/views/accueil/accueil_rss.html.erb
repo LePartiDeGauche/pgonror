@@ -1,60 +1,62 @@
-<section id="welcome">
-  <section class="content-bloc">
-    <header>
-      <h3 class="category">RSS&nbsp;&bull;</h3>
-    </header>
-    <%= t('identity.rss_explain_more') %>
-    <br/>
-    <br/>
-    <table>
-      <tr>
-        <td><h1><%= icon_medium('rss.png') %> <%= link_to root_path do %><%= t('identity.rss_1_explain') %><% end %></h1></td>
-        <td>
-          <%= link_to rss_feed_path, :target => "_blank", :title => "XML" do %><img src="<%= asset_path 'btn-xml.png' %>" alt="XML"><% end %>&nbsp;&bull;
-          <a target="_blank" href="http://add.my.yahoo.com/rss?url=<%= url_for rss_feed_path(:only_path => false) %>" title="MonYahoo!"><img src="<%= asset_path 'btn-yahoo.png' %>" alt="Mon Yahoo!"></a>&nbsp;&bull;
-          <a target="_blank" href="http://fusion.google.com/add?feedurl=<%= url_for rss_feed_path(:only_path => false) %>" title="Google+"><img src="<%= asset_path 'btn-google.png' %>" alt="Google+"></a>&nbsp;&bull;
-          <a target="_blank" href="http://www.netvibes.com/subscribe.php?url=<%= url_for rss_feed_path(:only_path => false) %>" title="netvibes"><img src="<%= asset_path 'btn-netvibes.png' %>" alt="netvibes"></a>
-        </td>
-      </tr>
-      <tr>
-        <td><h1><%= icon_medium('rss.png') %> <%= link_to agenda_path do %><%= t('identity.rss_2_explain') %><% end %></h1></td>
-        <td>
-          <%= link_to militer_rss_feed_path, :target => "_blank", :title => "XML" do %><img src="<%= asset_path 'btn-xml.png' %>" alt="XML"><% end %>&nbsp;&bull;
-          <a target="_blank" href="http://add.my.yahoo.com/rss?url=<%= url_for militer_rss_feed_path(:only_path => false) %>" title="MonYahoo!"><img src="<%= asset_path 'btn-yahoo.png' %>" alt="Mon Yahoo!"></a>&nbsp;&bull;
-          <a target="_blank" href="http://fusion.google.com/add?feedurl=<%= url_for militer_rss_feed_path(:only_path => false) %>" title="Google+"><img src="<%= asset_path 'btn-google.png' %>" alt="Google+"></a>&nbsp;&bull;
-          <a target="_blank" href="http://www.netvibes.com/subscribe.php?url=<%= url_for militer_rss_feed_path(:only_path => false) %>" title="netvibes"><img src="<%= asset_path 'btn-netvibes.png' %>" alt="netvibes"></a>
-        </td>
-      </tr>
-      <tr>
-        <td><h1><%= icon_medium('rss.png') %> <%= link_to podcast_path do %><%= t('identity.rss_3_explain') %><% end %></h1></td>
-        <td>
-          <%= link_to podcast_feed_path, :target => "_blank", :title => "XML" do %><img src="<%= asset_path 'btn-xml.png' %>" alt="XML"><% end %>&nbsp;&bull;
-          <a target="_blank" href="http://add.my.yahoo.com/rss?url=<%= url_for podcast_feed_path(:only_path => false) %>" title="MonYahoo!"><img src="<%= asset_path 'btn-yahoo.png' %>" alt="Mon Yahoo!"></a>&nbsp;&bull;
-          <a target="_blank" href="http://fusion.google.com/add?feedurl=<%= url_for podcast_feed_path(:only_path => false) %>" title="Google+"><img src="<%= asset_path 'btn-google.png' %>" alt="Google+"></a>&nbsp;&bull;
-          <a target="_blank" href="http://www.netvibes.com/subscribe.php?url=<%= url_for podcast_feed_path(:only_path => false) %>" title="netvibes"><img src="<%= asset_path 'btn-netvibes.png' %>" alt="netvibes"></a>
-        </td>
-      </tr>
-      <tr>
-        <td><h1><%= icon_medium('rss.png') %> <%= link_to lateledegauche_path do %><%= t('identity.rss_4_explain') %><% end %></h1></td>
-        <td>
-          <%= link_to lateledegauche_rss_feed_path, :target => "_blank", :title => "XML" do %><img src="<%= asset_path 'btn-xml.png' %>" alt="XML"><% end %>&nbsp;&bull;
-          <a target="_blank" href="http://add.my.yahoo.com/rss?url=<%= url_for lateledegauche_rss_feed_path(:only_path => false) %>" title="MonYahoo!"><img src="<%= asset_path 'btn-yahoo.png' %>" alt="Mon Yahoo!"></a>&nbsp;&bull;
-          <a target="_blank" href="http://fusion.google.com/add?feedurl=<%= url_for lateledegauche_rss_feed_path(:only_path => false) %>" title="Google+"><img src="<%= asset_path 'btn-google.png' %>" alt="Google+"></a>&nbsp;&bull;
-          <a target="_blank" href="http://www.netvibes.com/subscribe.php?url=<%= url_for lateledegauche_rss_feed_path(:only_path => false) %>" title="netvibes"><img src="<%= asset_path 'btn-netvibes.png' %>" alt="netvibes"></a>
-        </td>
-      </tr>
-      <% for tag in @tags %>
+<% cache_if can_cache?, @url do %>
+  <section id="welcome">
+    <section class="content-bloc">
+      <header>
+        <h3 class="category">RSS&nbsp;&bull;</h3>
+      </header>
+      <%= t('identity.rss_explain_more') %>
+      <br/>
+      <br/>
+      <table>
         <tr>
-          <td><h1><%= icon_medium('rss.png') %> <%= tag %></h1></td>
+          <td><h1><%= icon_medium('rss.png') %> <%= link_to root_path do %><%= t('identity.rss_1_explain') %><% end %></h1></td>
           <td>
-            <%= link_to rss_feed_path(:search => tag), :target => "_blank", :title => "XML" do %><img src="<%= asset_path 'btn-xml.png' %>" alt="XML"><% end %>&nbsp;&bull;
-            <a target="_blank" href="http://add.my.yahoo.com/rss?url=<%= url_for rss_feed_path(:search => tag, :only_path => false) %>" title="MonYahoo!"><img src="<%= asset_path 'btn-yahoo.png' %>" alt="Mon Yahoo!"></a>&nbsp;&bull;
-            <a target="_blank" href="http://fusion.google.com/add?feedurl=<%= url_for rss_feed_path(:search => tag, :only_path => false) %>" title="Google+"><img src="<%= asset_path 'btn-google.png' %>" alt="Google+"></a>&nbsp;&bull;
-            <a target="_blank" href="http://www.netvibes.com/subscribe.php?url=<%= url_for rss_feed_path(:search => tag, :only_path => false) %>" title="netvibes"><img src="<%= asset_path 'btn-netvibes.png' %>" alt="netvibes"></a>
+            <%= link_to rss_feed_path, :target => "_blank", :title => "XML" do %><img src="<%= asset_path 'btn-xml.png' %>" alt="XML"><% end %>&nbsp;&bull;
+            <a target="_blank" href="http://add.my.yahoo.com/rss?url=<%= url_for rss_feed_path(:only_path => false) %>" title="MonYahoo!"><img src="<%= asset_path 'btn-yahoo.png' %>" alt="Mon Yahoo!"></a>&nbsp;&bull;
+            <a target="_blank" href="http://fusion.google.com/add?feedurl=<%= url_for rss_feed_path(:only_path => false) %>" title="Google+"><img src="<%= asset_path 'btn-google.png' %>" alt="Google+"></a>&nbsp;&bull;
+            <a target="_blank" href="http://www.netvibes.com/subscribe.php?url=<%= url_for rss_feed_path(:only_path => false) %>" title="netvibes"><img src="<%= asset_path 'btn-netvibes.png' %>" alt="netvibes"></a>
           </td>
         </tr>
-      <% end %>
-    </table>
-    <br/>
+        <tr>
+          <td><h1><%= icon_medium('rss.png') %> <%= link_to agenda_path do %><%= t('identity.rss_2_explain') %><% end %></h1></td>
+          <td>
+            <%= link_to militer_rss_feed_path, :target => "_blank", :title => "XML" do %><img src="<%= asset_path 'btn-xml.png' %>" alt="XML"><% end %>&nbsp;&bull;
+            <a target="_blank" href="http://add.my.yahoo.com/rss?url=<%= url_for militer_rss_feed_path(:only_path => false) %>" title="MonYahoo!"><img src="<%= asset_path 'btn-yahoo.png' %>" alt="Mon Yahoo!"></a>&nbsp;&bull;
+            <a target="_blank" href="http://fusion.google.com/add?feedurl=<%= url_for militer_rss_feed_path(:only_path => false) %>" title="Google+"><img src="<%= asset_path 'btn-google.png' %>" alt="Google+"></a>&nbsp;&bull;
+            <a target="_blank" href="http://www.netvibes.com/subscribe.php?url=<%= url_for militer_rss_feed_path(:only_path => false) %>" title="netvibes"><img src="<%= asset_path 'btn-netvibes.png' %>" alt="netvibes"></a>
+          </td>
+        </tr>
+        <tr>
+          <td><h1><%= icon_medium('rss.png') %> <%= link_to podcast_path do %><%= t('identity.rss_3_explain') %><% end %></h1></td>
+          <td>
+            <%= link_to podcast_feed_path, :target => "_blank", :title => "XML" do %><img src="<%= asset_path 'btn-xml.png' %>" alt="XML"><% end %>&nbsp;&bull;
+            <a target="_blank" href="http://add.my.yahoo.com/rss?url=<%= url_for podcast_feed_path(:only_path => false) %>" title="MonYahoo!"><img src="<%= asset_path 'btn-yahoo.png' %>" alt="Mon Yahoo!"></a>&nbsp;&bull;
+            <a target="_blank" href="http://fusion.google.com/add?feedurl=<%= url_for podcast_feed_path(:only_path => false) %>" title="Google+"><img src="<%= asset_path 'btn-google.png' %>" alt="Google+"></a>&nbsp;&bull;
+            <a target="_blank" href="http://www.netvibes.com/subscribe.php?url=<%= url_for podcast_feed_path(:only_path => false) %>" title="netvibes"><img src="<%= asset_path 'btn-netvibes.png' %>" alt="netvibes"></a>
+          </td>
+        </tr>
+        <tr>
+          <td><h1><%= icon_medium('rss.png') %> <%= link_to lateledegauche_path do %><%= t('identity.rss_4_explain') %><% end %></h1></td>
+          <td>
+            <%= link_to lateledegauche_rss_feed_path, :target => "_blank", :title => "XML" do %><img src="<%= asset_path 'btn-xml.png' %>" alt="XML"><% end %>&nbsp;&bull;
+            <a target="_blank" href="http://add.my.yahoo.com/rss?url=<%= url_for lateledegauche_rss_feed_path(:only_path => false) %>" title="MonYahoo!"><img src="<%= asset_path 'btn-yahoo.png' %>" alt="Mon Yahoo!"></a>&nbsp;&bull;
+            <a target="_blank" href="http://fusion.google.com/add?feedurl=<%= url_for lateledegauche_rss_feed_path(:only_path => false) %>" title="Google+"><img src="<%= asset_path 'btn-google.png' %>" alt="Google+"></a>&nbsp;&bull;
+            <a target="_blank" href="http://www.netvibes.com/subscribe.php?url=<%= url_for lateledegauche_rss_feed_path(:only_path => false) %>" title="netvibes"><img src="<%= asset_path 'btn-netvibes.png' %>" alt="netvibes"></a>
+          </td>
+        </tr>
+        <% for tag in @tags %>
+          <tr>
+            <td><h1><%= icon_medium('rss.png') %> <%= tag %></h1></td>
+            <td>
+              <%= link_to rss_feed_path(:search => tag), :target => "_blank", :title => "XML" do %><img src="<%= asset_path 'btn-xml.png' %>" alt="XML"><% end %>&nbsp;&bull;
+              <a target="_blank" href="http://add.my.yahoo.com/rss?url=<%= url_for rss_feed_path(:search => tag, :only_path => false) %>" title="MonYahoo!"><img src="<%= asset_path 'btn-yahoo.png' %>" alt="Mon Yahoo!"></a>&nbsp;&bull;
+              <a target="_blank" href="http://fusion.google.com/add?feedurl=<%= url_for rss_feed_path(:search => tag, :only_path => false) %>" title="Google+"><img src="<%= asset_path 'btn-google.png' %>" alt="Google+"></a>&nbsp;&bull;
+              <a target="_blank" href="http://www.netvibes.com/subscribe.php?url=<%= url_for rss_feed_path(:search => tag, :only_path => false) %>" title="netvibes"><img src="<%= asset_path 'btn-netvibes.png' %>" alt="netvibes"></a>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+      <br/>
+    </section>
   </section>
-</section>
+<% end %>

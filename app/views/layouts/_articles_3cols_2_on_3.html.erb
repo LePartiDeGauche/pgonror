@@ -18,24 +18,26 @@
         <% for article in articles %>
           <% if not first_row %><td class="article-inter-column"></td><% end %>
           <td class="article-one-third-column">
-            <article class="article">
-              <% length = 800 %>
-              <% omission = link_to(article.category_option?(:video) ? t('titre.voir_video').html_safe : t('titre.lire_suite').html_safe, article.path) %>
-              <header>
-                <% unless article.heading.blank? %>
-                  <h4><%= article.heading_display.html_safe %></h4><br/>
-                  <% length = length-30*(1+(article.heading_display.length/30).floor) %>
-                <% end %>
-                <h1><%= link_to article.title_display.html_safe, article.path %></h1>
-                <% length = length-30*(1+(article.title_display.length/30).floor) %>
-              </header>
-              <% content = truncate_html(article.content_with_mini, :length => length, :omission => omission) %>
-              <% if content["<img src"] or content["<iframe src"] %>
-                <% length = length - 110 %>
+            <% cache_if can_cache?, article do %>
+              <article class="article">
+                <% length = 800 %>
+                <% omission = link_to(article.category_option?(:video) ? t('titre.voir_video').html_safe : t('titre.lire_suite').html_safe, article.path) %>
+                <header>
+                  <% unless article.heading.blank? %>
+                    <h4><%= article.heading_display.html_safe %></h4><br/>
+                    <% length = length-30*(1+(article.heading_display.length/30).floor) %>
+                  <% end %>
+                  <h1><%= link_to article.title_display.html_safe, article.path %></h1>
+                  <% length = length-30*(1+(article.title_display.length/30).floor) %>
+                </header>
                 <% content = truncate_html(article.content_with_mini, :length => length, :omission => omission) %>
-              <% end %>
-              <%= content.html_safe %>
-            </article>
+                <% if content["<img src"] or content["<iframe src"] %>
+                  <% length = length - 110 %>
+                  <% content = truncate_html(article.content_with_mini, :length => length, :omission => omission) %>
+                <% end %>
+                <%= content.html_safe %>
+              </article>
+            <% end %>
           </td>
           <% first_row = false %>
         <% end %>

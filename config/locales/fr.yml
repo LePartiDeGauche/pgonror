@@ -53,12 +53,15 @@ fr:
     fdg_web:              "http://www.placeaupeuple2012.fr"
     gaucheexemple:        "La Gauche par l’exemple"
     gaucheexemple_web:    "http://www.lagaucheparlexemple.fr/"
-    reserved:             "ESPACE ADHÉRENT"
+    reserved:             "ESPACE ADHÉRENTS"
     reserved_link:        "Site interne Agit’Prop"
     reserved_web:         "http://agitprop.lepartidegauche.fr"
     reserved_contact:     "Contact"
     reserved_email:       "agitprop@lepartidegauche.fr"
     reserved_explain:     "Retrouvez sur le site interne du pôle Agit’Prop les outils militants, les documents de formation, les fiches pratiques pour l’action et les lettres des assemblées citoyennes."
+    reserved_extranet:    "Extranet"
+    reserved_extranet_link: "https://extranet.lepartidegauche.fr/"
+    reserved_extranet_desc: "Site interne Extranet"
     phototheque:          "PHOTOS DE GAUCHE"
     phototheque_web:      "http://photosdegauche.lepartidegauche.fr/"
     phototheque_link:     "La photothèque du Parti de Gauche"
@@ -83,8 +86,8 @@ fr:
     rss_explain_more:     "Pour vous abonner, cliquez sur la vignette d’abonnement de votre choix."
     rss_1_explain:        "À la une"
     rss_2_explain:        "Agenda"
-    rss_3_explain:        "Podcast"
-    rss_4_explain:        "La télé de Gauche"
+    rss_3_explain:        "La Radio de Gauche"
+    rss_4_explain:        "La Télé de Gauche"
     txt_explain:          "Téléchargez les derniers articles sous forme d’un fichier portable (.txt)."
     follow_fb:            "Parti de Gauche sur facebook"
     follow_fb_link:       "https://www.facebook.com/partidegauche.national"
@@ -107,6 +110,8 @@ fr:
     message:              "Message"
     request:              "URL"
     remote_ip:            "Adresse IP"
+    referer:              "Provenance"
+    user:                 "Utilisateur connecté"
     params:               "Parametres"
 
   action:
@@ -204,6 +209,24 @@ fr:
       cancelled:  "Votre paiement est annulé."
     audit:
       log:        "Historique des modifications"
+    paybox:
+      p00001:      "La connexion au centre d’autorisation a échoué"
+      p001xx:      "Paiement refusé par le centre d’autorisation"
+      p00105:      "Paiement refusé pour provision insuffisante"
+      p00003:      "Erreur Paybox"
+      p00004:      "Numéro de porteur ou cryptogramme visuel invalide"
+      p00006:      "Un problème est survenu sur le paiement, un administrateur a été contacté pour régler le problème"
+      p00009:      "Un problème est survenu sur le paiement, un administrateur a été contacté pour régler le problème"
+      p00010:      "Un problème est survenu sur le paiement, un administrateur a été contacté pour régler le problème."
+      p00016:      "Un problème est survenu sur le paiement, un administrateur a été contacté pour régler le problème"
+      p00008:      "Date de fin de validité incorrecte"
+      p00011:      "Le montant que vous essayer de payer est incorrect, merci de vérifier le montant que vous avez entré"
+      p00015:      "Le paiement semble déjà effectué"
+      p00021:      "Le paiement semble déjà effectué"
+      p00029:      "Votre carte ne semble pas être conforme, merci de réessayer avec une autre carte bleue"
+      p00030:      "Temps d’attente pour le paiement (> 15 mn) est dépassé"
+      p00033:      "Le code pays de votre navigateur n'est pas autorisé par ce système de paiement"
+      p00040:      "Un problème est survenue lors de la validation de votre code 3D Secure"
 
   passwd:
     no_auth:    "Vous n’avez pas accès à cette partie du site."
@@ -252,6 +275,8 @@ fr:
     voir_video:          "&nbsp;+&nbsp;voir la vidéo&hellip;"
     autres:              "Articles récents"
     same_heading:        "Sur le même thème"
+  audio:
+    share:      "Partager ce son"
 
   date:
     formats:
@@ -323,6 +348,9 @@ fr:
       over_x_years:
         one:   "plus d’un an"
         other: "plus de %{count} ans"
+      almost_x_years:
+        one:   "près d'un an"
+        other: "près de %{count} ans"
     prompts:
       year:   "Année"
       month:  "Mois"
@@ -536,7 +564,8 @@ fr:
         assoc:                      "Engagements associatifs"
         assoc_resp:                 "Responsabilités"
         amount:                     "Montant"
-        amount_error:               "doit être supérieur ou égal à %{min}"
+        amount_error_min:           "doit être supérieur ou égal à %{min}"
+        amount_error_max:           "doit être inférieur ou égal à %{max}"
         amount_explain:             "Le montant doit être supérieur ou égal à 36 €."
         free_amount:                "ou montant libre (€)"
         select_amount:              "Sélectionnez ou entrez un montant libre"
@@ -557,7 +586,8 @@ fr:
         phone:                      "Téléphone"
         comment:                    "Commentaire"        
         amount:                     "Montant (€)"
-        amount_error:               "doit être inférieur ou égal à %{max}"
+        amount_error_min:           "doit être supérieur ou égal à %{min}"
+        amount_error_max:           "doit être inférieur ou égal à %{max}"
         amount_explain:             "Dans la limite de 7 500 € par an."
       audits:
         comments:                   "Commentaires"

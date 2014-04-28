@@ -219,11 +219,15 @@ class Notification < ActionMailer::Base
                    message,
                    request,
                    remote_ip,
+                   referer,
+                   user,
                    params,
                    invalid_backtrace)
     @message = message
     @request = request
     @remote_ip = remote_ip
+    @referer = referer
+    @user = user
     @params = params
     @invalid_backtrace = invalid_backtrace
     mail(:from => from, :to => recipients, :subject => subject.to_s)

@@ -16,19 +16,21 @@
   <ol>
     <% for article in articles %>
       <li>
-        <article class="article">
-          <% if article.category_option?(:parent) %>
-            <p class="photos">
-              <% photo = article.find_published_by_folder_random 'image' %>
-              <% if photo.present? and photo.image.present? %>
-                <%= link_to image_tag(photo.image.url(:medium, false)),
-                            :controller => :photos,
-                            :action => :diaporama,
-                            :uri => article.uri %>
-              <% end %>
-            </p>
-          <% end %>
-        </article>
+        <% cache_if can_cache?, article do %>
+          <article class="article">
+            <% if article.category_option?(:parent) %>
+              <p class="photos">
+                <% photo = article.find_published_by_folder_random 'image' %>
+                <% if photo.present? and photo.image.present? %>
+                  <%= link_to image_tag(photo.image.url(:medium, false)),
+                              :controller => :photos,
+                              :action => :diaporama,
+                              :uri => article.uri %>
+                <% end %>
+              </p>
+            <% end %>
+          </article>
+        <% end %>
       </li>
     <% end %>
   </ol>

@@ -88,6 +88,19 @@ describe DonationsController do
       donation.payment_error.should be == "00000"
     end
 
+    it "retour_paiement_don (failure)" do
+      FactoryGirl.create(:user, :notification_donation => true)
+      donation = FactoryGirl.create(:donation)
+      id = donation.id
+      get :retour_paiement_don, :erreur => "00000",
+                                :transac => "12345",
+                                :id => 26
+      response.should be_success
+      donation = Donation.where('id = ?', id).first
+      donation.should_not be_nil
+      donation.payment_error.should_not be == "00000"
+    end
+
     it "don_enregistre" do
       donation = FactoryGirl.create(:donation)
       id = donation.id

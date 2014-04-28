@@ -14,18 +14,8 @@
 # 
 # See doc/COPYRIGHT.rdoc for more details.
 class MiliterController < ApplicationController
-  before_filter :find_article, :only => [:evenement, :tract, :affiche, :kit]
-  before_filter :load_side_articles, :only => [:index, :inscription, :evenement, :agenda]
-  caches_action :index, :layout => false, :expires_in => 1.hour, :if => Proc.new { can_cache? }
-  caches_action :agenda, :layout => false, :expires_in => 1.hour, :if => Proc.new { can_cache? }
-  caches_action :evenement, :layout => false, :expires_in => 1.hour, :if => Proc.new { can_cache? }
-  caches_action :tracts, :if => Proc.new { can_cache? }
-  caches_action :tract, :if => Proc.new { can_cache? }
-  caches_action :kits, :if => Proc.new { can_cache? }
-  caches_action :kit, :if => Proc.new { can_cache? }
-  caches_action :affiches, :if => Proc.new { can_cache? }
-  caches_action :affiche, :if => Proc.new { can_cache? }
-  caches_action :rss, :expires_in => 1.hour, :if => Proc.new { can_cache? }
+  before_action :find_article, :only => [:evenement, :tract, :affiche, :kit]
+  before_action :load_side_articles, :only => [:index, :inscription, :evenement, :agenda]
 
   def index
     create_subscription
@@ -43,7 +33,9 @@ class MiliterController < ApplicationController
     @root_path = url_for agenda_path(:only_path => false)
     @rss_path = url_for militer_rss_feed_path(:only_path => false)
     @articles = Article.find_published_order_by_start_datetime 'evenement', 1, 50
-    render :template => 'layouts/rss'
+    if stale?(:etag => "militer/rss", :last_modified => @articles[0].nil? ? nil : @articles[0].updated_at, :public => true)
+      render :template => 'layouts/rss'
+    end
   end
   
   def tracts
@@ -101,7 +93,7 @@ class MiliterController < ApplicationController
   end
 
   def inscription
-    @subscription = Subscription.new(params[:subscription])
+    @subscription = Subscription.new(subscription_parameters)
     if @subscription.save
       flash.now[:notice] = t('action.subscription.created')
       @subscription.email_notification
@@ -111,6 +103,19 @@ class MiliterController < ApplicationController
   end
 
 private
+
+  # Returns the parameters that are allowed for mass-update.
+  def subscription_parameters
+    return nil if params[:subscription].nil?
+    params.require(:subscription).permit(:last_name,
+                                        :first_name,
+                                        :email,
+                                        :address,
+                                        :zip_code,
+                                        :city,
+                                        :phone,
+                                        :comment)
+  end
 
   def create_subscription
     @subscription = Subscription.new

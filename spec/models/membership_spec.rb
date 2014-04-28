@@ -82,6 +82,12 @@ describe Membership do
       member.should_not be_valid
       member.error_on(:amount).should_not be_empty
     end
+
+    it "should not be valid with an amount above the maximum" do
+      member = FactoryGirl.build(:membership, :amount => 123456.0)
+      member.should_not be_valid
+      member.error_on(:amount).should_not be_empty
+    end
   end
 
   context "Scopes" do

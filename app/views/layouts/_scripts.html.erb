@@ -1,28 +1,30 @@
-<script>
-  $(document).ready(function() {
-    $( ".zoom-title" ).each(function() {
-      var top = $(this).closest('.content-bloc').height()-$(this).closest('.article').height()-40;
-      $(this).css({top:top});
+<% cache_if can_cache?, 'scripts' do %>
+  <script>
+    $(document).ready(function() {
+      $( ".zoom-title" ).each(function() {
+        var top = $(this).closest('.content-bloc').height()-$(this).closest('.article').height()-40;
+        $(this).css({top:top});
+      });
     });
-  });
-  function getDocHeight() {
-    var D = document;
-    return Math.max(
-      Math.max(D.body.scrollHeight, D.documentElement.scrollHeight),
-      Math.max(D.body.offsetHeight, D.documentElement.offsetHeight),
-      Math.max(D.body.clientHeight, D.documentElement.clientHeight)
-    );
-  }
-  <% if defined?(GOOGLE_ANALYTICS_ID) and Rails.env.production? and not user_signed_in? %>
-    var _gaq = _gaq || [];
-    var pluginUrl = '//www.google-analytics.com/plugins/ga/inpage_linkid.js';
-    _gaq.push(['_require', 'inpage_linkid', pluginUrl]);
-    _gaq.push(['_setAccount', '<%= GOOGLE_ANALYTICS_ID %>']);
-    _gaq.push(['_trackPageview']);
-    (function() {
-       var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-  <% end %>
-</script>
+    function getDocHeight() {
+      var D = document;
+      return Math.max(
+        Math.max(D.body.scrollHeight, D.documentElement.scrollHeight),
+        Math.max(D.body.offsetHeight, D.documentElement.offsetHeight),
+        Math.max(D.body.clientHeight, D.documentElement.clientHeight)
+      );
+    }
+    <% if defined?(GOOGLE_ANALYTICS_ID) and Rails.env.production? and not user_signed_in? %>
+      var _gaq = _gaq || [];
+      var pluginUrl = '//www.google-analytics.com/plugins/ga/inpage_linkid.js';
+      _gaq.push(['_require', 'inpage_linkid', pluginUrl]);
+      _gaq.push(['_setAccount', '<%= GOOGLE_ANALYTICS_ID %>']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+         var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    <% end %>
+  </script>
+<% end %>

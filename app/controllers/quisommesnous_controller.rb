@@ -14,11 +14,7 @@
 # 
 # See doc/COPYRIGHT.rdoc for more details.
 class QuisommesnousController < ApplicationController
-  before_filter :find_article, :only => [:identite, :instance, :commission]
-  caches_action :index, :if => Proc.new { can_cache? }
-  caches_action :identite, :if => Proc.new { can_cache? }
-  caches_action :instance, :if => Proc.new { can_cache? }
-  caches_action :commission, :if => Proc.new { can_cache? }
+  before_action :find_article, :only => [:identite, :instance, :commission]
 
   def index
     @identites = Article.find_published 'identite', 1

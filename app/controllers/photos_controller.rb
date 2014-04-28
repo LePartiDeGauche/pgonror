@@ -14,10 +14,7 @@
 # 
 # See doc/COPYRIGHT.rdoc for more details.
 class PhotosController < ApplicationController
-  before_filter :find_article, :only => [:diaporama]
-
-  caches_action :index, :if => Proc.new { can_cache? }
-  caches_action :diaporama, :if => Proc.new { can_cache? }
+  before_action :find_article, :only => [:diaporama]
 
   def index
     @pages = Article.count_pages_published 'diaporama'

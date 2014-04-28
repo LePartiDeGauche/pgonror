@@ -5,34 +5,35 @@
     <% for article in articles %>
       <% if article.category_option?(:controller) and article.category_option?(:action) %>
         <li>
-          <br/>
-          <article class="article article-separator">
-            <header>
-              <h3 class="category"><%= article.category_display %></h3>&nbsp;&bull;
-              <% unless article.heading.blank? %><h4><%= article.heading_display.html_safe %></h4>&nbsp;&bull;<% end %>
-              <h1><%= link_to article.title_display.html_safe, article.path %></h1>
-              <% unless article.source_id.nil? %>
-                <br/>
-                <h2 class="main-title"><%= link_to article.source_display.html_safe, article.source.path %></h2>
-              <% end %>
-              <% if article.category_option?(:start_end_dates) %>
-                <br/>
-                <strong><%= t('activerecord.attributes.article.start_datetime') %></strong>&nbsp;
-                <div class="date"><%= article.start_end_datetime_display %></div>
-              <% else %>
-                <div class="signature">
-                  <div class="date"><%= l article.published_at, :format => :long_ordinal %></div>&nbsp;
-                  <%= article.signature if article.category_option?(:signature) %>
-                </div>
-              <% end %>
-              <% if not article.address.blank? %>
-                <strong><%= t('activerecord.attributes.article.address') %></strong>&nbsp;
-                <%= article.address %><br/>
-              <% end %>
-            </header>
-            <%= truncate_html(article.content_with_large,
-                              :omission => link_to(article.category_option?(:video) ? t('titre.voir_video').html_safe : t('titre.lire_suite').html_safe, article.path)) %>
-          </article>
+          <% cache_if can_cache?, article do %>
+            <article class="article article-separator">
+              <header>
+                <h3 class="category"><%= article.category_display %></h3>&nbsp;&bull;
+                <% unless article.heading.blank? %><h4><%= article.heading_display.html_safe %></h4>&nbsp;&bull;<% end %>
+                <h1><%= link_to article.title_display.html_safe, article.path %></h1>
+                <% unless article.source_id.nil? %>
+                  <br/>
+                  <h2 class="main-title"><%= link_to article.source_display.html_safe, article.source.path %></h2>
+                <% end %>
+                <% if article.category_option?(:start_end_dates) %>
+                  <br/>
+                  <strong><%= t('activerecord.attributes.article.start_datetime') %></strong>&nbsp;
+                  <div class="date"><%= article.start_end_datetime_display %></div>
+                <% else %>
+                  <div class="signature">
+                    <div class="date"><%= l article.published_at, :format => :long_ordinal %></div>&nbsp;
+                    <%= article.signature if article.category_option?(:signature) %>
+                  </div>
+                <% end %>
+                <% if not article.address.blank? %>
+                  <strong><%= t('activerecord.attributes.article.address') %></strong>&nbsp;
+                  <%= article.address %><br/>
+                <% end %>
+              </header>
+              <%= truncate_html(article.content_with_large,
+                                :omission => link_to(article.category_option?(:video) ? t('titre.voir_video').html_safe : t('titre.lire_suite').html_safe, article.path)) %>
+            </article>
+          <% end %>
         </li>
       <% end %>
     <% end %>

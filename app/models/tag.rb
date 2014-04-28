@@ -28,10 +28,6 @@ class Tag < ActiveRecord::Base
 
   before_validation :update_tag
 
-  # Setup accessible (or protected) attributes for the model.
-  attr_accessible :article_id, 
-                  :tag
-
   # Deletes one specific tag across all the articles.   
   def delete_all_references
     Tag.delete_all(['tag = ? and article_id is not null', self.tag])
@@ -66,11 +62,6 @@ class Tag < ActiveRecord::Base
                      )
                      group by a.id, a.tag
                      order by a.tag"
-  end
-
-  # Creates search attribute from tag name.
-  def create_search
-    self.search = Article.create_search self.tag
   end
 
 private

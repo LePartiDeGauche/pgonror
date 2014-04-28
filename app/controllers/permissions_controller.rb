@@ -14,8 +14,8 @@
 # 
 # See doc/COPYRIGHT.rdoc for more details.
 class PermissionsController < ApplicationController
-  before_filter :authenticate_user!
-  before_filter :authenticate_administrator!
+  before_action :authenticate_user!
+  before_action :authenticate_administrator!
 
   def index
     @user = User.find_by_id(params[:user_id])
@@ -30,7 +30,7 @@ class PermissionsController < ApplicationController
   def create
     @user = User.find_by_id(params[:user_id])
     if @user.present?
-      @permission = @user.permissions.new(params[:permission])
+      @permission = @user.permissions.new(permission_parameters)
       @permission.created_by = current_user.email
       @permission.updated_by = current_user.email
       if @permission.save
@@ -54,7 +54,7 @@ class PermissionsController < ApplicationController
     if @permission.present?
       @user = @permission.user
       @permission.updated_by = current_user.email
-      if @permission.update_attributes(params[:permission])
+      if @permission.update_attributes(permission_parameters)
         flash[:notice] = t('action.permission.updated')
         redirect_to(@user, :only_path => true)
       else
@@ -71,5 +71,17 @@ class PermissionsController < ApplicationController
       flash[:notice] = t('action.permission.deleted')
       redirect_to(@user, :only_path => true)
     end 
+  end
+
+private
+
+  # Returns the parameters that are allowed for mass-update.
+  def permission_parameters
+    return nil if params[:permission].nil?
+    params.require(:permission).permit(:user_id,
+                                       :source_id,
+                                       :category,
+                                           :authorization,
+                                           :notification_level)
   end
 end

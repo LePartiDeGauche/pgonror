@@ -14,22 +14,11 @@
 # 
 # See doc/COPYRIGHT.rdoc for more details.
 class ActualitesController < ApplicationController
-  before_filter :find_article, :only => [:edito, :actualite, :communique, :international, :dossier]
-  caches_action :index, :if => Proc.new { can_cache? }
-  caches_action :editos, :if => Proc.new { can_cache? } 
-  caches_action :edito, :if => Proc.new { can_cache? }
-  caches_action :actualites, :if => Proc.new { can_cache? }
-  caches_action :actualite, :if => Proc.new { can_cache? }
-  caches_action :communiques, :if => Proc.new { can_cache? }
-  caches_action :communique, :if => Proc.new { can_cache? }
-  caches_action :tout_international, :if => Proc.new { can_cache? }
-  caches_action :international, :if => Proc.new { can_cache? }
-  caches_action :dossiers, :if => Proc.new { can_cache? }
-  caches_action :dossier, :if => Proc.new { can_cache? }
+  before_action :find_article, :only => [:edito, :actualite, :communique, :international, :dossier]
 
   def index
-    @editos = Article.find_published 'edito', 1, 15
-    @dossiers = Article.find_published 'dossier', 1, 15
+    @editos = Article.find_published 'edito', 1, 8
+    @dossiers = Article.find_published 'dossier', 1, 8
     @communiques = Article.find_published 'com', 1, 3
     @actus = Article.find_published 'actu', 1, 3
     @tout_international = Article.find_published 'inter', 1, 3

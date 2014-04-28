@@ -78,6 +78,8 @@ describe VudailleursController do
       }
       get :blog, :uri => blog.uri
       response.should be_success
+      get :blog, :uri => blog.uri, :partial => true
+      response.should be_success
     end
 
     it "envoyer_message with no data" do

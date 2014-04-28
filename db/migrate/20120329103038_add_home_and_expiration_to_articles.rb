@@ -5,7 +5,7 @@ class AddHomeAndExpirationToArticles < ActiveRecord::Migration
     add_index :articles, [:expired_at]
     add_index :articles, [:zoom]
     execute "update articles set expired_at='2099-12-31'"
-    execute "update articles set zoom='t' where category='actu'"
+    execute "update articles set zoom = 't' where category='actu'"
   end
 
   def down

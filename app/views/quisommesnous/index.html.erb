@@ -1,13 +1,15 @@
-<section id="quisommesnous-identite">
-  <section id="quisommesnous-identite-content" class="content-bloc">
-    <%= render :partial => 'layouts/articles_simplified', :locals => { :articles => @identites } %>
+<% cache_if can_cache?, @url do %>
+  <section id="quisommesnous-identite">
+    <section id="quisommesnous-identite-content" class="content-bloc">
+      <%= render :partial => 'layouts/articles_simplified', :locals => { :articles => @identites } %>
+    </section>
   </section>
-</section>
-<section id="quisommesnous-instance">
-  <section id="quisommesnous-instances-content" class="content-bloc bloc-bottom-margin">
-    <%= render :partial => 'layouts/articles_simplified', :locals => { :articles => @instances } %>
+  <section id="quisommesnous-instance">
+    <section id="quisommesnous-instances-content" class="content-bloc bloc-bottom-margin">
+      <%= render :partial => 'layouts/articles_1col_1_on_3', :locals => { :articles => @instances } %>
+    </section>
+    <section id="quisommesnous-commission-content" class="content-bloc">
+      <%= render :partial => 'layouts/articles_1col_1_on_3', :locals => { :articles => @commissions } %>
+    </section>
   </section>
-  <section id="quisommesnous-commission-content" class="content-bloc highlighted-bloc">
-    <%= render :partial => 'layouts/articles_simplified', :locals => { :articles => @commissions } %>
-  </section>
-</section>
+<% end %>

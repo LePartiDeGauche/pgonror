@@ -48,8 +48,4 @@ RSpec.configure do |config|
   config.before(:each) do
     DatabaseCleaner.clean
   end
-
-  def saop
-    save_and_open_page
-  end
 end

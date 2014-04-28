@@ -1,19 +1,21 @@
-<section id="actualites-editos">
-  <section id="actualites-editos-content" class="content-bloc bloc-bottom-margin">
-    <%= render :partial => 'layouts/articles_1col_1_on_3', :locals => { :articles => @editos } %>
+<% cache_if can_cache?, @url do %>
+  <section id="actualites-editos">
+    <section id="actualites-editos-content" class="content-bloc bloc-bottom-margin">
+      <%= render :partial => 'layouts/articles_1col_1_on_3', :locals => { :articles => @editos } %>
+    </section>
+    <section id="actualites-dossiers-content" class="content-bloc highlighted-bloc">
+      <%= render :partial => 'layouts/articles_1col_1_on_3', :locals => { :articles => @dossiers } %>
+    </section>
   </section>
-  <section id="actualites-dossiers-content" class="content-bloc highlighted-bloc">
-    <%= render :partial => 'layouts/articles_1col_1_on_3', :locals => { :articles => @dossiers } %>
+  <section id="actualites-actus">
+    <section id="actualites-actus-content" class="content-bloc bloc-bottom-margin">
+      <%= render :partial => 'layouts/articles_3cols_2_on_3', :locals => { :articles => @actus } %>
+    </section>
+    <section id="actualites-communiques-content" class="content-bloc bloc-bottom-margin">
+      <%= render :partial => 'layouts/articles_3cols_2_on_3', :locals => { :articles => @communiques } %>
+    </section>
+    <section id="actualites-international-content" class="content-bloc bloc-bottom-margin">
+      <%= render :partial => 'layouts/articles_3cols_2_on_3', :locals => { :articles => @tout_international } %>
+    </section>
   </section>
-</section>
-<section id="actualites-actus">
-  <section id="actualites-actus-content" class="content-bloc bloc-bottom-margin">
-    <%= render :partial => 'layouts/articles_3cols_2_on_3', :locals => { :articles => @actus } %>
-  </section>
-  <section id="actualites-communiques-content" class="content-bloc bloc-bottom-margin">
-    <%= render :partial => 'layouts/articles_3cols_2_on_3', :locals => { :articles => @communiques } %>
-  </section>
-  <section id="actualites-international-content" class="content-bloc bloc-bottom-margin">
-    <%= render :partial => 'layouts/articles_3cols_2_on_3', :locals => { :articles => @tout_international } %>
-  </section>
-</section>
+<% end %>

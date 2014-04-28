@@ -21,12 +21,6 @@ class Audit < ActiveRecord::Base
   # Basic controls: mandatory attributes, uniqueness and formats.
   validates_presence_of :article_id, :updated_by
 
-  # Setup accessible (or protected) attributes for the model.
-  attr_accessible :article_id, 
-                  :status,
-                  :updated_by,
-                  :comments
-
   # Returns the status (displayed label) of the audit record.  
   def status_display
     Article::status_display(self.status)
@@ -38,6 +32,6 @@ class Audit < ActiveRecord::Base
   end
 
   # For logs in Administration panel
-  scope :logs, order('updated_at DESC')
+  scope :logs, -> { order('updated_at DESC') }
   scope :filtered_by, lambda { |search| where('lower(updated_by) LIKE ?', "%#{search.downcase.strip}%") }
 end

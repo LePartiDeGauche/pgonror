@@ -4,7 +4,6 @@
       <h3 class="category"><%= t('action.search_list') %></h3>&nbsp;&bull;
       <%= @search %>
     </hgroup>
-    <br/>
     <% unless @pages == 0 %>
       <%= render :partial => 'layouts/articles_1col_2_on_3_search',
                  :locals => { :articles => @articles } %>

@@ -11,7 +11,7 @@
         <aside class="actions">
           <%= f.label :status %> <%= f.select :status, Article::statuses %>&nbsp;&bull;
           <%= link_to t('action.cancel'), :back %>&nbsp;&bull;
-          <%= f.submit t('action.ok'), :disable_with => t('action.wait') %>
+          <%= f.submit t('action.ok'), :data => { disable_with: t('action.wait') } %>
         </aside>
         <header>
           <h3 class="category"><%= @article.category_display %></h3>&nbsp;&bull;

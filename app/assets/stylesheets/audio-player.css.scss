@@ -1,0 +1,112 @@
+/* ‡ custom audio player stylesheet */
+.ap-player,
+.ap-info-panel {
+	background: image-url("ui-bg_gloss-wave_30_3d3644_500x100.png") repeat-x scroll 50% top rgb(61, 54, 68);
+	position: relative;
+	width: 320px;
+	margin: 0 auto;
+	padding: 5px 60px 7px;
+}
+.ap-header {
+	height: 50px;
+}
+.ap-title {
+	margin: 50px 0 0 0;
+	padding: 0;
+	color: white;
+}	
+.ap-album,
+.ap-artist {
+	margin: 0;
+	padding: 0;
+}
+.ap-album {
+	font-style: italic;
+}
+.ap-controls-content {
+	text-align: left;
+	margin-top: 10px;
+}
+.ap-progress, .ap-volume {
+	position: relative;
+	text-align: left;
+}
+.ap-volume {
+	width:120px;
+	margin: 0 0 2px 60px;
+}
+.ap-progress {
+	width:220px;
+	float: right;
+  margin: -70px 0px 0px 100px;
+}
+.ap-controls {
+	position: relative;
+	display: inline-block;
+	vertical-align: bottom;
+	padding: 6px 2px;
+}
+.ap-button {
+	margin: 0 4px;
+}
+.ap-time {
+	width: 50%;
+	font-size: 0.8em;
+	cursor: default;
+}
+.ap-current {
+	position: relative;
+	top: 0;
+}
+.ap-duration {
+	position: absolute;
+	top: 0;
+	right: 2px;
+	text-align: right;
+}
+.ap-play, .ap-pause {
+	width: 64px;
+	height: 54px;
+}
+.ap-play a, .ap-pause a {
+	padding: 4px 28px 40px 28px;
+}
+.ap-play {
+	background: image-url("rdg_btn_playpause_2.png") no-repeat scroll 0 0;
+	background-size: 280px 64px;
+}
+.ap-play:hover {
+	background: image-url("rdg_btn_playpause_2.png") no-repeat scroll -71px 0;
+	background-size: 280px 64px;
+}
+.ap-pause {
+	background: image-url("rdg_btn_playpause_2.png") no-repeat scroll -142px 0;
+	background-size: 280px 64px;
+}
+.ap-pause:hover {
+	background: image-url("rdg_btn_playpause_2.png") no-repeat scroll -214px 0;
+	background-size: 280px 64px;
+}
+.ap-prev, ap-next {
+	display: none;
+}
+.ap-mute {
+	background-image: image-url("rdg_btn_stopvolume.png");
+	background-repeat: no-repeat;
+	background-size: 120px 36px;
+	background-position: -44px -4px;
+}
+.ap-unmute {
+	background-image: image-url("rdg_btn_stopvolume.png");
+	background-repeat: no-repeat;
+	background-size: 120px 36px;
+	background-position: -84px -4px;
+}
+.ap-stop {
+	background-image: image-url("rdg_btn_stopvolume.png");
+	background-repeat: no-repeat;
+	background-size: 120px 36px;
+	background-position: -4px -4px;
+	margin-left: 10px;
+}
+

@@ -21,17 +21,19 @@
             </article>
           </td>
           <td>
-            <article class="article">
-              <div class="date-title">
-                <% if article.content.present? and article.content.length > 0 %>
-                  <strong>
-                <% end %>
-                <%= link_to article.title_display.html_safe, article.path %>
-                <% if article.content.present? and article.content.length > 0 %>
-                  </strong>
-                <% end %>
-              </div>
-            </article>
+            <% cache_if can_cache?, article do %>
+              <article class="article">
+                <div class="date-title">
+                  <% if article.content.present? and article.content.length > 0 %>
+                    <strong>
+                  <% end %>
+                  <%= link_to article.title_display.html_safe, article.path %>
+                  <% if article.content.present? and article.content.length > 0 %>
+                    </strong>
+                  <% end %>
+                </div>
+              </article>
+            <% end %>
           </td>
         </tr>
       <% end %>

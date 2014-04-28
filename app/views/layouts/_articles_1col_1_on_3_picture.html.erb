@@ -10,13 +10,13 @@
                       :action => action_all },
                       :title => link_all_title %>
         <% else %>
-        <%= link_to defined?(category_title) ? category_title : articles[0].category_option(:category_title), 
-                    { :controller => articles[0].category_option(:controller), 
-                    :action => articles[0].category_option(:action_all) },
-                    :title => articles[0].category_option(:link_all_title) %>
+          <%= link_to defined?(category_title) ? category_title : articles[0].category_option(:category_title), 
+                      { :controller => articles[0].category_option(:controller), 
+                      :action => articles[0].category_option(:action_all) },
+                      :title => articles[0].category_option(:link_all_title) %>
         <% end %>
       <% else %>
-      <%= defined?(category_title) ? category_title : articles[0].category_option(:category_title) %>
+        <%= defined?(category_title) ? category_title : articles[0].category_option(:category_title) %>
       <% end %>
       </h3>&nbsp;&bull;
     </hgroup>
@@ -24,38 +24,40 @@
     <ol>
       <% for article in articles %>
         <li>
-          <article class="article">
-            <% content = truncate_html(article.content_replaced_with_medium, :length => 240).html_safe %>
-            <% if content[0..7] == "<img src" or content[0..10] == "<iframe src" %>
-              <% if not defined?(title) or title == :default or title == :no_heading %>
-                <% unless article.heading.blank? or not defined?(title) or title == :no_heading %>
-                  <h4><%= article.heading_display.html_safe %></h4><br/>
-                <% end %>
-                <h1><%= link_to article.title_display.html_safe, article.path %></h1>
-              <% end %>
-              <div class="one-third-column">
-                <%= link_to content, article.path %>
-              </div>
-              <% if defined?(title) and (title == :zoom or title == :zoom_no_heading)%>
-                <div class="zoom-title">
-                  <% unless title == :zoom_no_heading or article.heading.blank? %>
+          <% cache_if (can_cache? and not defined?(title)), article do %>
+            <article class="article">
+              <% content = truncate_html(article.content_replaced_with_medium, :length => 240).html_safe %>
+              <% if content[0..7] == "<img src" or content[0..10] == "<iframe src" or content[0..6] == "<object" %>
+                <% if not defined?(title) or title == :default or title == :no_heading %>
+                  <% unless article.heading.blank? or not defined?(title) or title == :no_heading %>
                     <h4><%= article.heading_display.html_safe %></h4><br/>
                   <% end %>
                   <h1><%= link_to article.title_display.html_safe, article.path %></h1>
-                </div>
-              <% end %>
-            <% else %>
-              <header>
-                <% unless article.heading.blank? %>
-                  <h4><%= article.heading_display.html_safe %></h4><br/>
                 <% end %>
-                <h1><%= link_to article.title_display.html_safe, article.path %></h1>
-              </header>
-              <div class="one-third-column">
-                <%= content %>
-              </div>
-            <% end %>
-          </article>
+                <div class="one-third-column">
+                  <% if content[0..6] == "<object" %>
+                    <%= content %>
+                  <% else %>
+                    <%= link_to content, article.path %>
+                  <% end %>
+                </div>
+                <% if defined?(title) and (title == :zoom or title == :zoom_no_heading)%>
+                  <div class="zoom-title">
+                    <% unless title == :zoom_no_heading or article.heading.blank? %>
+                      <h4><%= article.heading_display.html_safe %></h4><br/>
+                    <% end %>
+                    <h1><%= link_to article.title_display.html_safe, article.path %></h1>
+                  </div>
+                <% end %>
+              <% else %>
+                <header>
+                  <% unless article.heading.blank? %><h4><%= article.heading_display.html_safe %></h4><br/><% end %>
+                  <h1><%= link_to article.title_display.html_safe, article.path %></h1>
+                </header>
+                <div class="one-third-column"><%= content %></div>
+              <% end %>
+            </article>
+          <% end %>
         </li>
       <% end %>
     </ol>

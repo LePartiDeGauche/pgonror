@@ -14,18 +14,11 @@
 # 
 # See doc/COPYRIGHT.rdoc for more details.
 class ArgumentsController < ApplicationController
-  before_filter :find_article, :only => [:programme, :argument, :legislative]
-  caches_action :index, :if => Proc.new { can_cache? }
-  caches_action :leprogramme, :if => Proc.new { can_cache? }
-  caches_action :programme, :if => Proc.new { can_cache? }
-  caches_action :arguments, :if => Proc.new { can_cache? }
-  caches_action :argument, :if => Proc.new { can_cache? }
-  caches_action :legislatives, :if => Proc.new { can_cache? }
-  caches_action :legislative, :if => Proc.new { can_cache? }
+  before_action :find_article, :only => [:programme, :argument, :legislative]
   
   def index
     @programmes = Article.find_published 'programme', 1, 10
-    @arguments = Article.find_published 'argument', 1, 30
+    @arguments = Article.find_published 'argument', 1, 20
     @legislatives = Article.find_published 'legislative', 1, 5
   end
   

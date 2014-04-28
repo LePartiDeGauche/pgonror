@@ -55,15 +55,17 @@ xml.rss("xmlns:itunes" => "http://www.itunes.com/dtds/podcast-1.0.dtd",
             xml.cdata! article.content_with_inline unless article.content.blank?
           end
           if article.category_option?(:audio)
-            duration = article.mp3_duration
-            xml.tag! "itunes:author", coder.decode(article.signature)
-            xml.tag! "itunes:explicit", "clean"
-            xml.tag! "itunes:duration", duration
-            xml.tag! "itunes:summary", coder.decode(article.content_to_txt)
-            xml.tag! "itunes:keywords", coder.decode(article.tags_display)
-            xml.enclosure(:url => root_url + article.document.url,
-                          :type => article.document_content_type,
-                          :length => article.document_file_size)
+            if article.audio_file_name.present?
+              duration = article.mp3_duration.present? ? article.mp3_duration : ''
+              xml.tag! "itunes:author", coder.decode(article.signature)
+              xml.tag! "itunes:explicit", "clean"
+              xml.tag! "itunes:duration", duration
+              xml.tag! "itunes:summary", coder.decode(article.content_to_txt)
+              xml.tag! "itunes:keywords", coder.decode(article.tags_display)
+              xml.enclosure(:url => root_url + article.audio_file_name,
+                            :type => article.audio_content_type,
+                            :length => article.audio_file_size)
+            end
           end
         end
       end

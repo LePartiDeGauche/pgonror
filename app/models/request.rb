@@ -26,18 +26,6 @@ class Request < ActiveRecord::Base
   validates :comment, :presence => true, :length => {:minimum => 50, :maximum => 1000}
   validates :email, :length => {:minimum => 3, :maximum => 50}, :email => true, :presence => true
   
-  # Setup accessible (or protected) attributes for the model.
-  attr_accessible :last_name,
-                  :first_name,
-                  :email,
-                  :address,
-                  :zip_code,
-                  :city,
-                  :country,
-                  :phone,
-                  :comment,
-                  :recipient
-
   # Returns the name of the recipient using the article uri
   def recipient_display
     return "" if self.recipient.nil?
@@ -113,7 +101,7 @@ class Request < ActiveRecord::Base
   end
 
   # For logs in Administration panel
-  scope :logs, order('created_at DESC')
+  scope :logs, -> { order('created_at DESC') }
   scope :filtered_by, lambda { |search| where('lower(first_name) LIKE ? OR lower(last_name) LIKE ? OR lower(email) LIKE ? OR lower(comment) LIKE ?', "%#{search.downcase.strip}%", "%#{search.downcase.strip}%", "%#{search.downcase.strip}%", "%#{search.downcase.strip}%") }
 
 protected

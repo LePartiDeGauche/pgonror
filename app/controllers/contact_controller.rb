@@ -14,10 +14,8 @@
 # 
 # See doc/COPYRIGHT.rdoc for more details.
 class ContactController < ApplicationController
-  before_filter :find_article, :only => [:departement]
-  before_filter :load_index
-  caches_action :index, :if => Proc.new { can_cache? }
-  caches_action :departement, :if => Proc.new { can_cache? }
+  before_action :find_article, :only => [:departement]
+  before_action :load_index
 
   def index
     create_request
@@ -29,7 +27,7 @@ class ContactController < ApplicationController
   end
 
   def envoyer_message
-    @request = Request.new(params[:request])
+    @request = Request.new(request_parameters)
     saved = false
     begin
       @request.transaction do
@@ -48,6 +46,21 @@ class ContactController < ApplicationController
   end
   
 private
+
+  # Returns the parameters that are allowed for mass-update.
+  def request_parameters
+    return nil if params[:request].nil?
+    params.require(:request).permit(:last_name,
+                                        :first_name,
+                                        :email,
+                                        :address,
+                                        :zip_code,
+                                        :city,
+                                        :country,
+                                        :phone,
+                                        :comment,
+                                        :recipient)
+  end
 
   def create_request
     @request = Request.new

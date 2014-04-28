@@ -26,11 +26,7 @@ class User < ActiveRecord::Base
 
   validates :email, :uniqueness => true, :length => {:minimum => 3, :maximum => 50}, :email => true
 
-  has_many :permissions, 
-           :class_name => 'Permission', 
-           :foreign_key => :user_id,
-           :dependent => :destroy,
-           :order => 'source_id, category'
+  has_many :permissions,-> { order('source_id, category') }, :class_name => 'Permission',  :foreign_key => :user_id, :dependent => :destroy
 
   devise :database_authenticatable, 
          :registerable,
@@ -40,22 +36,8 @@ class User < ActiveRecord::Base
          :trackable, 
          :validatable,
          :lockable
-         
-  after_create :notification_new_user
 
-  # Setup accessible (or protected) attributes for the model.
-  attr_accessible :email, 
-                  :password, 
-                  :password_confirmation, 
-                  :remember_me, 
-                  :publisher, 
-                  :administrator,
-                  :notification_message, 
-                  :notification_subscription, 
-                  :notification_donation, 
-                  :notification_membership, 
-                  :notification_alert, 
-                  :access_level
+  after_create :notification_new_user
 
   # List (array) of access levels used in lists of values.
   def self.access_levels
@@ -77,7 +59,7 @@ class User < ActiveRecord::Base
   def self.find_like_email(email)
     User.where("lower(email) like #{quote('%' + email.downcase.strip + '%')}").order('last_sign_in_at desc')
   end
-  
+
   # Returns the authorization of given user, category and source of information.
   def self.get_authorization_article(user_email, category, source_id = nil)
     user = User.where("email = ? and publisher = ?", user_email, true).first

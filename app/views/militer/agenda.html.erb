@@ -1,58 +1,60 @@
-<section id="militer-liste">
-  <section class="content-bloc">
-    <div class="rss"><%= link_to icon_medium('rss.png'), militer_rss_feed_path, :target => "_blank" %></div>
-    <%= render :partial => 'layouts/articles_1col_2_on_3_agenda', :locals => { :articles => @articles } %>
+<% cache_if can_cache?, @url do %>
+  <section id="militer-liste">
+    <section class="content-bloc">
+      <div class="rss"><%= link_to icon_medium('rss.png'), militer_rss_feed_path, :target => "_blank" %></div>
+      <%= render :partial => 'layouts/articles_1col_2_on_3_agenda', :locals => { :articles => @articles } %>
+    </section>
   </section>
-</section>
-<section id="militer-vignettes">
-  <section class="content-bloc">
-    <% if defined?(GOOGLE_MAPS_SCRIPT) %>
-      <div id="carte" style="width:292px;height:354px;"></div>
-      <script src="<%= GOOGLE_MAPS_SCRIPT %>"></script>
-      <script>
-        var geocoder = new google.maps.Geocoder();
-        var latlng = new google.maps.LatLng(47,1.5);
-        var mapOptions = { zoom: 5, center: latlng, mapTypeId: google.maps.MapTypeId.ROADMAP }
-        var map = new google.maps.Map(document.getElementById('carte'), mapOptions);
-        var marker;
-        <% for article in @articles %>
-          <% if article.category_option?(:start_end_dates) and article.start_datetime.present? and article.address.present? %>
-            <% if article.longitude.present? and article.latitude.present? and article.longitude > 0.0 and article.latitude > 0.0 %>
-              latlng = new google.maps.LatLng(<%= article.latitude %>, <%= article.longitude %>);
-              marker = new google.maps.Marker({
-                map: map,
-                position: latlng,
-                title:"<%= l(article.start_datetime, :format => :short) %> > " +
-                      "<%= article.title_to_txt.gsub(/\"/, '\"').html_safe %> " +
-                      "> <%= article.address_to_txt.gsub(/\"/, '\"').html_safe %>"
-              });
-              google.maps.event.addListener(marker, 'click', function() {
-                window.location.href = "<%= url_for(article.path) %>";
-              });
-            <% else %>
-              geocoder.geocode(
-                { address: "<%= article.address_to_txt.gsub(/\"/, '\"') %>", region: "FR" },
-                function(results, status) {
-                  if (status == google.maps.GeocoderStatus.OK) {
-                    marker = new google.maps.Marker({
-                      map: map,
-                      position: results[0].geometry.location,
-                      title:"<%= l(article.start_datetime, :format => :short) %> > " +
-                            "<%= article.title_to_txt.gsub(/\"/, '\"').html_safe %> " +
-                            "> <%= article.address_to_txt.gsub(/\"/, '\"').html_safe %>"
-                    });
-                    google.maps.event.addListener(marker, 'click', function() {
-                      window.location.href = "<%= url_for(article.path) %>";
-                    });
-                  }
+  <section id="militer-vignettes">
+    <section class="content-bloc">
+      <% if defined?(GOOGLE_MAPS_SCRIPT) %>
+        <div id="carte" style="width:292px;height:354px;"></div>
+        <script src="<%= GOOGLE_MAPS_SCRIPT %>"></script>
+        <script>
+          var geocoder = new google.maps.Geocoder();
+          var latlng = new google.maps.LatLng(47,1.5);
+          var mapOptions = { zoom: 5, center: latlng, mapTypeId: google.maps.MapTypeId.ROADMAP }
+          var map = new google.maps.Map(document.getElementById('carte'), mapOptions);
+          var marker;
+          <% for article in @articles %>
+            <% if article.category_option?(:start_end_dates) and article.start_datetime.present? and article.address.present? %>
+              <% if article.longitude.present? and article.latitude.present? and article.longitude > 0.0 and article.latitude > 0.0 %>
+                latlng = new google.maps.LatLng(<%= article.latitude %>, <%= article.longitude %>);
+                marker = new google.maps.Marker({
+                  map: map,
+                  position: latlng,
+                  title:"<%= l(article.start_datetime, :format => :short) %> > " +
+                        "<%= article.title_to_txt.gsub(/\"/, '\"').html_safe %> " +
+                        "> <%= article.address_to_txt.gsub(/\"/, '\"').html_safe %>"
                 });
+                google.maps.event.addListener(marker, 'click', function() {
+                  window.location.href = "<%= url_for(article.path) %>";
+                });
+              <% else %>
+                geocoder.geocode(
+                  { address: "<%= article.address_to_txt.gsub(/\"/, '\"') %>", region: "FR" },
+                  function(results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                      marker = new google.maps.Marker({
+                        map: map,
+                        position: results[0].geometry.location,
+                        title:"<%= l(article.start_datetime, :format => :short) %> > " +
+                              "<%= article.title_to_txt.gsub(/\"/, '\"').html_safe %> " +
+                              "> <%= article.address_to_txt.gsub(/\"/, '\"').html_safe %>"
+                      });
+                      google.maps.event.addListener(marker, 'click', function() {
+                        window.location.href = "<%= url_for(article.path) %>";
+                      });
+                    }
+                  });
+              <% end %>
             <% end %>
           <% end %>
-        <% end %>
-      </script>
-    <% end %>
+        </script>
+      <% end %>
+    </section>
+    <section class="content-bloc">
+      <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @tracts, :title => :hide } %>
+    </section>
   </section>
-  <section class="content-bloc">
-    <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => @tracts, :title => :hide } %>
-  </section>
-</section>
+<% end %>

@@ -26,12 +26,13 @@ PartiDeGauche::Application.configure do
   config.serve_static_assets = true
   config.static_cache_control = "public, max-age=3600"
 
-  # Log error messages when you accidentally call methods on nil
-  config.whiny_nils = true
+  # When true, eager loads all registered.
+  config.eager_load = false
 
-  # Show full error reports and disable caching
+  # Show full error reports and enable caching
   config.consider_all_requests_local       = true
-  config.action_controller.perform_caching = false
+  config.action_controller.perform_caching = true
+  config.action_controller.cache_store = :memory_store
 
   # Raise exceptions instead of rendering exception templates
   config.action_dispatch.show_exceptions = false

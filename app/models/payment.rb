@@ -20,11 +20,6 @@ class Payment < ActiveRecord::Base
 
   validates :amount, :presence => true, :numericality => true
 
-  # Setup accessible (or protected) attributes for the model.
-  attr_accessible :amount,
-                  :payment_error,
-                  :payment_authorization
-
   # Returns the amount in cents as a string.  
   def amount_cents
     (100*self.amount.to_i).to_s
@@ -39,12 +34,34 @@ class Payment < ActiveRecord::Base
   def payment_error_display
     return "NO" if self.payment_error.blank?
     return "OK" if self.payment_error == "00000"
-    "ER:" + self.payment_error
+    "ER:" + self.payment_error + self.payment_error_message
   end
 
   # Prepares a string for .csv export.
   def escape_csv(text)
     text.nil? ? "" : text.strip.gsub(/(;|\n|\r|\|’")/, " ")
+  end
+
+  # Returns Paybox error message.
+  def payment_error_message
+    return " (" + I18n.t('action.paybox.p' + self.payment_error) + ")" if ["00001", 
+                                                                           "00105", 
+                                                                           "00003", 
+                                                                           "00004", 
+                                                                           "00006", 
+                                                                           "00009",
+                                                                           "00010",
+                                                                           "00016",
+                                                                           "00008",
+                                                                           "00011",
+                                                                           "00015",
+                                                                           "00021",
+                                                                           "00029",
+                                                                           "00030",
+                                                                           "00033",
+                                                                           "00040"].include? self.payment_error
+    return " (" + I18n.t('action.paybox.p001xx') + ")" if self.payment_error.starts_with? "001"
+    ""
   end
 
 protected

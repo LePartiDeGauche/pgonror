@@ -14,22 +14,14 @@
 # 
 # See doc/COPYRIGHT.rdoc for more details.
 class VudailleursController < ApplicationController
-  before_filter :find_article, :only => [:articleweb, :articleblog, :blog]
-  before_filter :load_side_articles, :only => [:articleweb, :articlesweb,
+  before_action :find_article, :only => [:articleweb, :articleblog, :blog]
+  before_action :load_side_articles, :only => [:articleweb, :articlesweb,
                                                :blog, :articlesblog, :articleblog,
                                                :envoyer_message]
 
-  caches_action :index, :if => Proc.new { can_cache? }
-  caches_action :articlesweb, :if => Proc.new { can_cache? }
-  caches_action :articleweb, :if => Proc.new { can_cache? }
-  caches_action :articlesblog, :if => Proc.new { can_cache? }
-  caches_action :articleblog, :if => Proc.new { can_cache? }
-  caches_action :blogs, :if => Proc.new { can_cache? }
-  caches_action :blog, :if => Proc.new { can_cache? }
-
   def index
     @articlesweb = Article.find_published 'web', 1, 3
-    @articlesblog = Article.find_published 'directblog', 1, 6
+    @articlesblog = Article.find_published 'directblog', 1, 1
   end
   
   def articleweb
@@ -68,7 +60,7 @@ class VudailleursController < ApplicationController
   end
 
   def envoyer_message
-    @request = Request.new(params[:request])
+    @request = Request.new(request_parameters)
     @request.recipient = "X"
     saved = false
     begin
@@ -90,6 +82,21 @@ class VudailleursController < ApplicationController
   end
 
 private
+
+  # Returns the parameters that are allowed for mass-update.
+  def request_parameters
+    return nil if params[:request].nil?
+    params.require(:request).permit(:last_name,
+                                        :first_name,
+                                        :email,
+                                        :address,
+                                        :zip_code,
+                                        :city,
+                                        :country,
+                                        :phone,
+                                        :comment,
+                                        :recipient)
+  end
 
   def create_request
     @request = Request.new

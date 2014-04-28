@@ -18,7 +18,7 @@ fr:
     messages:
       not_found: "n’a pas été trouvé(e)."
       already_confirmed: "a déjà été validé(e)."
-      not_locked: "n’était pas verrouillé(e)."    
+      not_locked: "n’était pas verrouillé(e)."
       not_saved:
         one: "1 erreur a empêché ce(tte) %{resource} d’être sauvegardé(e) :"
         other: "%{count} erreurs ont empêché ce(tte) %{resource} d’être sauvegardé(e) :"
@@ -50,11 +50,12 @@ fr:
       change_my_password: "Changer mon mot de passe"
       send_reset_password_instructions: "Envoyez-moi les instructions de réinitialisation"
       send_instructions: 'Vous allez recevoir les instructions de réinitialisation du mot de passe dans quelques instants.'
-      updated: 'Votre mot de passe a été édité avec succès, vous êtes maintenant connecté.'  
+      updated: 'Votre mot de passe a été édité avec succès, vous êtes maintenant connecté.'
+      updated_not_active: "Votre mot de passe a été édité avec succès."
     confirmations:
       resend_instructions: 'Ré-envoyer les instructions de confirmation'
       send_instructions: 'Vous allez recevoir les instructions nécessaires à la confirmation de votre accès dans quelques minutes.'
-      confirmed: 'Votre accès a été validé, vous êtes maintenant connecté.'
+      confirmed: 'Votre accès a été validé, vous pouvez maintenant vous connecter.'
     registrations:
       signed_up: 'Bienvenue, vous êtes connecté.'
       edit: "Editer %{resourcename}"

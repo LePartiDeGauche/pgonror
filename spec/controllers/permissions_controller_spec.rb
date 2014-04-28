@@ -19,7 +19,8 @@ describe PermissionsController do
 
   context "visitors" do
     it "index (no access)" do
-      get :index
+      user = FactoryGirl.create(:user)
+      get :index, :user_id => user.id
       response.should_not be_success
       flash[:alert].should_not be_nil
     end
@@ -27,7 +28,7 @@ describe PermissionsController do
     it "edit (no access)" do
       user = FactoryGirl.create(:user)
       permission = FactoryGirl.create(:permission, :user => user)
-      get :edit, :id => permission.id
+      get :edit, :user_id => user.id, :id => permission.id
       response.should_not be_success
       flash[:alert].should_not be_nil
     end
@@ -36,6 +37,7 @@ describe PermissionsController do
       user = FactoryGirl.create(:user)
       permission = FactoryGirl.create(:permission, :user => user)
       post :update,
+        :user_id => user.id,
         :id => permission.id,
         :user => { :access_level => "reserved" }
       response.should_not be_success
@@ -46,7 +48,7 @@ describe PermissionsController do
       user = FactoryGirl.create(:user)
       permission = FactoryGirl.create(:permission, :user => user)
       id = permission.id
-      delete :destroy, :id => id
+      delete :destroy, :user_id => user.id, :id => id
       response.should_not be_success
       flash[:alert].should_not be_nil
       permission = Permission.where('id = ?', id).first
@@ -102,7 +104,7 @@ describe PermissionsController do
     it "edit" do
       user = FactoryGirl.create(:user)
       permission = FactoryGirl.create(:permission, :user => user)
-      get :edit, :id => permission.id
+      get :edit, :user_id => user.id, :id => permission.id
       response.should be_success
       response.should render_template('edit')
     end
@@ -113,6 +115,7 @@ describe PermissionsController do
       id = permission.id
       post :update,
         :id => permission.id,
+        :user_id => user.id,
         :permission => {
           :category => ""
         }
@@ -126,6 +129,7 @@ describe PermissionsController do
       id = permission.id
       post :update,
         :id => permission.id,
+        :user_id => user.id,
         :permission => {
           :notification_level => Article::NEW
         }
@@ -140,7 +144,7 @@ describe PermissionsController do
       user = FactoryGirl.create(:user)
       permission = FactoryGirl.create(:permission, :user => user)
       id = permission.id
-      delete :destroy, :id => id
+      delete :destroy, :user_id => user.id, :id => id
       response.should redirect_to(user)
       flash[:notice].should_not be_nil
       permission = Permission.where('id = ?', id).first

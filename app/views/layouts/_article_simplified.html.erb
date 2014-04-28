@@ -1,17 +1,19 @@
 <% unless article.nil? %>
-  <article class="article">
-    <header>
-      <% if user_signed_in? and current_user.publisher %>
-        <%= link_to icon('edit.gif'), article %>
-      <% end %>
-      <% if not article.category_option?(:hide_category_name) %>
-        <h3 class="main-title"><%= article.category_display %></h3>&nbsp;&bull;
-      <% end %>
-      <% unless article.heading.blank? %>
-        <h4><%= article.heading_display.html_safe %></h4>&nbsp;&bull;
-      <% end %>
-      <h1><%= article.title_display.html_safe %></h1>
-    </header>
-    <%= article.content_with_inline_small.html_safe unless article.content.blank? %>
-  </article>
+  <% cache_if can_cache?, article do %>
+    <article class="article">
+      <header>
+        <% if user_signed_in? and current_user.publisher %>
+          <%= link_to icon('edit.gif'), article %>
+        <% end %>
+        <% if not article.category_option?(:hide_category_name) %>
+          <h3 class="main-title"><%= article.category_display %></h3>&nbsp;&bull;
+        <% end %>
+        <% unless article.heading.blank? %>
+          <h4><%= article.heading_display.html_safe %></h4>&nbsp;&bull;
+        <% end %>
+        <h1><%= article.title_display.html_safe %></h1>
+      </header>
+      <%= article.content_with_inline_small.html_safe unless article.content.blank? %>
+    </article>
+  <% end %>
 <% end %>

@@ -14,16 +14,7 @@
 # 
 # See doc/COPYRIGHT.rdoc for more details.
 class EducpopController < ApplicationController
-  before_filter :find_article, :only => [:date, :livre, :lecture, :revue ]
-  caches_action :index, :if => Proc.new { can_cache? }
-  caches_action :dates, :if => Proc.new { can_cache? }
-  caches_action :date, :if => Proc.new { can_cache? }
-  caches_action :librairie, :if => Proc.new { can_cache? }
-  caches_action :livre, :if => Proc.new { can_cache? }
-  caches_action :lectures, :if => Proc.new { can_cache? }
-  caches_action :lecture, :if => Proc.new { can_cache? }
-  caches_action :revues, :if => Proc.new { can_cache? }
-  caches_action :revue, :if => Proc.new { can_cache? }
+  before_action :find_article, :only => [:date, :livre, :lecture, :revue ]
 
   def index
     @dates = Article.find_published 'date', 1, 1

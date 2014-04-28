@@ -16,10 +16,7 @@
 
 # Controller for the podcast.
 class PodcastController < ApplicationController
-  before_filter :find_article, :only => [:son]
-  caches_action :index, :if => Proc.new { can_cache? }
-  caches_action :son, :if => Proc.new { can_cache? }
-  caches_action :rss, :expires_in => 1.hour, :if => Proc.new { can_cache? }
+  before_action :find_article, :only => [:son]
 
   def index
     find_list_articles_by_category 'son'
@@ -50,6 +47,8 @@ class PodcastController < ApplicationController
     @root_path = url_for podcast_path(:only_path => false)
     @rss_path = url_for podcast_feed_path(:only_path => false)
     @articles = Article.find_published('son', 1, 50)
-    render :template => '/layouts/rss'
+    if stale?(:etag => "podcast/rss", :last_modified => @articles[0].nil? ? nil : @articles[0].updated_at, :public => true)
+      render :template => '/layouts/rss'
+    end
   end
 end

@@ -3,9 +3,10 @@
   <% MENU.each do |menu, options| %>
     <% unless not options.blank? and options[:hide] %>
       <% if first %><% first = false %><% else %>&bull;<% end %>
-      <%= link_to_unless_current(menu, { :controller => options[:controller], 
-                                         :action => options[:action] },
-                                       :title => options[:description]) do |name| %>
+      <%= link_to_unless_current(menu,
+            { :controller => options[:controller], 
+              :action => options[:action] },
+            :title => options[:description]) do |name| %>
         <span class="current"><%= name %></span>
       <% end %>
     <% end %> 

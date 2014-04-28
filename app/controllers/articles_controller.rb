@@ -14,13 +14,12 @@
 # 
 # See doc/COPYRIGHT.rdoc for more details.
 class ArticlesController < ApplicationController
-  before_filter :authenticate_user!
-  before_filter :authenticate_publisher!
-  before_filter :authenticate_administrator!, :only => [:destroy]
-  before_filter :find, :only => [:show, :update, :destroy]
-  before_filter :load_side_data, :only => [:new, :new_child, :create, :edit, :update]
-  before_filter :pre_control_authorization, :only => [:new]
-  cache_sweeper :article_sweeper, :only => [:create, :update, :destroy]
+  before_action :authenticate_user!
+  before_action :authenticate_publisher!
+  before_action :authenticate_administrator!, :only => [:destroy]
+  before_action :find, :only => [:show, :update, :destroy]
+  before_action :load_side_data, :only => [:new, :new_child, :create, :edit, :update]
+  before_action :pre_control_authorization, :only => [:new]
 
   # Index page.
   def index
@@ -62,6 +61,10 @@ class ArticlesController < ApplicationController
     @uploaded_document = Article.new
     @parent_page = params[:parent_page].present? ? params[:parent_page].to_i : 1
     @source_page = params[:source_page].present? ? params[:source_page].to_i : 1
+    # Turns XSS auditor off in order to avoid false positive errors with Google Chrome.
+    # see https://github.com/volmer/bootsy/issues/17
+    # see http://edgeguides.rubyonrails.org/action_controller_overview.html
+    response.headers["X-XSS-Protection"] = "0"
   end
 
   # Prepares an article for creation.
@@ -97,7 +100,7 @@ class ArticlesController < ApplicationController
     begin
       signature = params[:article][:signature]
       params[:article][:signature] = nil
-      @article = Article.new(params[:article])
+      @article = Article.new(article_parameters)
       if @article.errors.empty?
         begin
           @article.transaction do
@@ -136,7 +139,7 @@ class ArticlesController < ApplicationController
       @comments = params[:comments]
       @article.transaction do
         @article.updated_by = current_user.email
-        @article.update_attributes!(params[:article])
+        @article.update_attributes!(article_parameters)
         if "change_image_options" == @modifier
           @article.image.reprocess! unless @article.image.nil?
         end
@@ -203,6 +206,45 @@ class ArticlesController < ApplicationController
   end
 
 private
+
+  # Returns the parameters that are allowed for mass-update.
+  def article_parameters
+    return nil if params[:article].nil?
+    params.require(:article).permit(:category,
+                                        :uri,
+                                        :published_at,
+                                        :expired_at,
+                                        :status, 
+                                        :draft,
+                                        :parent_id,
+                                        :source_id,
+                                        :heading,
+                                        :show_heading,
+                                        :title,
+                                        :signature, 
+                                        :content,
+                                        :start_datetime,
+                                        :end_datetime,
+                                        :no_endtime,
+                                        :all_day,
+                                        :address,
+                                        :email,
+                                        :external_id,
+                                        :original_url,
+                                        :zoom,
+                                        :zoom_video,
+                                        :home_video,
+                                        :zoom_sequence,
+                                        :gravity,
+                                        :agenda,
+                                        :legacy,
+                                        :image_remote_url_input,
+                                        :image,
+                                        :document,
+                                        :audio,
+                                        :created_by,
+                                        :updated_by)
+  end
 
   # Prepares data for display in the index page.  
   def prepare_index

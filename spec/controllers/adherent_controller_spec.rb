@@ -31,7 +31,29 @@ describe AdherentController do
     end
 
     it "article (no access)" do
-      get :article, :id => "aaa"
+      get :article, :uri => "aaa"
+      response.should_not be_success
+      flash[:alert].should_not be_nil
+    end
+  end
+
+  context "visitors not member" do
+    login_user(:user)
+
+    it "index (no access)" do
+      get :index
+      response.should_not be_success
+      flash[:alert].should_not be_nil
+    end
+
+    it "search (no access)" do
+      get :search
+      response.should_not be_success
+      flash[:alert].should_not be_nil
+    end
+
+    it "article (no access)" do
+      get :article, :uri => "aaa"
       response.should_not be_success
       flash[:alert].should_not be_nil
     end
@@ -43,7 +65,7 @@ describe AdherentController do
     it "index" do
       5.times {
         FactoryGirl.create(:article)
-        article = FactoryGirl.create(:article, :category => 'dossier')
+        article = FactoryGirl.create(:article, :category => 'conseil')
         article.status = Article::ONLINE
         article.save!
       }
@@ -55,7 +77,7 @@ describe AdherentController do
     it "search" do
       5.times {
         FactoryGirl.create(:article)
-        article = FactoryGirl.create(:article, :category => 'dossier')
+        article = FactoryGirl.create(:article, :category => 'conseil')
         article.status = Article::ONLINE
         article.save!
       }
@@ -64,7 +86,7 @@ describe AdherentController do
     end
 
     it "article" do
-      article = FactoryGirl.create(:article)
+      article = FactoryGirl.create(:article, :category => 'conseil')
       article.status = Article::ONLINE
       article.save!
       get :article, :uri => article.uri

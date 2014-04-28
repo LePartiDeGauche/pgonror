@@ -16,11 +16,6 @@
 
 # Controller for the web site home page.
 class AccueilController < ApplicationController
-  caches_action :index, :expires_in => 1.hour, :if => Proc.new { can_cache? }
-  caches_action :legal, :if => Proc.new { can_cache? }
-  caches_action :rss, :expires_in => 1.hour, :if => Proc.new { can_cache? }
-  caches_action :sitemap, :expires_in => 1.hour
-
   # Content of the home page
   def index
     @zooms = Article.find_published_zoom 1, 5
@@ -78,8 +73,10 @@ class AccueilController < ApplicationController
 
   # RSS output based on recent articles.
   def rss
-    @articles = Article.find_by_criteria({:status => Article::ONLINE, :feedable => true, :search => @search}, 1, 50)
-    render :template => 'layouts/rss'
+    @articles = Article.find_by_criteria({:status => Article::ONLINE, :feedable => true, :search => @search}, 1, 40)
+    if stale?(:etag => "rss" + (@search.nil? ? "" : @search), :last_modified => @articles[0].nil? ? nil : @articles[0].updated_at, :public => true)
+      render :template => 'layouts/rss'
+    end
   end
 
   # Renders most recent articles in a text format.

@@ -14,9 +14,9 @@
 # 
 # See doc/COPYRIGHT.rdoc for more details.
 class AdherentController < ApplicationController
-  before_filter :authenticate_user!
-  before_filter :authenticate_access_reserved!
-  before_filter :find_article, :only => [:article]
+  before_action :authenticate_user!
+  before_action :authenticate_access_reserved!
+  before_action :find_article, :only => [:article]
 
   def index
     prepare_index

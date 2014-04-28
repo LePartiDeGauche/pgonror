@@ -65,6 +65,56 @@ describe UsersController do
     end
   end
 
+  context "user not administrator" do
+    login_user(:user)
+
+    it "index (no access)" do
+      get :index
+      response.should_not be_success
+      flash[:alert].should_not be_nil
+    end
+
+    it "search (no access)" do
+      user = FactoryGirl.create(:user)
+      get :search, :search => "me"
+      response.should_not be_success
+      flash[:alert].should_not be_nil
+    end
+
+    it "show (no access)" do
+      user = FactoryGirl.create(:user)
+      get :show, :id => user.id
+      response.should_not be_success
+      flash[:alert].should_not be_nil
+    end
+
+    it "edit (no access)" do
+      user = FactoryGirl.create(:user)
+      get :edit, :id => user.id
+      response.should_not be_success
+      flash[:alert].should_not be_nil
+    end
+
+    it "update (no access)" do
+      user = FactoryGirl.create(:user)
+      post :update,
+        :id => user.id,
+        :user => { :access_level => "reserved" }
+      response.should_not be_success
+      flash[:alert].should_not be_nil
+    end
+
+    it "destroy (no access)" do
+      user = FactoryGirl.create(:user)
+      id = user.id
+      delete :destroy, :id => id
+      response.should_not be_success
+      flash[:alert].should_not be_nil
+      user = User.where('id = ?', id).first
+      user.should_not be_nil
+    end
+  end
+
   context "administrator" do
     login_user(:administrator)
 
@@ -87,7 +137,7 @@ describe UsersController do
       user = FactoryGirl.create(:user)
       get :search, :search => "me"
       response.should be_success
-      response.should render_template('search_list')
+      response.should render_template('users/_search_list')
     end
 
     it "update" do

@@ -47,6 +47,11 @@ describe ActualitesController do
       response.should be_success
     end
 
+    it "editos (partial)" do
+      get :editos, :partial => true
+      response.should be_success
+    end
+
     it "edito" do
       article = FactoryGirl.create(:article, :category => 'edito')
       article.status = Article::ONLINE
@@ -55,8 +60,23 @@ describe ActualitesController do
       response.should be_success
     end
 
+    it "wrong uri" do
+      get :edito, :uri => 'xxx'
+      response.should render_template('not_found')
+    end
+
+    it "redirection" do
+      get :edito, :uri => 'a%e2%80%99http://www.xxx.zzz%e2%80%99'
+      response.should render_template(nil)
+    end
+
     it "actualites" do
       get :actualites
+      response.should be_success
+    end
+
+    it "actualites (partial)" do
+      get :actualites, :partial => true
       response.should be_success
     end
 
@@ -73,6 +93,11 @@ describe ActualitesController do
       response.should be_success
     end
 
+    it "communiques (partial)" do
+      get :communiques, :partial => true
+      response.should be_success
+    end
+
     it "communique" do
       article = FactoryGirl.create(:article, :category => 'com')
       article.status = Article::ONLINE
@@ -86,6 +111,11 @@ describe ActualitesController do
       response.should be_success
     end
 
+    it "tout_international (partial)" do
+      get :tout_international, :partial => true
+      response.should be_success
+    end
+
     it "international" do
       article = FactoryGirl.create(:article, :category => 'inter')
       article.status = Article::ONLINE
@@ -96,6 +126,11 @@ describe ActualitesController do
 
     it "dossiers" do
       get :dossiers
+      response.should be_success
+    end
+
+    it "dossiers (partial)" do
+      get :dossiers, :partial => true
       response.should be_success
     end
 

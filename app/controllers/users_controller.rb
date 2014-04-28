@@ -14,8 +14,8 @@
 # 
 # See doc/COPYRIGHT.rdoc for more details.
 class UsersController < ApplicationController
-  before_filter :authenticate_user!
-  before_filter :authenticate_administrator!
+  before_action :authenticate_user!
+  before_action :authenticate_administrator!
 
   def index
   end
@@ -40,17 +40,13 @@ class UsersController < ApplicationController
       begin
         @user.transaction do
           @user.updated_by = current_user.email
-          @user.update_attributes(params[:user])
+          @user.update_attributes(user_parameters)
           saved = true
         end
       end
     end
-    if saved
-      flash[:notice] = t('action.user.updated')
-      redirect_to(@user)
-    else
-      render :action => "edit"
-    end
+    flash[:notice] = t('action.user.updated') if saved
+    redirect_to(@user)
   end
 
   def destroy
@@ -66,5 +62,24 @@ class UsersController < ApplicationController
     end
     flash[:notice] = t('action.user.deleted') if saved
     render :action => :index
+  end
+
+private
+
+  # Returns the parameters that are allowed for mass-update.
+  def user_parameters
+    return nil if params[:user].nil?
+    params.require(:user).permit(:email, 
+                                     :password, 
+                                     :password_confirmation, 
+                                     :remember_me, 
+                                     :publisher, 
+                                     :administrator,
+                                     :notification_message, 
+                                     :notification_subscription, 
+                                     :notification_donation, 
+                                     :notification_membership, 
+                                     :notification_alert, 
+                                     :access_level)
   end
 end

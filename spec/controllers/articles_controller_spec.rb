@@ -54,6 +54,45 @@ describe ArticlesController do
     end
   end
 
+  context "user not publisher" do
+    login_user(:user)
+
+    it "index (no access)" do
+      get :index
+      response.should_not be_success
+      flash[:alert].should_not be_nil
+    end
+
+    it "create (no access)" do
+      post :create, :article => {
+        :category => "inter",
+        :title => "Article 1"
+      }
+      response.should_not be_success
+      flash[:alert].should_not be_nil
+    end
+
+    it "update (no access)" do
+      article = FactoryGirl.create(:article)
+      id = article.id
+      post :update,
+        :id => article.id,
+        :article => { :status => Article::ONLINE }
+      response.should_not be_success
+      flash[:alert].should_not be_nil
+    end
+
+    it "destroy (no access)" do
+      article = FactoryGirl.create(:article)
+      id = article.id
+      delete :destroy, :id => article.id
+      response.should_not be_success
+      flash[:alert].should_not be_nil
+      article = Article.where('id = ?', id).first
+      article.should_not be_nil
+    end
+  end
+
   context "publishers with no authorization" do
     login_user(:publisher)
 
@@ -157,7 +196,9 @@ describe ArticlesController do
     end
 
     it "create with no data (no access)" do
-      lambda { post :create }.should raise_exception
+      FactoryGirl.create(:administrator)
+      post :create
+      response.should render_template('error')
     end
 
     it "create with bare minimum data (no access)" do
@@ -211,16 +252,6 @@ describe ArticlesController do
       article.gravity.should be_nil
     end
 
-    it "headings" do
-      get :headings, :format => :json
-      response.should be_success
-    end
-
-    it "signatures" do
-      get :signatures, :format => :json
-      response.should be_success
-    end
-
     it "destroy (no access)" do
       article = FactoryGirl.create(:article)
       id = article.id
@@ -247,7 +278,9 @@ describe ArticlesController do
     end
 
     it "create with no data (no access)" do
-      lambda { post :create }.should raise_exception
+      FactoryGirl.create(:administrator)
+      post :create
+      response.should render_template('error')
     end
 
     it "create with missing data" do
@@ -310,6 +343,24 @@ describe ArticlesController do
       response.should redirect_to(article)
       expect(assigns(:article).title).to be == title
       flash[:notice].should_not be_nil
+    end
+
+    it "headings" do
+      article = FactoryGirl.create(:article)
+      get :headings, :format => :json
+      response.should be_success
+    end
+
+    it "signatures" do
+      article = FactoryGirl.create(:article)
+      get :signatures, :format => :json
+      response.should be_success
+    end
+
+    it "directories" do
+      article = FactoryGirl.create(:article_directory)
+      get :directories, :format => :json
+      response.should be_success
     end
 
     it "update with incorrect data" do

@@ -1,7 +1,9 @@
-<section id="payment">
-  <section class="content-bloc">
-    <% unless @presentation.nil? %>
-      <%= render :partial => 'layouts/article_simplified',  :locals => { :article => @presentation } %>
-    <% end %>                        
+<% cache_if can_cache?, @url do %>
+  <section id="payment">
+    <section class="content-bloc">
+      <% unless @presentation.nil? %>
+        <%= render :partial => 'layouts/article_simplified',  :locals => { :article => @presentation } %>
+      <% end %>
+    </section>
   </section>
-</section>
+<% end %>

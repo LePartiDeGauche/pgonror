@@ -15,55 +15,47 @@
 # See doc/COPYRIGHT.rdoc for more details.
 source 'http://rubygems.org'
 
-gem 'rails', '3.2.12'
+gem 'rails', '4.0.2'
+gem 'coffee-rails', '~> 4.0.1'
+gem 'sass-rails', '~> 4.0.1'
+gem "compass-rails", "~> 1.1.2"
+gem 'uglifier', '>= 1.3.0'
 gem 'sqlite3', '~> 1.3.6', :require => 'sqlite3'
-gem 'jquery-rails', '>=2.0.0'
+gem 'jquery-rails', "2.3.0"
 gem 'execjs'
-gem "paperclip", "~> 2.4"
-gem 'truncate_html', '0.5.5' # To be removed - version to be used with ruby 1.8 only
+gem "paperclip"
+gem 'truncate_html'
 gem 'devise'
-gem 'active_cmis',"~> 0.3.2", :require => 'active_cmis'
-gem 'kaminari'
+gem 'active_cmis',">= 0.3.2", :require => 'active_cmis'
 gem 'htmlentities'
-gem 'dalli'
 gem 'ruby-mp3info'
 gem 'geocoder'
+gem 'yaml_db'
+gem 'thin'
+gem 'newrelic_rpm'
 gem 'capistrano-unicorn'
 
 platforms :ruby do
-  gem 'libv8' # necessary to be installed on Ubuntu
-  gem 'therubyracer', '>=0.11.3'
+  gem 'libv8'
+  gem 'therubyracer', '~> 0.11.3'
+end
+
+group :server do
   gem 'unicorn'
-end
-
-# Used only for assets and not required in production environments by default.
-group :assets do
-  gem 'sass-rails', '~> 3.2.3'
-  gem 'coffee-rails', '~> 3.2.1'
-  gem 'uglifier', '>= 1.0.3'
-  gem 'compass-rails'
-end
-
-group :test do
-  # Pretty printed test output
-  gem 'turn', :require => false
-  gem 'database_cleaner' # Used to cleanup database during tests: https://github.com/bmabey/database_cleaner
-  gem 'simplecov'
+  gem 'mysql2'
+  gem 'dalli'
 end
 
 group :development do
-  gem 'capistrano-ext' # To deploy with capistrano on various environments
+  gem 'capistrano-ext'
   gem 'capistrano_colors'
 end
 
 group :development, :test do
-  gem 'rspec-rails', "~> 2.8" # It needs to be in the :development group to expose generators and rake tasks without having to type RAILS_ENV=test
+  gem 'turn', :require => false
+  gem 'database_cleaner', "1.0.1"
+  gem 'simplecov'
+  gem 'rspec-rails', "~> 2.8"
   gem 'factory_girl_rails'
   gem 'valid_attribute'
-end
-
-# Specific gems used for development, to not install them use: > bundle install --without specifics
-group :specifics do
-  gem 'mailcatcher' # Used to catch emails in webbrowser: http://mailcatcher.me/
-  gem "system_timer", "~> 1.2.4"
 end

@@ -13,26 +13,25 @@
       </h3>&nbsp;&bull;
     </hgroup>
     <ol>
-      <% first_row = true %>
+      <% row = 1 %>
       <% for article in articles %>
         <li>
-          <article class="article">
-            <header>
-              <% unless article.heading.blank? %>
-                <h4><%= article.heading_display.html_safe %></h4>&nbsp;&bull;
+          <% cache_if can_cache?, article do %>
+            <article class="article <%= row >= 2 ? 'article-separator' : '' %>">
+              <header>
+                <% unless article.heading.blank? %>
+                  <h4><%= article.heading_display.html_safe %></h4>&nbsp;&bull;
+                <% end %>
+                <h1><%= link_to article.title_display.html_safe, article.path %></h1>
+              </header>
+              <% if row == 1 %>
+                <%= truncate_html(article.content_with_alternate,
+                                  :omission => link_to(article.category_option?(:video) ? t('titre.voir_video').html_safe : t('titre.lire_suite').html_safe, article.path)) %>
               <% end %>
-              <h1><%= link_to article.title_display.html_safe, article.path %></h1>
-              <% if not first_row %>
-                <aside class="actions"><%= link_to t('titre.lire'), article.path %></aside>
-              <% end %>
-            </header>
-            <% if first_row %>
-              <%= truncate_html(article.content_with_alternate,
-                                :omission => link_to(article.category_option?(:video) ? t('titre.voir_video').html_safe : t('titre.lire_suite').html_safe, article.path)) %>
-              <% first_row = false %>
-            <% end %>
-          </article>
+            </article>
+          <% end %>
         </li>
+        <% row = row + 1 %>
       <% end %>
     </ol>
   <% end %>

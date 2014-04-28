@@ -77,7 +77,7 @@ describe Article do
     end
 
     it "is valid with an image and a watermark" do
-      file = File.open("#{Rails.root}/spec/datafiles/PG-FDG.png")
+      file = File.open("#{Rails.root}/spec/datafiles/Abonnement.png")
       article = FactoryGirl.create(:article_image, :signature => "photosdegauche.fr")
       article.image = file
       article.save!

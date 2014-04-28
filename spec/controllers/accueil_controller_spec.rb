@@ -98,12 +98,17 @@ describe AccueilController do
     end
 
     it "default" do
-      get :default
+      get :default, :id => 'a'
       response.should_not be_success
+    end
+    
+    it "default" do
       article = FactoryGirl.create(:article)
       article.status = Article::ONLINE
       article.save!
       get :default, :id => article.id, :format => :pdf
+      response.should_not be_success
+      get :default, :id => 'aaa', :format => :pdf
       response.should_not be_success
       get :default, :id => article.id
       response.should_not be_success

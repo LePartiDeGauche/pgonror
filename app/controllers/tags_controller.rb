@@ -14,8 +14,8 @@
 # 
 # See doc/COPYRIGHT.rdoc for more details.
 class TagsController < ApplicationController
-  before_filter :authenticate_user!
-  before_filter :authenticate_publisher!
+  before_action :authenticate_user!
+  before_action :authenticate_publisher!
 
   def new
     @article = Article.find_by_id(params[:article_id])
@@ -30,15 +30,17 @@ class TagsController < ApplicationController
     if "add" == @modifier
       @article = Article.find_by_id(params[:article_id])
       unless @article.nil?
-        @tag = @article.tags.new
-        @tag.tag = params[:tag]
-        @tag.created_by = current_user.email
-        @tag.updated_by = current_user.email
-        Article.create_default_tag @tag.tag, current_user.email
-        if @tag.save
-          flash[:notice] = t('action.tag.added')
-          redirect_to(@article, :only_path => true)
-        else
+        begin
+          @tag = @article.tags.new
+          @tag.tag = params[:tag]
+          @tag.created_by = current_user.email
+          @tag.updated_by = current_user.email
+          Article.create_default_tag @tag.tag, current_user.email
+          if @tag.save
+            flash[:notice] = t('action.tag.added')
+            redirect_to(@article, :only_path => true)
+          end
+        rescue ActiveRecord::RecordInvalid => invalid
           @unused_tags = @article.unused_tags
           render :action => "new"
         end
@@ -54,11 +56,12 @@ class TagsController < ApplicationController
     begin
       @article = Article.find_by_id(params[:article_id])
       unless @article.nil?
-        @tag = @article.tags.new(params[:tag])
+        @tag = @article.tags.new(tag_parameters)
         @tag.created_by = current_user.email
         @tag.updated_by = current_user.email
         Article.create_default_tag @tag.tag, current_user.email
         if @tag.save
+          @article.save!
           saved = true
         end
       end
@@ -80,6 +83,7 @@ class TagsController < ApplicationController
       @article = @tag.article
       @tag.delete_all_references if @article.nil?
       @tag.destroy
+      @article.save! unless @article.nil?
       flash[:notice] = t('action.tag.deleted')
       unless @article.nil?
         redirect_to(@article, :only_path => true)
@@ -89,5 +93,14 @@ class TagsController < ApplicationController
         render :action => "index"
       end
     end 
+  end
+
+private
+
+  # Returns the parameters that are allowed for mass-update.
+  def tag_parameters
+    return nil if params[:tag].nil?
+    params.require(:tag).permit(:article_id,
+                                   :tag)
   end
 end
