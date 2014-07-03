@@ -67,7 +67,7 @@ describe ActualitesController do
 
     it "redirection" do
       get :edito, :uri => 'a%e2%80%99http://www.xxx.zzz%e2%80%99'
-      response.should render_template(nil)
+      response.should render_template('not_found')
     end
 
     it "actualites" do

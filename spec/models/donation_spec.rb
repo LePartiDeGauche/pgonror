@@ -59,13 +59,13 @@ describe Donation do
 
     it "#payment_ok? returns true when the payment was validated" do
       donation = FactoryGirl.create(:donation_paid)
-      donation.payment_ok?.should be_true
+      donation.payment_ok?.should == true
       donation.payment_identifier.should_not be_nil
     end
 
     it "#payment_ok? returns false when the payment was not validated" do
       donation = FactoryGirl.create(:donation_error)
-      donation.payment_ok?.should be_false
+      donation.payment_ok?.should == false
     end
 
     it "#payment_error_display returns OK when the payment was validated" do

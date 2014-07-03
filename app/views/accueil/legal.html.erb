@@ -4,6 +4,7 @@
       <% unless @legal.nil? %>
         <%= render :partial => 'layouts/article_simplified', :locals => { :article => @legal } %>
       <% end %>
+      (ruby <%= RUBY_VERSION %>, rails <%= Rails.version %>)
     </section>
   </section>
 <% end %>

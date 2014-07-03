@@ -1,0 +1,15 @@
+<div id="mainmenu">
+  <% MENU.each do |menu, options| %>
+    <% if options[:identity_layout] == 'radio' %>
+      <span class="hlist">
+      <%= link_to_unless_current(menu,
+            { :controller => options[:controller], 
+              :action => options[:action] },
+            :title => options[:description]) do |name| %>
+        <span class="current"><%= name %></span>
+      <% end %>
+      </span>
+    <% end %> 
+  <% end %>
+  <%= link_to 'Contact', 'mailto:radiodegauche@lepartidegauche.fr' %>
+</div>

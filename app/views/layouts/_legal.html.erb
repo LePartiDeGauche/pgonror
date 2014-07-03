@@ -1,5 +1,4 @@
 <% cache 'legal' do %>
-  <% unless Rails.env.production? %><%= Rails.env %> (ruby <%= RUBY_VERSION %>, rails <%= Rails.version %>)&nbsp;&bull;<% end %>
   <%= t('general.copyright') %>&nbsp;&bull;
   <%= link_to_unless_current t('general.mentions'), legal_path %>
 <% end %>

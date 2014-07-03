@@ -1,0 +1,19 @@
+<div class="inner-list">
+  <% unless articles.nil? or articles[0].nil? %>
+    <ul>
+      <% for article in articles %>
+        <li>
+          <% cache_if (can_cache? and not defined?(title)), article do %>
+            <article class="article">
+              <% content = truncate_html(article.content_replaced_with_alternate, :length => 480).html_safe %>
+                <header>
+                  <% unless article.heading.blank? %><h4><%= article.heading_display.html_safe %></h4><br/><% end %>
+                  <h1><%= link_to article.title_display.html_safe, article.path %></h1>
+                </header>
+            </article>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+</div>

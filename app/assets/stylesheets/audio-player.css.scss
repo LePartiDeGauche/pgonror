@@ -65,8 +65,9 @@
 	text-align: right;
 }
 .ap-play, .ap-pause {
-	width: 64px;
-	height: 54px;
+	margin-left: -10px;
+	width: 67px;
+	height: 70px;
 }
 .ap-play a, .ap-pause a {
 	padding: 4px 28px 40px 28px;
@@ -76,11 +77,11 @@
 	background-size: 280px 64px;
 }
 .ap-play:hover {
-	background: image-url("rdg_btn_playpause_2.png") no-repeat scroll -71px 0;
+	background: image-url("rdg_btn_playpause_2.png") no-repeat scroll -72px 0;
 	background-size: 280px 64px;
 }
 .ap-pause {
-	background: image-url("rdg_btn_playpause_2.png") no-repeat scroll -142px 0;
+	background: image-url("rdg_btn_playpause_2.png") no-repeat scroll -143px 0;
 	background-size: 280px 64px;
 }
 .ap-pause:hover {
@@ -108,5 +109,10 @@
 	background-size: 120px 36px;
 	background-position: -4px -4px;
 	margin-left: 10px;
+}
+.rdg-home {
+	position: absolute;
+	z-index: 100;
+	margin: -44px 386px;
 }
 

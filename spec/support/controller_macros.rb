@@ -14,7 +14,7 @@
 # 
 # See doc/COPYRIGHT.rdoc for more details.
 module ControllerMacros
-  def login_user(level = :user, authorization_category = nil)
+  def login_user(level = :user, authorization_category = nil, authorization_category2 = nil)
     before(:each) do
       @request.env["devise.mapping"] = Devise.mappings[:user]
       user = FactoryGirl.create(level.to_sym)
@@ -22,6 +22,9 @@ module ControllerMacros
       sign_in user
       unless authorization_category.nil?
         FactoryGirl.create(:permission, :user => user, :category => authorization_category)
+      end
+      unless authorization_category2.nil?
+        FactoryGirl.create(:permission, :user => user, :category => authorization_category2)
       end
     end
   end

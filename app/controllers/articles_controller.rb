@@ -19,7 +19,7 @@ class ArticlesController < ApplicationController
   before_action :authenticate_administrator!, :only => [:destroy]
   before_action :find, :only => [:show, :update, :destroy]
   before_action :load_side_data, :only => [:new, :new_child, :create, :edit, :update]
-  before_action :pre_control_authorization, :only => [:new]
+  before_action :pre_control_authorization, :only => [:new, :update]
 
   # Index page.
   def index
@@ -134,7 +134,14 @@ class ArticlesController < ApplicationController
   # Updates an article.
   def update
     saved = false
+    emergency_offline = false
     @modifier = params[:modifier]
+    if "change_status" == @modifier
+      new_status = params[:article][:status]
+      if Article::OFFLINE == new_status and Article::OFFLINE != @article.status
+        emergency_offline = true
+      end
+    end
     begin
       @comments = params[:comments]
       @article.transaction do
@@ -144,7 +151,7 @@ class ArticlesController < ApplicationController
           @article.image.reprocess! unless @article.image.nil?
         end
         set_dates @article
-        if @article.control_authorization
+        if emergency_offline or @article.control_authorization
           @article.create_audit! @article.status, @article.updated_by, @comments
           @article.save!
           saved = true
@@ -288,9 +295,17 @@ private
 
   # Controls current user is allowed to save an article of a given category.
   def pre_control_authorization
+    status = ''
+    if @article.present?
+      @category = @article.category
+      @modifier = params[:modifier]
+      if "change_status" == @modifier
+        status = params[:article][:status]
+      end
+    end
     message = Article::pre_control_authorization(current_user.email,
                                                  @category,
-                                                 @source.present? ? @source.to_i : nil)
+                                                 @source.present? ? @source.to_i : nil) unless Article::OFFLINE == status
     if message.present?
       flash.now[:notice] = message.html_safe
       prepare_index

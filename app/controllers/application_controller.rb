@@ -83,6 +83,7 @@ protected
     rescue Exception
       @uri = nil
     end
+    @format = params[:format]
   end
 
   # Sets a page title based on menus definition and article categories.
@@ -181,6 +182,9 @@ protected
     else
       @source = @last_published = @same_heading = @tags = nil
       @article = Article.find_published_by_uri @uri
+      if @article.nil? and @format.present?
+        @article = Article.find_published_by_uri(@uri + '.' + @format)
+      end
       if @article.nil?
         log_warning "find_article: not found"
         render :template => '/layouts/not_found', :formats => :html, :status => '404'
@@ -208,7 +212,7 @@ protected
           @og_type = "video.movie" if @article.category_option?(:video)
           @og_type = "music.song" if @article.category_option?(:audio)
           content = @article.extract_image_content
-          @identity_icon = content unless content.nil?
+          @identity_icon = content.sub(/(\S*)\?(\S*)/, "\\1") unless content.nil?
           header_menu = MENU.find {|meaning, options| options.present? and
                                                     options[:controller].present? and
                                                     options[:controller].to_s == '/' + params[:controller].to_s

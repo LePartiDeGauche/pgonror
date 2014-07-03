@@ -19,7 +19,7 @@
       <meta property="og:url" content="<%= @url %>" />
       <meta property="og:description" content="<%= current_page_description %>" />
       <meta property="og:site_name" content="<%= t 'general.title' %>" />
-      <meta property="og:image" content="<%= asset_path @identity_icon %>" />
+      <meta property="og:image" content="<%= @root_path %><%= asset_path @identity_icon %>" />
       <meta property="og:locale" content="fr_FR" />
       <meta name="generator" content="Ruby on Rails 4" />
       <% if @norobot.present? and @norobot -%><meta name="robots" content="noindex,nofollow" /><% end -%>

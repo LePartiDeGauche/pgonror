@@ -22,7 +22,6 @@ class ContactController < ApplicationController
   end
   
   def departement
-    @attached_articles = @article.present? ? @article.find_published_by_source(@page) : nil
     @pages = @article.present? ? @article.count_pages_published_by_source : 0
   end
 

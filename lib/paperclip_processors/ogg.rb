@@ -29,7 +29,7 @@ module Paperclip
     def make
       target = File.join(File.dirname(@attachment.path), @audio_path, (@filename + @extension))
       FileUtils.mkdir_p(File.dirname(@attachment.path))
-      Paperclip.run('avconv', "-y -i #{File.expand_path(@file.path)} -acodec libvorbis #{target}")
+      Paperclip.run 'avconv', "-y -i '#{File.expand_path(@file.path)}' -acodec libvorbis '#{target}'"
       dst = File.open @file.path
     end
   end

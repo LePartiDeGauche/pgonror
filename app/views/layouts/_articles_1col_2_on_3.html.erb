@@ -31,7 +31,10 @@
               </div>
             </header>
             <%= truncate_html(article.content_with_large,
-                              :omission => link_to(article.category_option?(:video) ? t('titre.voir_video').html_safe : t('titre.lire_suite').html_safe, article.path)) %>
+                              :omission => link_to(article.category_option?(:video) ? t('titre.voir_video').html_safe : article.category_option?(:audio) ? t('titre.ecouter_radio').html_safe : t('titre.lire_suite').html_safe, article.path)) %>
+            <% if article.audio_file_name %>
+              <center><div class="ap-play"><%= link_to '&nbsp;'.html_safe, article.path, {:class => 'ap-button', :title => 'play'} %></div></center>
+            <% end %>
           </article>
         <% end %>
       </li>

@@ -1,0 +1,27 @@
+<section id="actualites-liste">
+  <section class="content-bloc">
+    <hgroup>
+      <h3 class="main-title">
+        <%= t('identity.radiodegauche') %>
+      </h3>&nbsp;&bull;
+    </hgroup>
+    <ol id="liste-articles">
+    <%= render :partial => 'layouts/articles_1col_2_on_3', :locals => { :articles => @articles, :partial => true } %>
+    </ol>
+  </section>
+</section>
+<section id="actualites-vignettes">
+  <%= render :partial => 'layouts/source' %>
+  <% unless @headings.nil? or @headings.empty? %>
+    <section class="content-bloc bloc-bottom-margin">
+      <%= render :partial => 'layouts/table_of_content', :locals => { :headings => @headings, :articles => @articles } %>
+    </section>
+  <% end %>
+  <% unless @side_articles.nil? or @side_articles.empty? %>
+    <% for articles in @side_articles %>
+      <section class="content-bloc bloc-bottom-margin">
+        <%= render :partial => 'layouts/articles_1col_1_on_3_picture', :locals => { :articles => articles } %>
+      </section>
+    <% end %>
+  <% end %>
+</section>

@@ -217,8 +217,8 @@ describe ArticlesController do
         :id => article.id,
         :modifier => "change_status",
         :article => { :status => Article::ONLINE }
-      response.should render_template('change_status')
-      flash[:notice].should be_nil
+      response.should render_template('index')
+      flash[:notice].should_not be_nil
       article = Article.where('id = ?', id).first
       article.should_not be_nil
       article.status.should be_nil
@@ -231,8 +231,8 @@ describe ArticlesController do
         :id => article.id,
         :modifier => "change_category",
         :article => { :category => 'inter' }
-      response.should render_template('change_category')
-      flash[:notice].should be_nil
+      response.should render_template('index')
+      flash[:notice].should_not be_nil
       article = Article.where('id = ?', id).first
       article.should_not be_nil
       article.category.should be == 'dossier'
@@ -245,8 +245,8 @@ describe ArticlesController do
         :id => article.id,
         :modifier => "change_image_options",
         :article => { :gravity => Article::SOUTH }
-      response.should render_template('change_image_options')
-      flash[:notice].should be_nil
+      response.should render_template('index')
+      flash[:notice].should_not be_nil
       article = Article.where('id = ?', id).first
       article.should_not be_nil
       article.gravity.should be_nil
@@ -264,7 +264,7 @@ describe ArticlesController do
   end
 
   context "publishers with authorization" do
-    login_user(:publisher, "inter")
+    login_user(:publisher, "inter", "dossier")
 
     it "new" do
       get :new, :category => "inter"

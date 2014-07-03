@@ -54,7 +54,7 @@ describe Article do
       article.start_end_datetime_display.should_not be == ""
       article.start_datetime_display.should_not be == ""
       article.end_time_display.should_not be == ""
-      article.end_time?.should be_true
+      article.end_time?.should == true
       article.title_to_txt.should_not be == ""
       article.address_to_txt.should_not be == ""
     end
@@ -162,7 +162,7 @@ describe Article do
 
     it "#category_option? returns true" do
       article = FactoryGirl.create(:article)
-      article.category_option?(:controller).should be_true
+      article.category_option?(:controller).should == "/actualites"
     end
 
     it "#statuses returns a list of supported statuses" do
@@ -232,7 +232,7 @@ describe Article do
     it "#control_authorization returns false if a user can't publish content" do
       user = FactoryGirl.create(:publisher)
       article = FactoryGirl.create(:article, :updated_by => user.email)
-      article.control_authorization.should be_false
+      article.control_authorization.should == false
       article.errors.should_not be_empty
     end
 
@@ -240,24 +240,24 @@ describe Article do
       user = FactoryGirl.create(:publisher)
       FactoryGirl.create(:permission, :user => user)
       article = FactoryGirl.create(:article, :updated_by => user.email)
-      article.control_authorization.should be_true
+      article.control_authorization.should == true
     end
 
     it "#published? returns true if the article was published" do
       article = FactoryGirl.create(:article)
-      article.published?.should be_false
+      article.published?.should == false
       article.status = Article::ONLINE
       article.save!
-      article.published?.should be_true
+      article.published?.should == true
     end
 
     it "#was_published? returns true if the article was published before last update" do
       article = FactoryGirl.create(:article)
       article.status = Article::ONLINE
-      article.was_published?.should be_false
+      article.was_published?.should == false
       article.save!
       article.status = Article::OFFLINE
-      article.was_published?.should be_true
+      article.was_published?.should == true
     end
 
     it "#description returns the truncated content of the article with no HTML tag" do

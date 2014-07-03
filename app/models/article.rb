@@ -298,6 +298,7 @@ class Article < ActiveRecord::Base
   def content_with_large; content_with("large", LARGE_WIDTH, LARGE_HEIGHT, 2*LARGE_HEIGHT) end
   def content_with_medium; content_with("medium", MEDIUM_WIDTH, MEDIUM_HEIGHT) end
   def content_replaced_with_medium; content_replaced_with("medium", MEDIUM_WIDTH, MEDIUM_HEIGHT) end
+  def content_replaced_with_alternate; content_replaced_with("alternate", ALTERNATE_WIDTH, ALTERNATE_HEIGHT) end
   def content_with_small; content_with("small", SMALL_WIDTH, SMALL_HEIGHT) end
   def content_with_mini; content_with("mini", MINI_WIDTH, MINI_HEIGHT) end
   def content_with_alternate; content_with("alternate", ALTERNATE_WIDTH, ALTERNATE_HEIGHT) end
@@ -846,6 +847,11 @@ class Article < ActiveRecord::Base
     find_by_criteria({:status => ONLINE, :video => true}, page, limit)
   end
 
+  # Selects published articles for audio categories.  
+  def self.find_published_audio(page = 1, limit = ARTICLES_PER_PAGE)
+    find_by_criteria({:status => ONLINE, :audio => true}, page, limit)
+  end
+
   # Selects published articles for militer categories.  
   def self.find_published_militer(page = 1, limit = ARTICLES_PER_PAGE)
     find_by_criteria({:status => ONLINE, :militer => true}, page, limit)
@@ -879,6 +885,11 @@ class Article < ActiveRecord::Base
   # Selects published video articles.  
   def self.find_published_video_exclude_zoom(page = 1, limit = ARTICLES_PER_PAGE)
     find_by_criteria({:status => ONLINE, :video => true, :exclude_zoom => true}, page, limit)
+  end
+
+  # Selects published audio articles.  
+  def self.find_published_audio_exclude_zoom(exclude = nil, page = 1, limit = ARTICLES_PER_PAGE)
+    find_by_criteria({:status => ONLINE, :audio => true, :exclude_zoom => true, :excluding => exclude}, page, limit)
   end
 
   # Searches published articles.  
@@ -1337,11 +1348,13 @@ private
       (options[:exclude_zoom].present? ? " and (zoom is null or zoom = #{@@sql_false})" : "") +
       (options[:exclude_zoom_video].present? ? " and (zoom_video is null or zoom_video = #{@@sql_false})" : "") +
       (options[:video].present? ? " and category in (#{categories_with(:video)})" : "") +
+      (options[:audio].present? ? " and category in (#{categories_with(:audio)})" : "") +
       (options[:militer].present? ? " and category in (#{categories_with(:militer)})" : "") +
       (options[:searchable].present? ? " and category in (#{categories_with(:searchable)})" : "") +
       (options[:feedable].present? ? " and category in (#{categories_without(:unfeedable)})" : "") +
       (options[:access_level_reserved].present? ? " and category in (#{access_level_reserved_categories})" : "") +
       (options[:heading].present? ? " and lower(heading) = #{quote(options[:heading].downcase.strip)}" : "") +
+      (options[:excluding].present? ? " and id not in(#{options[:excluding]})" : "") +
       (options[:parent_search].present? ?
         " and parent_id in (" +
         "select id from articles where " +

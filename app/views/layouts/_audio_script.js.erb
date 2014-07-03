@@ -454,8 +454,9 @@ jQuery(function($) { // ‡ Start a jQuery script
       function() { $(this).removeClass('ui-state-hover'); }
     );
 */
-    getTracks(  { "title":"<%= @article.title_display.html_safe %>", "file":"../<%= article.audio.url(:ogg, false).gsub(/\.mp3$/, "") %>" }  );
+    getTracks(  { "title":"<%= @article.title_display.html_safe %>", "file":"<%= article.audio.url(:ogg, false).gsub(/\.mp3$/, "") %>" }  );
     audio.volume = vl; //set last volume level
+    $('.ap-button[title=play]').click();
   } else {
     $('#ap_container_1').html('Your browser does not support the HTML5 audio tag.');
   }

@@ -15,7 +15,7 @@
 # See doc/COPYRIGHT.rdoc for more details.
 source 'http://rubygems.org'
 
-gem 'rails', '4.0.2'
+gem 'rails', '4.1.4'
 gem 'coffee-rails', '~> 4.0.1'
 gem 'sass-rails', '~> 4.0.1'
 gem "compass-rails", "~> 1.1.2"

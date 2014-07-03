@@ -45,32 +45,39 @@
       <article class="article">
         <aside class="actions">
           <% if session[:last_url].present? %>
-            <a href="<%= session[:last_url] %>"><%= t('action.back') %></a>&nbsp;&bull;
+            <span class="hlist"><a href="<%= session[:last_url] %>"><%= t('action.back') %></a></span>
           <% end %>
-          <%= link_to t('action.update'), 
-                :action => :edit, 
+          <% if current_user.permissions.find_by(:category => @article.category) %>
+            <span class="hlist"><%= link_to t('action.update'), 
+                  :action => :edit, 
+                  :id => @article.id %>
+            </span>
+            <span class="hlist"><%= link_to t('action.change_category'),
+              :action => :edit,
+              :modifier => :change_category, 
+              :id => @article.id %>
+            </span>
+            <% if @article.category_option?(:image) %>
+              <span class="hlist"><%= link_to t('action.change_image_options'),
+                :action => :edit,
+                :modifier => :change_image_options, 
                 :id => @article.id %>
-          <% if not @article.draft %>&bull;
-            <%= link_to t('action.change_status'),
+              </span>
+            <% end %>
+          <% end %>
+          <% if not @article.draft %>
+            <span class="hlist"><%= link_to t('action.change_status'),
               :action => :edit,
               :modifier => :change_status, 
               :id => @article.id %>
+            </span>
           <% end %>
-          &bull; <%= link_to t('action.change_category'),
-            :action => :edit,
-            :modifier => :change_category, 
-            :id => @article.id %>
-          <% if @article.category_option?(:image) %>
-            &bull; <%= link_to t('action.change_image_options'),
-              :action => :edit,
-              :modifier => :change_image_options, 
-              :id => @article.id %>
-          <% end %>
-          <% if current_user.administrator %>&bull;
-            <%= link_to t('action.delete'), 
+          <% if current_user.administrator %>
+            <span class="hlist"><%= link_to t('action.delete'), 
                 @article, 
                 :data => {:confirm => t("action.confirm")}, 
                 :method => :delete %>
+            </span>
           <% end %>
         </aside>
         <header>

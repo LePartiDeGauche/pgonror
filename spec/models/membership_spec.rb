@@ -129,13 +129,13 @@ describe Membership do
 
     it "#payment_ok? returns true when the payment was validated" do
       member = FactoryGirl.create(:membership_paid)
-      member.payment_ok?.should be_true
+      member.payment_ok?.should == true
       member.payment_identifier.should_not be_nil
     end
 
     it "#payment_ok? returns false when the payment was not validated" do
       member = FactoryGirl.create(:membership_error)
-      member.payment_ok?.should be_false
+      member.payment_ok?.should == false
     end
 
     it "#payment_error_display returns OK when the payment was validated" do

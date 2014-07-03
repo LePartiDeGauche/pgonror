@@ -180,7 +180,7 @@ class ArticleUploadPhototheque < Article
         gsub(/[ùûüÙÛÜ]/,"u").
         gsub(/[çÇ]/,"c").
         gsub(/[œŒ]/,"oe").
-        gsub(/[^a-z0-9-.]/,"").
+        gsub(/[^a-z0-9\-.]/,"").
         gsub(/-{2,}/,"-").
         gsub(/-\z/,"\\1").
         gsub(/\./, "-").

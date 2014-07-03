@@ -1,0 +1,105 @@
+<% cache_if can_cache?, @url do %>
+  <% cache 'radiodegauche' do %>
+  <section id="laradiodegauche-radioactu">
+    <section id="laradiodegauche-radioactu-content" class="content-bloc">
+      <%= render :partial => 'layouts/articles_1col_1_on_2_picture', :locals => { :articles => @radioactu, :title => :zoom_no_heading } %>
+    </section>
+  </section>
+  <section id="laradiodegauche-educpop">
+    <section id="laradiodegauche-educpop-content" class="content-bloc">
+      <%= render :partial => 'layouts/articles_1col_1_on_2_picture', :locals => { :articles => @educpop, :title => :zoom_no_heading } %>
+    </section>
+  </section>
+  <section id="laradiodegauche-radiomedia">
+    <section id="laradiodegauche-radiomedia-content" class="content-bloc">
+      <%= render :partial => 'layouts/articles_1col_1_on_2_picture', :locals => { :articles => @radiomedia, :title => :zoom_no_heading } %>
+    </section>
+  </section>
+  <section id="laradiodegauche-intervention">
+    <section id="laradiodegauche-intervention-content" class="content-bloc">
+      <%= render :partial => 'layouts/articles_1col_1_on_2_picture', :locals => { :articles => @intervention, :title => :zoom_no_heading } %>
+    </section>
+  </section>
+  <section id="laradiodegauche-ontheweb">
+    <section id="laradiodegauche-ontheweb-content" class="content-bloc">
+      <article class="article">
+        <h3 class="category"><%= t 'identity.radiodegauche_sn' %>&nbsp;&bull;</h3>
+        <table>
+          <tr>
+            <td>
+              <%= link_to t('identity.follow_rdg_tw_link'), :target => "_blank" do %>
+                <img src="<%= asset_path 'twitter-bird-light-bgs.png' %>" alt="<%= t 'identity.follow_rdg_tw' %>" width="32" height="32">
+              <% end %>
+            </td>
+            <td>
+              <%= link_to t('identity.follow_rdg_tw_link'), :target => "_blank" do %>
+                @<%= t 'identity.follow_rdg_tw' %>
+              <% end %>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <%= link_to t('identity.follow_rdg_fb_link'), :target => "_blank" do %>
+                <img src="<%= asset_path 'f_logo.png' %>" alt="<%= t 'identity.follow_rdg_fb' %>" width="32" height="32">
+              <% end %>
+            </td>
+            <td>
+              <%= link_to t('identity.follow_rdg_fb_link'), :target => "_blank" do %>
+                <%= t 'identity.follow_rdg_fb' %>
+              <% end %>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <img src="<%= asset_path 'rss.png' %>" alt="<%= t 'identity.rss_3_explain' %>" width="32" height="32">
+            </td>
+            <td>
+              <%= t 'identity.rss_title' %>
+              <%= link_to 'PG', { :controller => 'podcast', :action => 'rss' } %>&nbsp;&bull;&nbsp;
+              <%= link_to t('identity.rss_rdg_sc_link'), :target => "_blank" do %>
+                <%= t 'identity.radiodegauche_share' %>
+              <% end %>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <%= link_to t('identity.follow_sc_link') do %>
+                <img src="<%= asset_path 'SC.png' %>" alt="<%= t('identity.follow_sc') %>" width="32" height="32">
+              <% end %>
+            </td>
+            <td>
+              <%= link_to t('identity.follow_sc_link') do %>
+                <%= t('identity.follow_sc') %>
+              <% end %>
+            </td>
+          </tr>
+        </table>
+      </article>
+    </section>
+  </section>
+  <section id="laradiodegauche-lastposts">
+    <section id="laradiodegauche-lastposts-content" class="content-bloc">
+      <article class="article">
+        <h3 class="category"><%= t 'identity.radiodegauche_lastposts' %>&nbsp;&bull;</h3><br/>
+        <% unless @side_articles.nil? or @side_articles.empty? %>
+          <% for previous_article in @side_articles %>
+            <% if previous_article.category_option?(:start_end_dates) or not previous_article.agenda.blank? %>
+              <div class="date"><%= previous_article.start_end_datetime_display(true) %></div>
+            <% else %>
+              <div class="date"><%= l previous_article.published_at, :format => :long_ordinal %></div>&nbsp;
+            <% end %>
+            <% unless previous_article.heading.blank? %>
+              <h4><%= previous_article.heading_display.html_safe %></h4>&nbsp;&bull;
+            <% end %>
+            <h1><%= link_to previous_article.title_display.html_safe, 
+                  :controller => previous_article.category_option(:controller),
+                  :action => previous_article.category_option(:action),
+                  :uri => previous_article.uri %></h1>
+            <br/>
+          <% end %>
+        <% end %>
+      </article>
+    </section>
+  </section>
+  <% end %>
+<% end %>

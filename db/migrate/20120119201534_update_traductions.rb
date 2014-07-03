@@ -1,6 +1,6 @@
 class UpdateTraductions < ActiveRecord::Migration
   def up
-    Article.update_all({:category => 'web'}, ['category in (?)', 'traduction'])
+    Article.where('category in (?)', 'traduction').update_all(category: 'web') 
   end
 
   def down

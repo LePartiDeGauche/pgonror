@@ -8,6 +8,6 @@ Le site a été conçu, développé et est maintenu par les adhérents du parti.
 
 Les sources en exploitation sont disponibles sur le site de partage Github à cette adresse : http://github.com/LePartiDeGauche/pgonror. A partir de cette plateforme, les développeurs peuvent proposer des améliorations ainsi que des corrections, qui pourront être intégrées dans la branche principale de développement ; les visiteurs peuvent également signaler des dysfonctionnements. 
 
-Le site web s’appuie sur la plateforme Ruby on Rails (rubyonrails.org) dans sa version 4.0, disponible sur un grand nombre de systèmes. 
+Le site web s’appuie sur la plateforme Ruby on Rails (rubyonrails.org) dans sa version 4.1, disponible sur un grand nombre de systèmes. 
 
 Rendez-vous sur le wiki https://github.com/LePartiDeGauche/pgonror/wiki pour prendre connaissance des documentations disponibles.

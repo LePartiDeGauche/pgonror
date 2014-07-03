@@ -291,6 +291,14 @@ body {
         position:absolute;
       }
     }
+    .one-half-column {
+      img {
+        width:452px;
+      }
+      object {
+        position:absolute;
+      }
+    }
   }
   .article-separator {
     border-top:1px dotted $pg-green;
@@ -500,6 +508,12 @@ body {
   }
 }
 
+span.hlist::after {
+  content: " \2022 ";
+}
+span.hlist:last-child::after {
+  content: "";
+}
 .highlighted-bloc {
   color:white;
   @include background-image(radial-gradient(50% 50%, adjust-lightness($pg-red, 5%) 10%, $pg-red));
@@ -1040,7 +1054,7 @@ $zoom-height:309px;
 
 @include two-columns-1third-2third("#lateledegauche-videoevenement", "#lateledegauche-presentation");
 
-#lateledegauche-presentation-content {
+#lateledegauche-presentation-content, #laradiodegauche-ontheweb-content {
   height:$picture-height;
   table {
     margin-top:$pg-padding;
@@ -1070,4 +1084,23 @@ table {
       background-color:$pg-red;
     }
   }
+}
+
+@include two-columns-half("#laradiodegauche-radioactu", "#laradiodegauche-educpop");
+@include two-columns-half("#laradiodegauche-radiomedia", "#laradiodegauche-intervention");
+@include two-columns-1third-2third("#laradiodegauche-ontheweb", "#laradiodegauche-lastposts");
+
+#laradiodegauche-ontheweb, #laradiodegauche-lastposts {
+  margin-top: 20px;
+}
+
+.rdg-block {
+  height: 250px;
+}
+
+.rdg-subtitle {
+  font-size: 20pt;
+  font-weight: bold;
+  color: white;
+  line-height: 40pt;
 }

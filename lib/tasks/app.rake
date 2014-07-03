@@ -42,7 +42,11 @@ namespace :app do
 
   desc 'Update status for old articles'
   task :update_old_status => :environment do
-    for article in Article.where('(status is null or status = ?) and updated_at < ?', Article::NEW, Time.now - 1.month)
+    for article in Article.where('(status is null or status in (?,?,?)) and updated_at < ?',
+                  Article::NEW,
+                  Article::REWORK,
+                  Article::REVIEWED,
+                  Time.now - 1.month)
       puts "-- Update article '#{article.title}'"
       article.transaction do
         article.updated_by = "[Auto]"
